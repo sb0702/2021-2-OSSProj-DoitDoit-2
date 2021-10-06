@@ -62,10 +62,11 @@ class ui_variables:
 
     # image
     levelup = pygame.image.load("assets/images/levelup.png")
-    fever_image = pygame.image.load("assets/images/fever.png")
+    fever_image = pygame.image.load("assets/images/bubble_explo4.png")
     pvp_win_image = pygame.image.load("assets/images/win.png")
     pvp_lose_image = pygame.image.load("assets/images/lose.png")
     pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
+    delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
 
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
@@ -97,16 +98,16 @@ def set_volume():
     ui_variables.tetris_sound.set_volume(effect_volume / 10)
 
 
-# Draw block
+# Draw block 아 이건 전체 필드를 그리는건가???
 def draw_block(x, y, color):
     pygame.draw.rect(
         screen,
         color,
         Rect(x, y, block_size, block_size)
     )
-    pygame.draw.rect(
+    pygame.draw.rect( # 얘는 줄무늬 경계를 그리는거
         screen,
-        ui_variables.grey_1,
+        ui_variables.grey_4,
         Rect(x, y, block_size, block_size),
         1
     )
@@ -209,6 +210,7 @@ def draw_reverse_board(next, hold, score, level, goal):
 
     for i in range(mino_size):
         for j in range(mino_turn):
+
             dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
             dy = int(SCREEN_HEIGHT * 0.3743) + block_size * i
             if grid_n[i][j] != 0:
@@ -266,7 +268,7 @@ def draw_reverse_board(next, hold, score, level, goal):
         for y in range(height):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * x
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * y
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][(height - 1) - y + 1]])
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
 def draw_1Pboard(next, hold):
@@ -411,10 +413,10 @@ def draw_mino(x, y, mino, r):
     while not is_bottom(tx, ty, mino, r):
         ty += 1
 
-    # Draw ghost
+    # Draw ghost 이게 아마 밑바닥에 보이는 그 색깔일텐데
     for i in range(mino_size):
         for j in range(mino_turn):
-            if grid[i][j] != 0:
+            if grid[i][j] != 0: # 0이면 비어있는 공간인데 비어있지 않으면이라는 뜻
                 matrix[tx + j][ty + i] = 8
 
     # Draw mino
@@ -896,7 +898,9 @@ while not done:
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 if reverse:
+                if reverse:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
+
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
                 pygame.display.update()
@@ -905,9 +909,9 @@ while not done:
                 if not game_over:
                     erase_mino(dx, dy, mino, rotation)
 
-                # Move mino down
+                # Move mino down 떨구는 함수
                 if not is_bottom(dx, dy, mino, rotation):
-                    dy += 1
+                    dy += 1 # 떨어지는 변화량
 
                 # Create new mino
                 else:
@@ -984,22 +988,26 @@ while not done:
                     for i in range(width):
                         matrix[i][height] = 9
                     k = randint(1, 9)
-                    matrix[k][height] = 0
+                    matrix[k][height] = 0 # 0은 빈칸임
 
                 # 점수 구간에 따른 피버타임 #fever_interval=3
                 for i in range(1, max_score, fever_interval):
-                    if score > i * fever_score and score < (i + 1) * fever_score:  # 500~1000,2000~2500.3500~4000
-                        mino = randint(1, 1)
-                        next_mino = randint(1, 1)
-                        next_fever = (i + fever_interval) * fever_score
-                        # fever time시 이미지 깜빡거리게
-                        if blink:
-                            screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                               (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
-                                        (SCREEN_WIDTH * 0.01, SCREEN_HEIGHT * 0.1))
-                            blink = False
-                        else:
-                            blink = True
+                    if score > i * fever_score and score < (i + 0.5) * fever_score:  # 500~750,1000~1250.3500~4000
+                            mino = randint(1, 1)
+                            next_mino = randint(1, 1)
+                            next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
+                            # 여기에 맵을 초기화 하고
+                            for x, row in enumerate(matrix): # 각 행에 숫자를 붙이고
+                                for y, block in enumerate(row): # 행의 각 블럭 마다 y(숫자)를 넣음
+                                    screen.blit(ui_variables.delete,x,y)
+                            # fever time시 이미지 깜빡거리게
+                            if blink:
+                                screen.blit(pygame.transform.scale(ui_variables.fever_image,
+                                                                   (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
+                                            (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
+                                blink = False
+                            else:
+                                blink = True
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1255,7 +1263,7 @@ while not done:
                 for j in range(height + 1):
                     is_full = True
                     for i in range(width):
-                        if matrix[i][j] == 0 or matrix[i][j] == 9:
+                        if matrix[i][j] == 0 or matrix[i][j] == 9: # j는 바닥부터의 높이, i는 폭
                             is_full = False
                     if is_full:
                         erase_count += 1
@@ -2391,13 +2399,13 @@ while not done:
 
                 blink = not blink
 
-            # difficulty page
+            # 여기가 난이도 메뉴임 쉬움모드는 삭제하고 버튼식으로 바꾸면 좋지 않을까?
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
                 DIFFICULTY_COUNT = 6
-                DIFFICULTY_NAMES = ["EASY", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
+                DIFFICULTY_NAMES = ["fa", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "블록이 천천히 내려오는 이지모드 입니다.",
+                    "ewe",
                     "블록이 중간 속도로 내려오는 노말모드 입니다.",
                     "블록이 빠르게 내려오는 하드모드 입니다.",
                     "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
