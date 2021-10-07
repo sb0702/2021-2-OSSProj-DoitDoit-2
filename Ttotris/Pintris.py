@@ -897,7 +897,7 @@ while not done:
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
-                if reverse:
+                
                 if reverse:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
 
