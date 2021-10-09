@@ -4,7 +4,7 @@ import math
 from random import *
 from pygame.locals import *
 from mino import *
-
+from ui import ui_variables
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -33,58 +33,7 @@ pygame.init()
 pygame.key.set_repeat(500)
 
 
-class ui_variables:
-    # Fonts
-    font_path = "./assets/fonts/OpenSans-Light.ttf"
-    font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
-    font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
 
-    h1 = pygame.font.Font(font_path, 50)
-    h2 = pygame.font.Font(font_path, 30)
-    h4 = pygame.font.Font(font_path, 20)
-    h5 = pygame.font.Font(font_path, 13)
-    h6 = pygame.font.Font(font_path, 10)
-
-    h1_b = pygame.font.Font(font_path_b, 50)
-    h2_b = pygame.font.Font(font_path_b, 30)
-
-    h2_i = pygame.font.Font(font_path_i, 30)
-    h5_i = pygame.font.Font(font_path_i, 13)
-
-    # Sounds
-    click_sound = pygame.mixer.Sound("assets/sounds/SFX_ButtonUp.wav")
-    move_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceMoveLR.wav")
-    drop_sound = pygame.mixer.Sound("assets/sounds/SFX_PieceHardDrop.wav")
-    single_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearSingle.wav")
-    double_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearDouble.wav")
-    triple_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearTriple.wav")
-    tetris_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialTetris.wav")
-
-    # image
-    levelup = pygame.image.load("assets/images/levelup.png")
-    fever_image = pygame.image.load("assets/images/bubble_explo4.png")
-    pvp_win_image = pygame.image.load("assets/images/win.png")
-    pvp_lose_image = pygame.image.load("assets/images/lose.png")
-    pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
-    delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
-
-    # Background colors
-    black = (10, 10, 10)  # rgb(10, 10, 10)
-    white = (255, 255, 255)  # rgb(255, 255, 255)
-    grey_1 = (26, 26, 26)  # rgb(26, 26, 26)
-    grey_2 = (35, 35, 35)  # rgb(35, 35, 35)
-    grey_3 = (55, 55, 55)  # rgb(55, 55, 55)
-    grey_4 = (100, 100, 100)
-    # Tetrimino colors
-    cyan = (69, 206, 204)  # rgb(69, 206, 204) # I
-    blue = (64, 111, 249)  # rgb(64, 111, 249) # J
-    orange = (253, 189, 53)  # rgb(253, 189, 53) # L
-    yellow = (246, 227, 90)  # rgb(246, 227, 90) # O
-    green = (98, 190, 68)  # rgb(98, 190, 68) # S
-    pink = (242, 64, 235)  # rgb(242, 64, 235) # T
-    red = (225, 13, 27)  # rgb(225, 13, 27) # Z
-
-    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]
 
 
 # 소리 크기 설정
@@ -107,7 +56,7 @@ def draw_block(x, y, color):
     )
     pygame.draw.rect( # 얘는 줄무늬 경계를 그리는거
         screen,
-        ui_variables.grey_4,
+        ui_variables.grey_1,
         Rect(x, y, block_size, block_size),
         1
     )
@@ -406,17 +355,17 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
     draw_2Pboard(next_2P, hold_2P)
 
 
-# Draw a tetrimino
+# 도형그리기
 def draw_mino(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]  # grid에 mino_map의 모양과 방향을 선택한 리스트를 넣는다.
-    tx, ty = x, y
+    tx, ty = x, y # x,y에 따라서 tx,ty 도형 내려오는 곧 결정
     while not is_bottom(tx, ty, mino, r):
         ty += 1
 
-    # Draw ghost 이게 아마 밑바닥에 보이는 그 색깔일텐데
+    # 이게 아마 밑바닥에 보이는 그 색깔일텐데
     for i in range(mino_size):
         for j in range(mino_turn):
-            if grid[i][j] != 0: # 0이면 비어있는 공간인데 비어있지 않으면이라는 뜻
+            if grid[i][j] != 0: # 0이면 빈공간인데 1,2등 색깔이 있으면 비어있지 않으니 
                 matrix[tx + j][ty + i] = 8
 
     # Draw mino
@@ -663,7 +612,7 @@ def is_stackable_2P(mino):
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+pygame.time.set_timer(pygame.USEREVENT, framerate * 100)
 pygame.display.set_caption("PINTRIS™")
 
 # pages
@@ -697,7 +646,7 @@ attack_point_2P = 0
 fever_score = 500
 next_fever = 500
 fever_interval = 3
-
+fever_key = 1
 # 난이도
 easy_difficulty = 0
 normal_difficulty = 1
@@ -771,7 +720,7 @@ while not done:
             if event.type == QUIT:
                 done = True
             elif event.type == USEREVENT:
-                pygame.time.set_timer(pygame.USEREVENT, 300)
+                pygame.time.set_timer(pygame.USEREVENT, 100)
                 if reverse:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 elif pvp:
@@ -886,6 +835,8 @@ while not done:
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
+            
+            # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
                 # Set speed
                 if not game_over:
@@ -893,7 +844,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 10) # 게임내 동작시간
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -990,25 +941,24 @@ while not done:
                     k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
 
-                # 점수 구간에 따른 피버타임 #fever_interval=3
-                for i in range(1, max_score, fever_interval):
-                    if score > i * fever_score and score < (i + 0.5) * fever_score:  # 500~750,1000~1250.3500~4000
-                            mino = randint(1, 1)
-                            next_mino = randint(1, 1)
-                            next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
-                            # 여기에 맵을 초기화 하고
-                            for x, row in enumerate(matrix): # 각 행에 숫자를 붙이고
-                                for y, block in enumerate(row): # 행의 각 블럭 마다 y(숫자)를 넣음
-                                    screen.blit(ui_variables.delete,x,y)
-                            # fever time시 이미지 깜빡거리게
-                            if blink:
-                                screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                                   (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
-                                            (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
-                                blink = False
-                            else:
-                                blink = True
-
+                # 피버모드 재설계
+                if score>= fever_key* next_fever:
+                    
+                    mino = randint(1, 1)
+                    next_mino = randint(1, 1)
+                    next_fever = (fever_key + fever_interval) * fever_score # 피버모드 점수 표시
+                    # 여기에 맵을 초기화 하고
+                    
+                    # fever time시 이미지 깜빡거리게
+                    if blink:
+                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
+                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
+                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
+                        blink = False
+                    else:
+                        blink = True
+                    fever_key + 1
+                            
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
@@ -2016,14 +1966,12 @@ while not done:
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 block_size = int(SCREEN_HEIGHT * 0.045)
-                screen.fill(ui_variables.white)
-                pygame.draw.rect(
-                    screen,
-                    ui_variables.grey_1,
-                    Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
-                )
+                background = pygame.image.load("assets/images/backgroun.png")
+                background = pygame.transform.scale(background,(int(SCREEN_WIDTH), int(SCREEN_HEIGHT)))
+                screen.blit(background,(0, 0))
+                # 애니팡 이름 이미지 소환하고 scrren.blit으로 중간에 띄우기
 
-                title = ui_variables.h1.render("PINTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1.render("anipangTris™", 1, ui_variables.white)
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
 
@@ -2038,10 +1986,10 @@ while not done:
                     screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 40, SCREEN_HEIGHT * 0.44)))
 
                 blink = not blink
-
+                
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
-
+              
                 screen.blit(leader_1, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.0347)))
                 screen.blit(leader_2, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.0614)))
                 screen.blit(leader_3, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.096)))
