@@ -5,6 +5,7 @@ from random import *
 from pygame.locals import *
 from mino import *
 from ui import *
+
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -607,6 +608,8 @@ def is_stackable_2P(mino):
     return True
 
 
+
+
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
@@ -841,7 +844,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 3)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -939,20 +942,29 @@ while not done:
                     matrix[k][height] = 0 # 0은 빈칸임
 
                 # 점수 구간에 따른 피버타임 #fever_interval=3
-                for i in range(1, max_score, fever_interval):
-                    if score > i * fever_score and score < (i + 1) * fever_score:  # 500~750,1000~1250.3500~4000
-                            mino = randint(1, 1)
-                            next_mino = randint(1, 1)
-                            next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
-                            
-                            # fever time시 이미지 깜빡거리게
-                            if blink:
-                                screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                                   (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
-                                            (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
-                                blink = False
-                            else:
-                                blink = True
+                '''
+                i = 1
+                if score > i * 100:  
+                    
+                    pygame.time.set_timer(pygame.USEREVENT, 5)                  
+                    mino = randint(1, 1)
+                    next_mino = randint(1, 1)
+                    next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
+                                      
+                    # fever time시 이미지 깜빡거리게
+                    if blink:
+                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
+                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
+                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
+                        blink = False
+                    else:
+                        blink = True
+                    i += fever_interval
+                '''
+                    
+                    
+
+##########키조작 부부분   
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1027,6 +1039,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
@@ -1632,7 +1645,7 @@ while not done:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
-
+                ## 이름 스코어 입력
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
 
@@ -1660,6 +1673,7 @@ while not done:
                         screen.blit(underbar_3, (SCREEN_WIDTH * 0.15625, SCREEN_HEIGHT * 0.326 - 2))
                     blink = True
                 pygame.display.update()
+            
             # 마우스로 창크기조절
             elif event.type == VIDEORESIZE:
 
@@ -1961,12 +1975,12 @@ while not done:
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 block_size = int(SCREEN_HEIGHT * 0.045)
-                background = pygame.image.load("assets/images/backgroun.png")
-                background = pygame.transform.scale(background,(int(SCREEN_WIDTH), int(SCREEN_HEIGHT)))
-                screen.blit(background,(0, 0))
-                # 애니팡 이름 이미지 소환하고 scrren.blit 띄우기
-
-                title = ui_variables.h1.render("anipangTris™", 1, ui_variables.white)
+                
+                
+                
+               
+                
+                title = ui_variables.h1.render("pintris", 1, ui_variables.white)
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
 
@@ -2346,9 +2360,9 @@ while not done:
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
                 DIFFICULTY_COUNT = 6
-                DIFFICULTY_NAMES = ["fa", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
+                DIFFICULTY_NAMES = ["easy", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "ewe",
+                    "문구테스트",
                     "블록이 중간 속도로 내려오는 노말모드 입니다.",
                     "블록이 빠르게 내려오는 하드모드 입니다.",
                     "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
