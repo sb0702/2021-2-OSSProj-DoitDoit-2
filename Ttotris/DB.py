@@ -2,9 +2,8 @@ import pymysql
 import bcrypt
 
 
-
 class Database:
-    def __init__():
+    def __init__(self):
         score_db = pymysql.connect(
             user='admin',
             password='tjgus1234',
@@ -13,7 +12,7 @@ class Database:
             charset='utf8'
         )
 
-    def id_not_exists(input_id, mode): # 아이디가 데이터베이스에 존재하는지 확인
+    def id_not_exists(self,input_id, mode): # 아이디가 데이터베이스에 존재하는지 확인
         curs = score.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM mode WHERE id=%s"
         curs.execute(sql, input_id)
@@ -24,16 +23,8 @@ class Database:
         else:
             return True
 
-    def add_id_data(user_id): # 아이디 추가
-        #추가하기
-        curs = score.cursor()
-        sql = "INSERT INTO users (user_id) VALUES (%s)"
-        curs.execute(sql, user_id)
-        self.score_db.commit()  #서버로 추가 사항 보내기
-        curs.close()
 
-
-    def add_data(game_mode,  id, score):
+    def add_data(self,game_mode,  id, score):
         #추가하기
         curs = score.cursor()
         if game_mode == 'Normal':

@@ -3,9 +3,10 @@ import operator
 import math
 from random import *
 from pygame.locals import *
+
 from mino import *
 from ui import *
-
+from DB import *
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -32,7 +33,7 @@ board_rate = 0.5
 
 pygame.init()
 pygame.key.set_repeat(500)
-
+## database = Database()
 
 
 # 소리 크기 설정
@@ -699,7 +700,7 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 # 초기화 부분을 하나로 합쳐준다.
 def init_game(board_width, board_height, game_difficulty):
     global width, height, matrix, matrix_2P, difficulty, framerate
-
+    
     width = board_width
     height = board_height
 
@@ -1645,7 +1646,7 @@ while not done:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
-                ## 이름 스코어 입력
+    
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
 
@@ -1703,8 +1704,7 @@ while not done:
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-
+                    ui_variables.click_sound.play()                
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
@@ -1975,12 +1975,14 @@ while not done:
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 block_size = int(SCREEN_HEIGHT * 0.045)
-                
-                
-                
-               
-                
-                title = ui_variables.h1.render("pintris", 1, ui_variables.white)
+                screen.fill(ui_variables.white)
+                pygame.draw.rect(
+                    screen,
+                    ui_variables.grey_1,
+                    Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
+                )
+
+                title = ui_variables.h1.render("PINTRIS™", 1, ui_variables.white)
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
 
