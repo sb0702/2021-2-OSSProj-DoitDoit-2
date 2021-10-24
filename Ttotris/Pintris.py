@@ -3,10 +3,11 @@ import operator
 import math
 from random import *
 from pygame.locals import *
-
+import pymysql
+from pymysql.cursors import Cursor
 from mino import *
 from ui import *
-from DB import *
+
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -33,9 +34,14 @@ board_rate = 0.5
 
 pygame.init()
 pygame.key.set_repeat(500)
-## database = Database()
 
-
+tetris = pymysql.connect(
+            user='admin',
+            password='tjgus1234',
+            host='mytetris.cw4my8jpnexs.ap-northeast-2.rds.amazonaws.com',
+            db='tetris',
+            charset='utf8'
+        )
 # 소리 크기 설정
 def set_volume():
     ui_variables.click_sound.set_volume(effect_volume / 10)
@@ -1708,7 +1714,12 @@ while not done:
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
-
+                    cursor = tetris.cursor()
+                    sql = "INSERT INTO Normal (id, score) VALUES ('aad', 400)"
+                    cursor.execute(sql)
+                    tetris.commit()  
+                    cursor.close()
+                    
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
