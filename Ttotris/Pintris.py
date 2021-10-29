@@ -9,8 +9,6 @@ from mino import *
 from ui import *
 import time
 
-t0 = time.time()
-comboCounter =0
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -653,7 +651,7 @@ hard_drop_2P = False
 
 attack_point = 0
 attack_point_2P = 0
-
+comboCounter =0
 fever_score = 500
 next_fever = 500
 fever_interval = 3
@@ -723,7 +721,8 @@ def init_game(board_width, board_height, game_difficulty):
 ###########################################################
 # Loop Start
 ###########################################################
-
+## timer start
+t0 = time.time()
 while not done:
     # Pause screen
     if pause:
@@ -971,7 +970,7 @@ while not done:
                     
                     dt = t1 - t0
                     
-                    if dt >= 10:
+                    if dt >= 27:
                         mino = next_mino
                         next_mino = randint(1, 7)                       
                         t0 = t1
@@ -1157,7 +1156,7 @@ while not done:
 
         pygame.display.update()
 
-
+#### pvp 모드 
     elif pvp:
         pygame.key.set_repeat(0)  # 키반복 비활성화
         for event in pygame.event.get():
