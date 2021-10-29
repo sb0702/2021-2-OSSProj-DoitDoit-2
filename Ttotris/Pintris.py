@@ -1724,28 +1724,28 @@ while not done:
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
                     ## 여기서부터 기록 저장
-                    if difficulty == 1:
+                    if difficulty == 1: ## normal
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Normal (id, score) VALUES (%s,%s)'
                         cursor.execute(sql, (name2, score))
                         tetris.commit()  
-                        cursor.close()
-                    if difficulty == 2:
+                        cursor.close() ## tetris db insert 
+                    if difficulty == 2: ## hard
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Hard (id, score) VALUES (%s,%s)'
                         cursor.execute(sql, (name2, score))
                         tetris.commit()  
                         cursor.close()
-                    if difficulty == 3:
+                    if difficulty == 3: ## ITem
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Item (id, score) VALUES (%s,%s)'
                         cursor.execute(sql, (name2, score))
                         tetris.commit()  
                         cursor.close()
-                    if difficulty == 4:
+                    if difficulty == 4: ## reverse
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Reverse (id, score) VALUES (%s,%s)'
