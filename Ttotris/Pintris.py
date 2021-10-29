@@ -7,7 +7,10 @@ import pymysql
 from pymysql.cursors import Cursor
 from mino import *
 from ui import *
+import time
 
+t0 = time.time()
+comboCounter =0
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -654,7 +657,7 @@ attack_point_2P = 0
 fever_score = 500
 next_fever = 500
 fever_interval = 3
-
+comboCounter =0
 # 난이도
 easy_difficulty = 0
 normal_difficulty = 1
@@ -851,7 +854,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 3)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -908,6 +911,7 @@ while not done:
                             is_full = False
                     if is_full:
                         erase_count += 1
+                        comboCounter += 1
                         k = j
                         while k > 0:
                             for i in range(width):
@@ -948,12 +952,10 @@ while not done:
                     k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
 
-                # 점수 구간에 따른 피버타임 #fever_interval=3
-                '''
-                i = 1
-                if score > i * 100:  
-                    
-                    pygame.time.set_timer(pygame.USEREVENT, 5)                  
+                # 콤보회수에 따른 피버타임
+                     
+                if 10> comboCounter > 2:
+                    t1 = time.time()              
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
                     next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
@@ -966,8 +968,16 @@ while not done:
                         blink = False
                     else:
                         blink = True
-                    i += fever_interval
-                '''
+                    
+                    dt = t1 - t0
+                    
+                    if dt >= 10:
+                        mino = next_mino
+                        next_mino = randint(1, 7)                       
+                        t0 = t1
+                        comboCounter =0
+                
+                        
                     
                     
 
@@ -1714,11 +1724,35 @@ while not done:
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
-                    cursor = tetris.cursor()
-                    sql = "INSERT INTO Normal (id, score) VALUES ('aad', 400)"
-                    cursor.execute(sql)
-                    tetris.commit()  
-                    cursor.close()
+                    ## 여기서부터 기록 저장
+                    if difficulty == 1:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Normal (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 2:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Hard (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 3:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Item (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 4:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Reverse (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
                     
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
@@ -2405,7 +2439,7 @@ while not done:
                                 # previous difficulty select
                                 ui_variables.click_sound.play()
                                 selected = selected - 1
-                        if event.key == K_SPACE:
+                        if event.key == K_SPACE: ## 게임난이도 조절인데 여기보니깐 selected로만 설정됨
                             pygame.key.set_repeat(0)
                             if 0 <= selected < 3:
                                 # start game with selected difficulty
