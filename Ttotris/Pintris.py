@@ -3,8 +3,12 @@ import operator
 import math
 from random import *
 from pygame.locals import *
+import pymysql
+from pymysql.cursors import Cursor
 from mino import *
 from ui import *
+import time
+
 # Constants
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -32,8 +36,13 @@ board_rate = 0.5
 pygame.init()
 pygame.key.set_repeat(500)
 
-
-
+tetris = pymysql.connect(
+            user='admin',
+            password='tjgus1234',
+            host='mytetris.cw4my8jpnexs.ap-northeast-2.rds.amazonaws.com',
+            db='tetris',
+            charset='utf8'
+        )
 # 소리 크기 설정
 def set_volume():
     ui_variables.click_sound.set_volume(effect_volume / 10)
@@ -607,6 +616,8 @@ def is_stackable_2P(mino):
     return True
 
 
+
+
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
@@ -640,11 +651,11 @@ hard_drop_2P = False
 
 attack_point = 0
 attack_point_2P = 0
-
+comboCounter =0
 fever_score = 500
 next_fever = 500
 fever_interval = 3
-
+comboCounter =0
 # 난이도
 easy_difficulty = 0
 normal_difficulty = 1
@@ -696,7 +707,7 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 # 초기화 부분을 하나로 합쳐준다.
 def init_game(board_width, board_height, game_difficulty):
     global width, height, matrix, matrix_2P, difficulty, framerate
-
+    
     width = board_width
     height = board_height
 
@@ -710,7 +721,8 @@ def init_game(board_width, board_height, game_difficulty):
 ###########################################################
 # Loop Start
 ###########################################################
-
+## timer start
+t0 = time.time()
 while not done:
     # Pause screen
     if pause:
@@ -841,7 +853,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -898,6 +910,7 @@ while not done:
                             is_full = False
                     if is_full:
                         erase_count += 1
+                        comboCounter += 1
                         k = j
                         while k > 0:
                             for i in range(width):
@@ -938,21 +951,36 @@ while not done:
                     k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
 
-                # 점수 구간에 따른 피버타임 #fever_interval=3
-                for i in range(1, max_score, fever_interval):
-                    if score > i * fever_score and score < (i + 1) * fever_score:  # 500~750,1000~1250.3500~4000
-                            mino = randint(1, 1)
-                            next_mino = randint(1, 1)
-                            next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
-                            
-                            # fever time시 이미지 깜빡거리게
-                            if blink:
-                                screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                                   (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
-                                            (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
-                                blink = False
-                            else:
-                                blink = True
+                # 콤보회수에 따른 피버타임
+                     
+                if 10> comboCounter > 2:
+                    t1 = time.time()              
+                    mino = randint(1, 1)
+                    next_mino = randint(1, 1)
+                    next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
+                                      
+                    # fever time시 이미지 깜빡거리게
+                    if blink:
+                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
+                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
+                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
+                        blink = False
+                    else:
+                        blink = True
+                    
+                    dt = t1 - t0
+                    
+                    if dt >= 27:
+                        mino = next_mino
+                        next_mino = randint(1, 7)                       
+                        t0 = t1
+                        comboCounter =0
+                
+                        
+                    
+                    
+
+##########키조작 부부분   
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1027,6 +1055,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
@@ -1127,7 +1156,7 @@ while not done:
 
         pygame.display.update()
 
-
+#### pvp 모드 
     elif pvp:
         pygame.key.set_repeat(0)  # 키반복 비활성화
         for event in pygame.event.get():
@@ -1632,7 +1661,7 @@ while not done:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
-
+    
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
 
@@ -1660,6 +1689,7 @@ while not done:
                         screen.blit(underbar_3, (SCREEN_WIDTH * 0.15625, SCREEN_HEIGHT * 0.326 - 2))
                     blink = True
                 pygame.display.update()
+            
             # 마우스로 창크기조절
             elif event.type == VIDEORESIZE:
 
@@ -1689,12 +1719,40 @@ while not done:
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-
+                    ui_variables.click_sound.play()                
                     outfile = open('leaderboard.txt', 'a')
                     outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
                     outfile.close()
-
+                    ## 여기서부터 기록 저장
+                    if difficulty == 1:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Normal (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 2:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Hard (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 3:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Item (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    if difficulty == 4:
+                        cursor = tetris.cursor()
+                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                        sql = 'INSERT INTO Reverse (id, score) VALUES (%s,%s)'
+                        cursor.execute(sql, (name2, score))
+                        tetris.commit()  
+                        cursor.close()
+                    
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -1961,12 +2019,14 @@ while not done:
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 block_size = int(SCREEN_HEIGHT * 0.045)
-                background = pygame.image.load("assets/images/backgroun.png")
-                background = pygame.transform.scale(background,(int(SCREEN_WIDTH), int(SCREEN_HEIGHT)))
-                screen.blit(background,(0, 0))
-                # 애니팡 이름 이미지 소환하고 scrren.blit 띄우기
+                screen.fill(ui_variables.white)
+                pygame.draw.rect(
+                    screen,
+                    ui_variables.grey_1,
+                    Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
+                )
 
-                title = ui_variables.h1.render("anipangTris™", 1, ui_variables.white)
+                title = ui_variables.h1.render("PINTRIS™", 1, ui_variables.white)
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
 
@@ -2346,9 +2406,9 @@ while not done:
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
                 DIFFICULTY_COUNT = 6
-                DIFFICULTY_NAMES = ["fa", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
+                DIFFICULTY_NAMES = ["easy", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "ewe",
+                    "문구테스트",
                     "블록이 중간 속도로 내려오는 노말모드 입니다.",
                     "블록이 빠르게 내려오는 하드모드 입니다.",
                     "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
@@ -2378,7 +2438,7 @@ while not done:
                                 # previous difficulty select
                                 ui_variables.click_sound.play()
                                 selected = selected - 1
-                        if event.key == K_SPACE:
+                        if event.key == K_SPACE: ## 게임난이도 조절인데 여기보니깐 selected로만 설정됨
                             pygame.key.set_repeat(0)
                             if 0 <= selected < 3:
                                 # start game with selected difficulty
