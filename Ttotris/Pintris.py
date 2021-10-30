@@ -15,6 +15,7 @@ SCREEN_HEIGHT = 600
 
 STARTING_FRAMERATE_BY_DIFFCULTY = [50, 30, 20]
 FRAMELATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.7]
+FEVERTIMER = [0,1,2,3,4]
 
 DEFAULT_WIDTH = 10
 DEFAULT_HEIGHT = 20
@@ -23,7 +24,7 @@ DEFAULT_HEIGHT = 20
 block_size = 17  # Height, width of single block
 width = DEFAULT_WIDTH  # Board width
 height = DEFAULT_HEIGHT  # Board height
-
+c =0
 mino_size = 4
 mino_turn = 4
 
@@ -952,13 +953,15 @@ while not done:
                     matrix[k][height] = 0 # 0은 빈칸임
 
                 # 콤보회수에 따른 피버타임
-                     
-                if 10> comboCounter > 2:
+                
+                if (c + fever_interval) * fever_score > score:
+                    ADD = FEVERTIMER[c]
+                if comboCounter > 3:
                     t1 = time.time()              
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
                     next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
-                                      
+                                    
                     # fever time시 이미지 깜빡거리게
                     if blink:
                         screen.blit(pygame.transform.scale(ui_variables.fever_image,
@@ -968,14 +971,15 @@ while not done:
                     else:
                         blink = True
                     
-                    dt = t1 - t0
-                    
-                    if dt >= 27:
-                        mino = next_mino
-                        next_mino = randint(1, 7)                       
+                    dt = t1 - t0                     
+                    if dt >= 27+ADD:
                         t0 = t1
                         comboCounter =0
-                
+                        mino = next_mino
+                        next_mino = randint(1, 7)                       
+                        c += 1
+                        
+                        
                         
                     
                     
