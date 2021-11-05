@@ -16,7 +16,8 @@ SCREEN_HEIGHT = 600
 STARTING_FRAMERATE_BY_DIFFCULTY = [50, 30, 20]
 FRAMELATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.7]
 FEVERTIMER = [0,1,2,3,4]
-
+FEVERSCOREBOARD = [0,1500,5000,15000,30000]
+FEVERGOAL = 4
 DEFAULT_WIDTH = 10
 DEFAULT_HEIGHT = 20
 
@@ -137,7 +138,7 @@ def draw_board(next, hold, score, level, goal):
     screen.blit(text_goal, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
     screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
     screen.blit(text_fever, (int(SCREEN_WIDTH * 0.12) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
+    ##screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
@@ -616,7 +617,16 @@ def is_stackable_2P(mino):
 
     return True
 
-
+def isthereID(ID, table):
+    curs = tetris.cursor()
+    sql = "SELECT * FROM {} WHERE id=%s".format(table)
+    curs.execute(sql, ID)
+    data = curs.fetchone()
+    curs.close()
+    if data:
+        return False
+    else:
+        return True
 
 
 # Start game
@@ -691,15 +701,6 @@ erase_stack_2P = 0
 
 name_location = 0
 name = [65, 65, 65]
-
-with open('leaderboard.txt') as f:
-    lines = f.readlines()
-lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
-leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-for i in lines:
-    leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
 
 matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
 matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
@@ -953,31 +954,30 @@ while not done:
                     matrix[k][height] = 0 # 0은 빈칸임
 
                 # 콤보회수에 따른 피버타임
-                
-                if (c + fever_interval) * fever_score > score:
-                    ADD = FEVERTIMER[c]
-                if comboCounter > 3:
+
+                if FEVERSCOREBOARD[1] > score >=FEVERSCOREBOARD[0]:
+                    ADD = FEVERTIMER[0]
+                if FEVERSCOREBOARD[2] > score >= FEVERSCOREBOARD[1]:
+                    ADD = FEVERTIMER[1]
+                if  FEVERSCOREBOARD[3] > score >= FEVERSCOREBOARD[2]:
+                    ADD = FEVERTIMER[2]
+                if  FEVERSCOREBOARD[4] > score >= FEVERSCOREBOARD[3]:
+                    ADD = FEVERTIMER[3]
+                if  score >= FEVERSCOREBOARD[4]:
+                    ADD = FEVERTIMER[4]    
+                if comboCounter > FEVERGOAL:
                     t1 = time.time()              
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
-                    next_fever = (i + fever_interval) * fever_score # 피버모드 점수 표시
-                                    
-                    # fever time시 이미지 깜빡거리게
-                    if blink:
-                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
-                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
-                        blink = False
-                    else:
-                        blink = True
+                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시
                     
                     dt = t1 - t0                     
-                    if dt >= 27+ADD:
+                    if dt >= ui_variables.Basictimer+ADD:
                         t0 = t1
                         comboCounter =0
                         mino = next_mino
                         next_mino = randint(1, 7)                       
-                        c += 1
+                        
                         
                         
                         
@@ -1058,8 +1058,7 @@ while not done:
                         rotation = 0
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                        
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)                     
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
@@ -1724,25 +1723,30 @@ while not done:
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
-                    outfile = open('leaderboard.txt', 'a')
-                    outfile.write(chr(name[0]) + chr(name[1]) + chr(name[2]) + ' ' + str(score) + '\n')
-                    outfile.close()
                     ## 여기서부터 기록 저장
-                    if difficulty == 1: ## normal
-                        cursor = tetris.cursor()
+                    if difficulty == 0: ## normal
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
-                        sql = 'INSERT INTO Normal (id, score) VALUES (%s,%s)'
-                        cursor.execute(sql, (name2, score))
-                        tetris.commit()  
-                        cursor.close() ## tetris db insert 
-                    if difficulty == 2: ## hard
+                        if isthereID(name2,"NORMAL"):
+                            cursor = tetris.cursor()
+                            sql = 'INSERT INTO NORMAL (id, score) VALUES (%s,%s)'
+                            cursor.execute(sql, (name2, score))
+                            tetris.commit()  
+                            cursor.close() ## tetris db insert 
+                        else :
+                            cursor = tetris.cursor()
+                            sql = "Update NORMAL set score = %s where id =%s"
+                            cursor.execute(sql, (score,name2))
+                            tetris.commit()  
+                            cursor.close() ## tetris db insert 
+                            
+                    if difficulty == 1: ## hard
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Hard (id, score) VALUES (%s,%s)'
                         cursor.execute(sql, (name2, score))
                         tetris.commit()  
                         cursor.close()
-                    if difficulty == 3: ## ITem
+                    if difficulty == 2: ## ITem
                         cursor = tetris.cursor()
                         name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                         sql = 'INSERT INTO Item (id, score) VALUES (%s,%s)'
@@ -1809,15 +1813,6 @@ while not done:
                     attack_stack_2P = 0
                     erase_stack = 0
                     erase_stack_2P = 0
-
-                    with open('leaderboard.txt') as f:
-                        lines = f.readlines()
-                    lines = [line.rstrip('\n') for line in open('leaderboard.txt')]
-
-                    leaders = {'AAA': 0, 'BBB': 0, 'CCC': 0}
-                    for i in lines:
-                        leaders[i.split(' ')[0]] = int(i.split(' ')[1])
-                    leaders = sorted(leaders.items(), key=operator.itemgetter(1), reverse=True)
 
                 elif event.key == K_RIGHT:
                     pygame.key.set_repeat(0)
@@ -2034,13 +2029,6 @@ while not done:
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
 
-                leader_1 = ui_variables.h5_i.render('1st ' + leaders[0][0] + ' ' + str(leaders[0][1]), 1,
-                                                    ui_variables.white)
-                leader_2 = ui_variables.h5_i.render('2nd ' + leaders[1][0] + ' ' + str(leaders[1][1]), 1,
-                                                    ui_variables.white)
-                leader_3 = ui_variables.h5_i.render('3rd ' + leaders[2][0] + ' ' + str(leaders[2][1]), 1,
-                                                    ui_variables.white)
-
                 if blink:
                     screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 40, SCREEN_HEIGHT * 0.44)))
 
@@ -2048,10 +2036,6 @@ while not done:
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
-
-                screen.blit(leader_1, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.0347)))
-                screen.blit(leader_2, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.0614)))
-                screen.blit(leader_3, (int(SCREEN_WIDTH * 0.033), int(SCREEN_HEIGHT * 0.096)))
 
             # MENU PAGE
             elif page == MENU_PAGE:
@@ -2409,14 +2393,13 @@ while not done:
             # 여기가 난이도 메뉴임 쉬움모드는 삭제하고 버튼식으로 바꾸면 좋지 않을까?
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
-                DIFFICULTY_COUNT = 6
-                DIFFICULTY_NAMES = ["easy", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
+                DIFFICULTY_COUNT = 5
+                DIFFICULTY_NAMES = ["NORMAL", "HARD", "PvP", "Item", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "문구테스트",
-                    "블록이 중간 속도로 내려오는 노말모드 입니다.",
-                    "블록이 빠르게 내려오는 하드모드 입니다.",
+                    "기본 테트리스입니다",
+                    "장애물맵 모드입니다..",
                     "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
-                    "보드 크기가 줄어든 스피드&미니모드 입니다.",
+                    "아이템전 모드입니다",
                     "방향키와 블록 등장이 반대인 리버스모드 입니다."
                 ]
 
@@ -2448,8 +2431,7 @@ while not done:
                                 # start game with selected difficulty
                                 ui_variables.click_sound.play()
                                 start = True
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, selected)
-
+                                
                                 # PvP mode page
                             if selected == 3:
                                 ui_variables.click_sound.play()
@@ -2508,15 +2490,49 @@ while not done:
                              int(SCREEN_HEIGHT * 0.24))
                     )
                 )
+                ## 여기에 모드별 점수를 blit
                 font2 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 15)
                 difficulty_name = DIFFICULTY_NAMES[current_selected]
                 difficulty_explain = DIFFICULTY_EXPLAINES[current_selected]
-
+                 
+                if DIFFICULTY_NAMES[current_selected] == "NORMAL":
+                    cursor = tetris.cursor()
+                    query = "SELECT * FROM NORMAL ORDER BY score DESC"
+                    cursor.execute(query)
+                    datas = cursor.fetchmany(size=3)
+                    for i in range(3):
+                        ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
+                if DIFFICULTY_NAMES[current_selected] == "Hard":
+                    cursor = tetris.cursor()
+                    query = "SELECT * FROM Hard ORDER BY score DESC"
+                    cursor.execute(query)
+                    datas = cursor.fetchmany(size=3)
+                    for i in range(3):
+                        ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))                
+                if DIFFICULTY_NAMES[current_selected] == "Item":
+                    cursor = tetris.cursor()
+                    query = "SELECT * FROM Item ORDER BY score DESC"
+                    cursor.execute(query)
+                    datas = cursor.fetchmany(size=3)
+                    for i in range(3):
+                        ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
+                if DIFFICULTY_NAMES[current_selected] == "Reverse":
+                    cursor = tetris.cursor()
+                    query = "SELECT * FROM Reverse ORDER BY score DESC"
+                    cursor.execute(query)
+                    datas = cursor.fetchmany(size=3)
+                    for i in range(3):
+                        ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
+                
                 title = ui_variables.h1.render(difficulty_name, 1, ui_variables.white)
                 title_explain = font2.render(difficulty_explain, 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Press left and right to change, space to start", 1,
                                                     ui_variables.grey_1)
-
+            
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_explain, title_explain.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
