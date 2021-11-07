@@ -627,7 +627,24 @@ def isthereID(ID, table):
         return False
     else:
         return True
-
+def istheresaved(name2,table):
+    if isthereID(name2,table):
+        cursor = tetris.cursor()
+        sql = "INSERT INTO {} (id, score) VALUES (%s,%s)".format(table)
+        cursor.execute(sql, (name2, score))
+        tetris.commit()  
+        cursor.close() ## tetris db insert 
+    else :    
+        cursor = tetris.cursor()
+        sql = "select score from {} where id =%s".format(table)
+        cursor.execute(sql, name2)
+        result = cursor.fetchone()
+        if result[0] < score:                           
+            sql = "Update {} set score = %s where id =%s".format(table)
+            cursor.execute(sql, (score,name2))
+            tetris.commit()  
+            cursor.close() ## tetris db insert 
+        else: pass
 
 # Start game
 clock = pygame.time.Clock()
@@ -855,7 +872,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -970,7 +987,13 @@ while not done:
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
                     next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시
-                    
+                    if blink:
+                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
+                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
+                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
+                        blink = False
+                    else:
+                        blink = True
                     dt = t1 - t0                     
                     if dt >= ui_variables.Basictimer+ADD:
                         t0 = t1
@@ -1724,43 +1747,15 @@ while not done:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
-                    if difficulty == 0: ## normal
-                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
-                        if isthereID(name2,"NORMAL"):
-                            cursor = tetris.cursor()
-                            sql = 'INSERT INTO NORMAL (id, score) VALUES (%s,%s)'
-                            cursor.execute(sql, (name2, score))
-                            tetris.commit()  
-                            cursor.close() ## tetris db insert 
-                        else :
-                            cursor = tetris.cursor()
-                            sql = "Update NORMAL set score = %s where id =%s"
-                            cursor.execute(sql, (score,name2))
-                            tetris.commit()  
-                            cursor.close() ## tetris db insert 
-                            
-                    if difficulty == 1: ## hard
-                        cursor = tetris.cursor()
-                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
-                        sql = 'INSERT INTO Hard (id, score) VALUES (%s,%s)'
-                        cursor.execute(sql, (name2, score))
-                        tetris.commit()  
-                        cursor.close()
-                    if difficulty == 2: ## ITem
-                        cursor = tetris.cursor()
-                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
-                        sql = 'INSERT INTO Item (id, score) VALUES (%s,%s)'
-                        cursor.execute(sql, (name2, score))
-                        tetris.commit()  
-                        cursor.close()
-                    if difficulty == 4: ## reverse
-                        cursor = tetris.cursor()
-                        name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
-                        sql = 'INSERT INTO Reverse (id, score) VALUES (%s,%s)'
-                        cursor.execute(sql, (name2, score))
-                        tetris.commit()  
-                        cursor.close()
-                    
+                    name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                    if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
+                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                    if DIFFICULTY_NAMES[current_selected] == "Item": ## normal
+                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                    if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
+                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                    if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
+                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])    
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2394,7 +2389,7 @@ while not done:
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
                 DIFFICULTY_COUNT = 5
-                DIFFICULTY_NAMES = ["NORMAL", "HARD", "PvP", "Item", "REVERSE"]
+                DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "Item", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
                     "기본 테트리스입니다",
                     "장애물맵 모드입니다..",
@@ -2427,26 +2422,26 @@ while not done:
                                 selected = selected - 1
                         if event.key == K_SPACE: ## 게임난이도 조절인데 여기보니깐 selected로만 설정됨
                             pygame.key.set_repeat(0)
-                            if 0 <= selected < 3:
+                            if 0 <= selected < 2:
                                 # start game with selected difficulty
                                 ui_variables.click_sound.play()
                                 start = True
                                 
                                 # PvP mode page
-                            if selected == 3:
+                            if selected == 2:
                                 ui_variables.click_sound.play()
                                 pvp = True
                                 start = False
                                 init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, normal_difficulty)
 
-                            if selected == 4:
-                                # start game with small size
+                            if selected == 3:
+                                # start game with ITEM
                                 ui_variables.click_sound.play()
                                 start = True
                                 init_game(DEFAULT_WIDTH, int(DEFAULT_HEIGHT / 2), hard_difficulty)
 
                                 # Reverse mode page
-                            if selected == 5:
+                            if selected == 4:
                                 ui_variables.click_sound.play()
                                 start = True
                                 reverse = True
@@ -2503,9 +2498,9 @@ while not done:
                     for i in range(3):
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
-                if DIFFICULTY_NAMES[current_selected] == "Hard":
+                if DIFFICULTY_NAMES[current_selected] == "HARD":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM Hard ORDER BY score DESC"
+                    query = "SELECT * FROM HARD ORDER BY score DESC"
                     cursor.execute(query)
                     datas = cursor.fetchmany(size=3)
                     for i in range(3):
@@ -2519,9 +2514,9 @@ while not done:
                     for i in range(3):
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
-                if DIFFICULTY_NAMES[current_selected] == "Reverse":
+                if DIFFICULTY_NAMES[current_selected] == "REVERSE":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM Reverse ORDER BY score DESC"
+                    query = "SELECT * FROM REVERSE ORDER BY score DESC"
                     cursor.execute(query)
                     datas = cursor.fetchmany(size=3)
                     for i in range(3):
