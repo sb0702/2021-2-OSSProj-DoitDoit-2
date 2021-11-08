@@ -1979,7 +1979,7 @@ while not done:
         # selected는 선택지가 있는 페이지에서 몇번째  보기를 선택하고 있는지 나타내는 변수입니다.
         # 편의상 0부터 시작합니다.
 
-        START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20
+        START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30 # 근데 이거 숫자 의미를 모르겠음
         page, selected = START_PAGE, 0
 
         while not done and not start and not reverse and not pvp:
@@ -2063,22 +2063,22 @@ while not done:
                             page, selected = START_PAGE, 0
                         elif event.key == K_DOWN:
                             pygame.key.set_repeat(0)
-                            if selected == 0 or selected == 1:
+                            if selected == 0 or selected == 1: # 마지막 선택지가 아니면
                                 # next menu select
                                 ui_variables.click_sound.play()
-                                selected = selected + 1
+                                selected = selected + 1 # 다음 선택지로
                         elif event.key == K_UP:
                             pygame.key.set_repeat(0)
-                            if selected == 1 or selected == 2:
+                            if selected == 1 or selected == 2: # 첫 선택지가 아니면
                                 # previous menu select
                                 ui_variables.click_sound.play()
-                                selected = selected - 1
-                        elif event.key == K_SPACE:
+                                selected = selected - 1 # 이전 선택지로
+                        elif event.key == K_SPACE: # 선택
                             pygame.key.set_repeat(0)
-                            if selected == 0:
-                                # select start menu, goto difficulty select page
+                            if selected == 0: 
+                                # select start menu, goto mode select page
                                 ui_variables.click_sound.play()
-                                page, selected = DIFFICULTY_PAGE, 0
+                                page, selected = MODE_PAGE, 0
                             elif selected == 1:
                                 # select help menu, goto help page
                                 ui_variables.click_sound.play()
@@ -2402,17 +2402,16 @@ while not done:
 
                 blink = not blink
 
-            # 여기가 난이도 메뉴임 쉬움모드는 삭제하고 버튼식으로 바꾸면 좋지 않을까?
-            elif page == DIFFICULTY_PAGE:
-                # 난이도를 설정한다.
+            # 여기가  MODE PAGE. 
+            elif page == MODE_PAGE:
+                # 모드를 설정한다.
                 DIFFICULTY_COUNT = 6
-                DIFFICULTY_NAMES = ["easy", "NORMAL", "HARD", "PvP", "SPEED & MINI", "REVERSE"]
+                DIFFICULTY_NAMES = ["NORMAL", "HARD", "PvP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "문구테스트",
-                    "블록이 중간 속도로 내려오는 노말모드 입니다.",
-                    "블록이 빠르게 내려오는 하드모드 입니다.",
+                    "기본 테트리스 모드입니다.",
+                    "게임 중 방해 요소가 포함된 모드입니다.",
                     "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
-                    "보드 크기가 줄어든 스피드&미니모드 입니다.",
+                    "아이템 사용이 가능한 모드입니다.",
                     "방향키와 블록 등장이 반대인 리버스모드 입니다."
                 ]
 
@@ -2438,7 +2437,7 @@ while not done:
                                 # previous difficulty select
                                 ui_variables.click_sound.play()
                                 selected = selected - 1
-                        if event.key == K_SPACE: ## 게임난이도 조절인데 여기보니깐 selected로만 설정됨
+                        if event.key == K_SPACE: # -> DIFFICULTY PAGE로 가도록
                             pygame.key.set_repeat(0)
                             if 0 <= selected < 3:
                                 # start game with selected difficulty
