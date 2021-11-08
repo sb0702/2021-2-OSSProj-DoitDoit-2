@@ -2405,7 +2405,7 @@ while not done:
             # 여기가  MODE PAGE. 
             elif page == MODE_PAGE:
                 # 모드를 설정한다.
-                DIFFICULTY_COUNT = 6
+                DIFFICULTY_COUNT = 5
                 DIFFICULTY_NAMES = ["NORMAL", "HARD", "PvP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
                     "기본 테트리스 모드입니다.",
