@@ -622,7 +622,7 @@ def is_stackable_2P(mino):
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
-pygame.display.set_caption("PINTRIS™")
+pygame.display.set_caption("TTOTRIS™")
 
 # pages
 blink = False
@@ -1971,9 +1971,9 @@ while not done:
     # Start screen
     else:
         # 복잡성을 줄이기 위해 start screen 내부에 page를 나누는 방식으로 구현했습니다.
-        # Start page <-> Menu Page <-> Diffculty Page -> Start
-        #                          <-> HelpPage
-        #                          <-> SettingPage
+        # Start page <-> Menu Page <-> Mode Page <-> Diffculty Page -> Start
+        #                          <-> Help Page
+        #                          <-> Setting Page
         #
         # page는 지금 있는 page의 고유 넘버를 나타내고, 아래와 같이 상수를 사용해 가독성을 높였습니다.
         # selected는 선택지가 있는 페이지에서 몇번째  보기를 선택하고 있는지 나타내는 변수입니다.
@@ -2026,9 +2026,9 @@ while not done:
                     Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("PINTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
                 title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
-                title_info = ui_variables.h6.render("Copyright (c) 2021 PINT Rights Reserved.", 1, ui_variables.grey_1)
+                title_info = ui_variables.h6.render("Copyright (c) 2021 DOITDOIT Rights Reserved.", 1, ui_variables.grey_1)
 
                 leader_1 = ui_variables.h5_i.render('1st ' + leaders[0][0] + ' ' + str(leaders[0][1]), 1,
                                                     ui_variables.white)
@@ -2121,7 +2121,7 @@ while not done:
                          int(SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("PINTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press up and down to change, space to select", 1,
                                                     ui_variables.grey_1)
 
