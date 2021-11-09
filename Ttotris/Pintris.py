@@ -1750,7 +1750,7 @@ while not done:
                     name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
-                    if DIFFICULTY_NAMES[current_selected] == "Item": ## normal
+                    if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
@@ -2389,7 +2389,7 @@ while not done:
             elif page == DIFFICULTY_PAGE:
                 # 난이도를 설정한다.
                 DIFFICULTY_COUNT = 5
-                DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "Item", "REVERSE"]
+                DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
                     "기본 테트리스입니다",
                     "장애물맵 모드입니다..",
@@ -2422,6 +2422,7 @@ while not done:
                                 selected = selected - 1
                         if event.key == K_SPACE: ## 게임난이도 조절인데 여기보니깐 selected로만 설정됨
                             pygame.key.set_repeat(0)
+                            
                             if 0 <= selected < 2:
                                 # start game with selected difficulty
                                 ui_variables.click_sound.play()
@@ -2492,10 +2493,13 @@ while not done:
                  
                 if DIFFICULTY_NAMES[current_selected] == "NORMAL":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM NORMAL ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM NORMAL"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM NORMAL ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "HARD":
@@ -2506,12 +2510,15 @@ while not done:
                     for i in range(3):
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))                
-                if DIFFICULTY_NAMES[current_selected] == "Item":
+                if DIFFICULTY_NAMES[current_selected] == "ITEM":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM Item ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM ITEM"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM ITEM ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchone()
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "REVERSE":
