@@ -664,6 +664,8 @@ reverse_over = False
 pvp_over = False
 
 # Initial values
+mode_selected = 0
+set_difficulty = 0
 score = 0
 max_score = 99999
 score_2P = 0
@@ -734,7 +736,7 @@ def init_game(board_width, board_height, game_difficulty):
     matrix_2P = [[0 for y in range(board_height + 1)] for x in range(board_width)]
 
     difficulty = game_difficulty
-    framerate = STARTING_FRAMERATE_BY_DIFFCULTY[difficulty]
+    framerate -= difficulty * 2 # 2는 speed change로, 최대 속도 계산해서 설정
 
 
 ###########################################################
@@ -2420,32 +2422,13 @@ while not done:
                                 # previous difficulty select
                                 ui_variables.click_sound.play()
                                 selected = selected - 1
+
                         if event.key == K_SPACE: # -> DIFFICULTY PAGE로 가도록
                             pygame.key.set_repeat(0)
-                            if 0 <= selected < 2:
-                                # start game with selected difficulty
-                                ui_variables.click_sound.play()
-                                start = True
-                                
-                                # PvP mode page
-                            if selected == 2:
-                                ui_variables.click_sound.play()
-                                pvp = True
-                                start = False
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, normal_difficulty)
+                            ui_variables.click_sound.play()
+                            page, selected = DIFFICULTY_PAGE, 0
 
-                            if selected == 3:
-                                # start game with ITEM
-                                ui_variables.click_sound.play()
-                                start = True
-                                init_game(DEFAULT_WIDTH, int(DEFAULT_HEIGHT / 2), hard_difficulty)
-
-                                # Reverse mode page
-                            if selected == 4:
-                                ui_variables.click_sound.play()
-                                start = True
-                                reverse = True
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, normal_difficulty)
+                mode_selected = selected   # 현재 선택한 모드 저장
 
 
                     # 마우스로 창크기조절
@@ -2525,7 +2508,7 @@ while not done:
                 
                 title = ui_variables.h1.render(difficulty_name, 1, ui_variables.white)
                 title_explain = font2.render(difficulty_explain, 1, ui_variables.grey_1)
-                title_info = ui_variables.h6.render("Press left and right to change, space to start", 1,
+                title_info = ui_variables.h6.render("Press left and right to change, space to select difficulty", 1,
                                                     ui_variables.grey_1)
             
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
@@ -2541,6 +2524,135 @@ while not done:
                     pos = [[SCREEN_WIDTH - 10, SCREEN_HEIGHT / 2], [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 - 5],
                            [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 + 5]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
+            
+            elif page == DIFFICULTY_PAGE:
+                current_selected = selected # 이거는 지금 내가 현재 페이지에서 새롭게 선택하는 거
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        done = True
+                    elif event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            pygame.key.set_repeat(0)
+                            ui_variables.click_sound.play()
+                            page, selected = MODE_PAGE, mode_selected # 직전 모드 페이지로
+                        elif event.key == K_UP:
+                            pygame.key.set_repeat(0)
+                            ui_variables.click_sound.play()
+                            if set_difficulty >= 9: # 변수 설정 시 set_difficulty = 0으로 미리 초기화
+                                set_difficulty = 9
+                            else:
+                                set_difficulty += 1
+
+                        elif event.key == K_DOWN:
+                            pygame.key.set_repeat(0)
+                            ui_variables.click_sound.play()
+                            if set_difficulty <= 0:
+                                set_difficulty = 0
+                            else:
+                                set_difficulty -= 1
+
+                        if event.key == K_SPACE:
+                            pygame.key.set_repeat(0)
+                            # mode page에서 선택된 모드
+                            if mode_selected ==0: #normal mode
+                                # start game with selected difficulty
+                                ui_variables.click_sound.play()
+                                start = True
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+
+                            if mode_selected == 1: # hard mode 
+                                ui_variables.click_sound.play()
+                                #hard = True
+                                start = True # 수빈이 수정하는 거에 따라서 변경
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+
+                            if mode_selected == 2: # pvp mode
+                                ui_variables.click_sound.play()
+                                pvp = True
+                                start = False
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+
+                            if mode_selected == 3: # item mode
+                                # start game with ITEM
+                                ui_variables.click_sound.play()
+                                start = True # 구현 -> item = True
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+    
+                            if mode_selected == 4: # Reverse mode 
+                                ui_variables.click_sound.play()
+                                start = True
+                                reverse = True
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                
+                         # 마우스로 창크기조절
+                    elif event.type == VIDEORESIZE:
+
+                        SCREEN_WIDTH = event.w
+
+                        SCREEN_HEIGHT = event.h
+
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+
+                            SCREEN_WIDTH = min_width
+
+                            SCREEN_HEIGHT = min_height
+
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
+
+                                board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                screen.fill(ui_variables.white)
+                pygame.draw.rect(
+                    screen,
+                    ui_variables.grey_1,
+                    pygame.draw.rect(
+                        screen,
+                        ui_variables.grey_1,
+                        Rect(0, 0, int(SCREEN_WIDTH),
+                             int(SCREEN_HEIGHT * 0.24))
+                    )
+                )
+                title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
+
+                title_info = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
+
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
+
+                # settings에서 따온 거라 아직 안 지움
+                #velocity = ui_variables.h2.render("VOLUME", 1, ui_variables.black_1)
+                #screen.blit(velocity, volume.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )))
+		            #  screen.blit 가 텍스트 그리는 거
+                
+                # 왜.. 안 뜨지..
+                velocity = ui_variables.h2.render(str(set_difficulty), 1, ui_variables.black)
+                pos_velocity = velocity.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 ))
+		            # center: 지정한 좌표가 velocity 텍스트의 중심에  가게
+                
+                # 지금 아래쪽 안 삼각형 안 나옴 ㅠㅠ
+                if effect_volume > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
+                    pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 + 90],
+                           [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60],
+                           [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60]]
+                    pygame.draw.polygon(screen, ui_variables.black, pos, 0)
+			            # pos, 1하면 두께 1로 선만, 0 하면 채우기인 것 같음
+
+                if effect_volume < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
+                    pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 - 60],
+                           [SCREEN_WIDTH / 2 - 30 , SCREEN_HEIGHT / 2 - 30],
+                           [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 - 30]]
+		                    # 좌표 계산해서 넣기
+                    pygame.draw.polygon(screen, ui_variables.black, pos, 0)
 
             if not start:
                 pygame.display.update()
