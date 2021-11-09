@@ -736,7 +736,7 @@ def init_game(board_width, board_height, game_difficulty):
     matrix_2P = [[0 for y in range(board_height + 1)] for x in range(board_width)]
 
     difficulty = game_difficulty
-    framerate -= difficulty * 2 # 2는 speed change로, 최대 속도 계산해서 설정
+    framerate -= difficulty * 3 # 3은 speed_change로, 최대 속도 계산해서 initial variables에서 설정
 
 
 ###########################################################
