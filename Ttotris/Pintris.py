@@ -2444,7 +2444,7 @@ while not done:
                                 start = True
                                 init_game(DEFAULT_WIDTH, int(DEFAULT_HEIGHT / 2), hard_difficulty)
 
-                             mode_selected = selected   # 현재 선택한 모드 저장
+                            mode_selected = selected   # 현재 선택한 모드 저장
 
 
                     # 마우스로 창크기조절
