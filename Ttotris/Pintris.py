@@ -2422,29 +2422,14 @@ while not done:
                                 # previous difficulty select
                                 ui_variables.click_sound.play()
                                 selected = selected - 1
+                        
+                        mode_selected = selected   # 현재 선택한 모드 저장        
 
                         if event.key == K_SPACE: # -> DIFFICULTY PAGE로 가도록
                             pygame.key.set_repeat(0)
-                            
-                            if 0 <= selected < 2:
-                                # start game with selected difficulty
-                                ui_variables.click_sound.play()
-                                start = True
-                                
-                                # PvP mode page
-                            if selected == 2:
-                                ui_variables.click_sound.play()
-                                pvp = True
-                                start = False
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, normal_difficulty)
-
-                            if selected == 3:
-                                # start game with ITEM
-                                ui_variables.click_sound.play()
-                                start = True
-                                init_game(DEFAULT_WIDTH, int(DEFAULT_HEIGHT / 2), hard_difficulty)
-
-                            mode_selected = selected   # 현재 선택한 모드 저장
+                            ui_variables.click_sound.play()
+                            page,selected = DIFFICULTY_PAGE, 0
+                        
 
 
                     # 마우스로 창크기조절
