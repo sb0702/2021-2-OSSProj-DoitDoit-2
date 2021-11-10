@@ -1752,7 +1752,7 @@ while not done:
                     name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
-                    if DIFFICULTY_NAMES[current_selected] == "Item": ## normal
+                    if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[current_selected])
@@ -2391,7 +2391,7 @@ while not done:
             elif page == MODE_PAGE:
                 # 모드를 설정한다.
                 DIFFICULTY_COUNT = 5
-                DIFFICULTY_NAMES = ["NORMAL", "HARD", "PvP", "ITEM", "REVERSE"]
+                DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
                     "기본 테트리스 모드입니다.",
                     "게임 중 방해 요소가 포함된 모드입니다.",
@@ -2425,10 +2425,26 @@ while not done:
 
                         if event.key == K_SPACE: # -> DIFFICULTY PAGE로 가도록
                             pygame.key.set_repeat(0)
-                            ui_variables.click_sound.play()
-                            page, selected = DIFFICULTY_PAGE, 0
+                            
+                            if 0 <= selected < 2:
+                                # start game with selected difficulty
+                                ui_variables.click_sound.play()
+                                start = True
+                                
+                                # PvP mode page
+                            if selected == 2:
+                                ui_variables.click_sound.play()
+                                pvp = True
+                                start = False
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, normal_difficulty)
 
-                mode_selected = selected   # 현재 선택한 모드 저장
+                            if selected == 3:
+                                # start game with ITEM
+                                ui_variables.click_sound.play()
+                                start = True
+                                init_game(DEFAULT_WIDTH, int(DEFAULT_HEIGHT / 2), hard_difficulty)
+
+                             mode_selected = selected   # 현재 선택한 모드 저장
 
 
                     # 마우스로 창크기조절
@@ -2475,34 +2491,46 @@ while not done:
                  
                 if DIFFICULTY_NAMES[current_selected] == "NORMAL":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM NORMAL ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM NORMAL"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM NORMAL ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "HARD":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM HARD ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM HARD"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM HARD ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
-                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))                
-                if DIFFICULTY_NAMES[current_selected] == "Item":
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))     
+                if DIFFICULTY_NAMES[current_selected] == "ITEM":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM Item ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM ITEM"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM ITEM ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "REVERSE":
                     cursor = tetris.cursor()
-                    query = "SELECT * FROM REVERSE ORDER BY score DESC"
-                    cursor.execute(query)
-                    datas = cursor.fetchmany(size=3)
-                    for i in range(3):
+                    sql = "SELECT COUNT(id) FROM REVERSE"
+                    cursor.execute(sql)
+                    num = cursor.fetchone()
+                    for i in range(int(num[0])):
+                        query = "SELECT * FROM REVERSE ORDER BY score DESC"
+                        cursor.execute(query)
+                        datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 
@@ -2640,14 +2668,14 @@ while not done:
 		            # center: 지정한 좌표가 velocity 텍스트의 중심에  가게
                 
                 # 지금 아래쪽 안 삼각형 안 나옴 ㅠㅠ
-                if effect_volume > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
+                if set_difficulty > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
                     pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 + 90],
                            [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60],
-                           [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60]]
+                           [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 + 60]]
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0)
 			            # pos, 1하면 두께 1로 선만, 0 하면 채우기인 것 같음
 
-                if effect_volume < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
+                if set_difficulty < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
                     pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 - 60],
                            [SCREEN_WIDTH / 2 - 30 , SCREEN_HEIGHT / 2 - 30],
                            [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 - 30]]
