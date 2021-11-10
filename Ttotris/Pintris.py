@@ -1751,13 +1751,13 @@ while not done:
                     ## 여기서부터 기록 저장
                     name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])
+                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[current_selected])    
+                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])    
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2424,7 +2424,7 @@ while not done:
                                 selected = selected - 1
                         
                         mode_selected = selected   # 현재 선택한 모드 저장        
-
+                        
                         if event.key == K_SPACE: # -> DIFFICULTY PAGE로 가도록
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2540,6 +2540,8 @@ while not done:
             
             elif page == DIFFICULTY_PAGE:
                 current_selected = selected # 이거는 지금 내가 현재 페이지에서 새롭게 선택하는 거
+                print("C: ", current_selected)
+                print("M: ", mode_selected)
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         done = True
