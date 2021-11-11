@@ -13,8 +13,8 @@ import time
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
-STARTING_FRAMERATE_BY_DIFFCULTY = [50, 30, 20]
-FRAMELATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.7]
+
+FRAMERATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.9, 0.9, 0.9] # pvp, item, reverse는 normal과 같은 비율
 FEVERTIMER = [0,1,2,3,4]
 FEVERSCOREBOARD = [0,1500,5000,15000,30000]
 FEVERGOAL = 4
@@ -672,6 +672,7 @@ reverse_over = False
 pvp_over = False
 
 # Initial values
+speed_change=1 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수로, 2로 하면 hard mode 최대 levelup시 framerate=0.08로 너무 작아지는 듯함
 mode_selected = 0
 set_difficulty = 0
 score = 0
@@ -734,8 +735,8 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
 
 # 초기화 부분을 하나로 합쳐준다.
-def init_game(board_width, board_height, game_difficulty):
-    global width, height, matrix, matrix_2P, difficulty, framerate
+def init_game(board_width, board_height, mode, game_difficulty):
+    global width, height, matrix, matrix_2P, difficulty, framerate, mode_selected
     
     width = board_width
     height = board_height
@@ -743,8 +744,9 @@ def init_game(board_width, board_height, game_difficulty):
     matrix = [[0 for y in range(board_height + 1)] for x in range(board_width)]
     matrix_2P = [[0 for y in range(board_height + 1)] for x in range(board_width)]
 
+    mode_selected = mode
     difficulty = game_difficulty
-    framerate -= difficulty * 3 # 3은 speed_change로, 최대 속도 계산해서 initial variables에서 설정
+    framerate -= difficulty * speed_change 
 
 
 ###########################################################
@@ -965,14 +967,14 @@ while not done:
                 if goal < 1 and level < 15:
                     level += 1
                     goal += level * 2
-                    framerate = math.ceil(framerate * FRAMELATE_MULTIFLIER_BY_DIFFCULTY[difficulty])
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     # 레벨업시 이미지 출력
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                     pygame.display.update()
                     pygame.time.delay(200)
-                    # 기존있던블럭들 한칸증가
+                    # 기존 있던 블럭들 한 칸씩 증가
                     for j in range(height):
                         for i in range(width):
                             matrix[i][j] = matrix[i][j + 1]
@@ -982,7 +984,7 @@ while not done:
                     k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
 
-                # 콤보회수에 따른 피버타임
+                # 콤보횟수에 따른 피버타임
 
                 if FEVERSCOREBOARD[1] > score >=FEVERSCOREBOARD[0]:
                     ADD = FEVERTIMER[0]
@@ -1393,7 +1395,7 @@ while not done:
                 if erase_stack >= 3 and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    framerate = math.ceil(framerate * FRAMELATE_MULTIFLIER_BY_DIFFCULTY[difficulty])
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
@@ -1402,7 +1404,7 @@ while not done:
                 elif erase_stack > erase_stack_2P and erase_stack >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    framerate = math.ceil(framerate * FRAMELATE_MULTIFLIER_BY_DIFFCULTY[difficulty])
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
@@ -1411,7 +1413,7 @@ while not done:
                 elif erase_stack < erase_stack_2P and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    framerate = math.ceil(framerate * FRAMELATE_MULTIFLIER_BY_DIFFCULTY[difficulty])
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
@@ -2547,9 +2549,7 @@ while not done:
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
             
             elif page == DIFFICULTY_PAGE:
-                current_selected = selected # 이거는 지금 내가 현재 페이지에서 새롭게 선택하는 거
-                print("C: ", current_selected)
-                print("M: ", mode_selected)
+                # current_selected = selected 
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         done = True
@@ -2557,7 +2557,7 @@ while not done:
                         if event.key == K_ESCAPE:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
-                            page, selected = MODE_PAGE, mode_selected # 직전 모드 페이지로
+                            page, selected = MODE_PAGE, mode_selected # 모드 선택 페이지로, 원래 선택했던 모드 화면이 뜸
                         elif event.key == K_UP:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2565,7 +2565,7 @@ while not done:
                                 set_difficulty = 9
                             else:
                                 set_difficulty += 1
-
+                            
                         elif event.key == K_DOWN:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2573,6 +2573,7 @@ while not done:
                                 set_difficulty = 0
                             else:
                                 set_difficulty -= 1
+                            pygame.draw.polygon(screen, ui_variables.black, pos, 0)
 
                         if event.key == K_SPACE:
                             pygame.key.set_repeat(0)
@@ -2581,31 +2582,31 @@ while not done:
                                 # start game with selected difficulty
                                 ui_variables.click_sound.play()
                                 start = True
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 1: # hard mode 
                                 ui_variables.click_sound.play()
                                 #hard = True
                                 start = True # 수빈이 수정하는 거에 따라서 변경
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 2: # pvp mode
                                 ui_variables.click_sound.play()
                                 pvp = True
                                 start = False
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 3: # item mode
                                 # start game with ITEM
                                 ui_variables.click_sound.play()
                                 start = True # 구현 -> item = True
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
     
                             if mode_selected == 4: # Reverse mode 
                                 ui_variables.click_sound.play()
                                 start = True
                                 reverse = True
-                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
                                 
                          # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
@@ -2652,31 +2653,36 @@ while not done:
 
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
 
-                # settings에서 따온 거라 아직 안 지움
-                #velocity = ui_variables.h2.render("VOLUME", 1, ui_variables.black_1)
-                #screen.blit(velocity, volume.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 )))
-		            #  screen.blit 가 텍스트 그리는 거
+    
                 
-                # 왜.. 안 뜨지..
+                
                 velocity = ui_variables.h2.render(str(set_difficulty), 1, ui_variables.black)
-                pos_velocity = velocity.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 ))
+                pos_velocity = velocity.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 15 ))
 		            # center: 지정한 좌표가 velocity 텍스트의 중심에  가게
+                screen.blit(velocity, pos_velocity)
                 
-                # 지금 아래쪽 안 삼각형 안 나옴 ㅠㅠ
                 if set_difficulty > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
                     pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 + 90],
                            [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60],
                            [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 + 60]]
-                    pygame.draw.polygon(screen, ui_variables.black, pos, 0)
-			            # pos, 1하면 두께 1로 선만, 0 하면 채우기인 것 같음
+                    pygame.draw.polygon(screen, ui_variables.black, pos, 0) # 원하는 좌표에 삼각형 그리기
+			            # pos, 1하면 두께 1로 선만, 0 하면 채우기
 
                 if set_difficulty < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
                     pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 - 60],
                            [SCREEN_WIDTH / 2 - 30 , SCREEN_HEIGHT / 2 - 30],
                            [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 - 30]]
 		                    # 좌표 계산해서 넣기
-                    pygame.draw.polygon(screen, ui_variables.black, pos, 0)
+                    pygame.draw.polygon(screen, ui_variables.black, pos, 0) 
+                
+                
+                # 숫자가 깜빡이면 정신 없는 것 같아서 뺌. 깜빡이고 싶으면 아래 코드 넣기
+                '''
+                if blink: 
+                    screen.blit(velocity, pos_velocity)
 
+                blink = not blink
+                '''
             if not start:
                 pygame.display.update()
                 clock.tick(3)
