@@ -231,7 +231,6 @@ def draw_reverse_board(next, hold, score, level, goal):
 
 def draw_1Pboard(next, hold):
     sidebar_width = int(SCREEN_WIDTH * 0.3112)  # 크기 비율 고정, 전체 board 가로길이에서 원하는 비율을 곱해줌
-
     # Draw sidebar
     pygame.draw.rect(
         screen,
@@ -646,6 +645,15 @@ def istheresaved(name2,table):
             cursor.close() ## tetris db insert 
         else: pass
 
+def DrawBar(pos, size, borderC, barC, progress):
+    
+    pygame.draw.rect(screen, borderC, (*pos, *size), 1)
+    innerPos  = (pos[0]+3, pos[1]+3)
+    innerSize = ((size[0]-6) * progress, size[1]-6)
+    pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
+
+
+
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
@@ -744,6 +752,8 @@ def init_game(board_width, board_height, game_difficulty):
 ###########################################################
 ## timer start
 t0 = time.time()
+t1 = 30
+dt = t1 -t0
 while not done:
     # Pause screen
     if pause:
@@ -985,18 +995,16 @@ while not done:
                 if  score >= FEVERSCOREBOARD[4]:
                     ADD = FEVERTIMER[4]    
                 if comboCounter > FEVERGOAL:
+                    barPos      = (400, 30)
+                    barSize     = (300, 20)
+                    borderColor = (0, 0, 0)
+                    barColor    = (0, 128, 0)
+                    dt = t1 - t0 
+                    DrawBar(barPos,barSize,borderColor,barColor, (30 - dt)/ (dt+1)) 
                     t1 = time.time()              
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
-                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시
-                    if blink:
-                        screen.blit(pygame.transform.scale(ui_variables.fever_image,
-                                                        (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.2))),
-                                    (SCREEN_WIDTH * 0.1, SCREEN_HEIGHT * 0.1))
-                        blink = False
-                    else:
-                        blink = True
-                    dt = t1 - t0                     
+                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                 
                     if dt >= ui_variables.Basictimer+ADD:
                         t0 = t1
                         comboCounter =0
