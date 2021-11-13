@@ -754,8 +754,8 @@ def init_game(board_width, board_height, mode, game_difficulty):
 ###########################################################
 ## timer start
 t0 = time.time()
-t1 = 30
-dt = t1 -t0
+dt = 0
+ADD =0
 while not done:
     # Pause screen
     if pause:
@@ -886,7 +886,7 @@ while not done:
                     if keys_pressed[K_DOWN]:
                         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
                     else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
+                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -896,6 +896,11 @@ while not done:
 
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
+                    barPos      = (400, 30)
+                    barSize     = (300, 20)
+                    borderColor = (0, 0, 0)
+                    barColor    = (0, 128, 0)
+                    DrawBar(barPos,barSize,borderColor,barColor, (ui_variables.Basictimer-ADD - dt)/ (ui_variables.Basictimer-ADD))
                 pygame.display.update()
 
                 # Erase a mino
@@ -997,17 +1002,12 @@ while not done:
                 if  score >= FEVERSCOREBOARD[4]:
                     ADD = FEVERTIMER[4]    
                 if comboCounter > FEVERGOAL:
-                    barPos      = (400, 30)
-                    barSize     = (300, 20)
-                    borderColor = (0, 0, 0)
-                    barColor    = (0, 128, 0)
-                    dt = t1 - t0 
-                    DrawBar(barPos,barSize,borderColor,barColor, (30 - dt)/ (dt+1)) 
-                    t1 = time.time()              
+                    t1 = time.time()
+                    dt = t1 - t0                
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
-                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                 
-                    if dt >= ui_variables.Basictimer+ADD:
+                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                
+                    if dt >= ui_variables.Basictimer-ADD:
                         t0 = t1
                         comboCounter =0
                         mino = next_mino
@@ -1203,7 +1203,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6)
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -2490,6 +2490,8 @@ while not done:
                     cursor.execute(sql)
                     num = cursor.fetchone()
                     for i in range(int(num[0])):
+                        if i > 2: 
+                            continue
                         query = "SELECT * FROM NORMAL ORDER BY score DESC"
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
@@ -2501,6 +2503,8 @@ while not done:
                     cursor.execute(sql)
                     num = cursor.fetchone()
                     for i in range(int(num[0])):
+                        if i > 2: 
+                            continue
                         query = "SELECT * FROM HARD ORDER BY score DESC"
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
@@ -2512,6 +2516,8 @@ while not done:
                     cursor.execute(sql)
                     num = cursor.fetchone()
                     for i in range(int(num[0])):
+                        if i > 2: 
+                            continue
                         query = "SELECT * FROM ITEM ORDER BY score DESC"
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
@@ -2523,6 +2529,8 @@ while not done:
                     cursor.execute(sql)
                     num = cursor.fetchone()
                     for i in range(int(num[0])):
+                        if i > 2: 
+                            continue
                         query = "SELECT * FROM REVERSE ORDER BY score DESC"
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
