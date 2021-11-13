@@ -30,7 +30,10 @@ mino_size = 4
 mino_turn = 4
 
 framerate = 30  # Bigger -> Slower
-
+barPos      = (400, 30)
+barSize     = (300, 20)
+borderColor = (0, 0, 0)
+barColor    = (0, 128, 0)
 min_width = 700
 min_height = 350
 board_rate = 0.5
@@ -896,11 +899,7 @@ while not done:
 
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
-                    barPos      = (400, 30)
-                    barSize     = (300, 20)
-                    borderColor = (0, 0, 0)
-                    barColor    = (0, 128, 0)
-                    DrawBar(barPos,barSize,borderColor,barColor, (ui_variables.Basictimer-ADD - dt)/ (ui_variables.Basictimer-ADD))
+                    
                 pygame.display.update()
 
                 # Erase a mino
@@ -1001,9 +1000,11 @@ while not done:
                     ADD = FEVERTIMER[3]
                 if  score >= FEVERSCOREBOARD[4]:
                     ADD = FEVERTIMER[4]    
-                if comboCounter > FEVERGOAL:
+                if comboCounter > 1:
                     t1 = time.time()
-                    dt = t1 - t0                
+                    dt = t1 - t0
+        
+                    DrawBar(barPos,barSize,borderColor,barColor, (ui_variables.Basictimer-ADD - dt)/ (ui_variables.Basictimer-ADD))                
                     mino = randint(1, 1)
                     next_mino = randint(1, 1)
                     next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                
