@@ -7,6 +7,7 @@ import pymysql
 from pymysql.cursors import Cursor
 from mino import *
 from ui import *
+from init_values import *
 import time
 
 # Constants
@@ -15,9 +16,6 @@ SCREEN_HEIGHT = 600
 
 
 FRAMERATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.9, 0.9, 0.9] # pvp, item, reverse는 normal과 같은 비율
-FEVERTIMER = [0,1,2,3,4]
-FEVERSCOREBOARD = [0,1500,5000,15000,30000]
-FEVERGOAL = 4
 DEFAULT_WIDTH = 10
 DEFAULT_HEIGHT = 20
 
@@ -990,17 +988,17 @@ while not done:
 
                 # 콤보횟수에 따른 피버타임
 
-                if FEVERSCOREBOARD[1] > score >=FEVERSCOREBOARD[0]:
-                    ADD = FEVERTIMER[0]
-                if FEVERSCOREBOARD[2] > score >= FEVERSCOREBOARD[1]:
-                    ADD = FEVERTIMER[1]
-                if  FEVERSCOREBOARD[3] > score >= FEVERSCOREBOARD[2]:
-                    ADD = FEVERTIMER[2]
-                if  FEVERSCOREBOARD[4] > score >= FEVERSCOREBOARD[3]:
-                    ADD = FEVERTIMER[3]
-                if  score >= FEVERSCOREBOARD[4]:
-                    ADD = FEVERTIMER[4]    
-                if comboCounter > 1:
+                if values.feverTimeAddScore[1] > score >=values.feverTimeAddScore[0]:
+                    ADD = values.feverAddingTime[0]
+                if values.feverTimeAddScore[2] > score >= values.feverTimeAddScore[1]:
+                    ADD = values.feverAddingTime[1]
+                if  values.feverTimeAddScore[3] > score >= values.feverTimeAddScore[2]:
+                    ADD = values.feverAddingTime[2]
+                if  values.feverTimeAddScore[4] > score >= values.feverTimeAddScore[3]:
+                    ADD = values.feverAddingTime[3]
+                if  score >= values.feverTimeAddScore[4]:
+                    ADD = values.feverAddingTime[4]    
+                if comboCounter > values.feverBlockGoal:
                     t1 = time.time()
                     dt = t1 - t0
         
