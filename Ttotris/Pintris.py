@@ -738,7 +738,7 @@ def init_game(board_width, board_height, mode, game_difficulty):
 
     mode_selected = mode
     difficulty = game_difficulty
-    framerate -= difficulty * speed_change 
+    framerate -= difficulty * speed_change
 
 
 ###########################################################
@@ -2639,12 +2639,13 @@ while not done:
                 )
                 title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
 
-                title_info = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
+                title_info1 = ui_variables.h6.render("Press up and down to change, space to start game", 1, ui_variables.grey_1)
+                title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
 
-                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
-
+                screen.blit(title_info1, title_info1.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 200)))
+                screen.blit(title_info2, title_info2.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
     
                 
                 
