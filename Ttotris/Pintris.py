@@ -664,7 +664,7 @@ reverse_over = False
 pvp_over = False
 
 # Initial values
-speed_change=1 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수로, 2로 하면 hard mode 최대 levelup시 framerate=0.08로 너무 작아지는 듯함
+speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수로, 2로 하면 hard mode 최대 levelup시 framerate=0.08로 너무 작아지는 듯함
 mode_selected = 0
 set_difficulty = 0
 score = 0
@@ -687,10 +687,7 @@ fever_score = 500
 next_fever = 500
 fever_interval = 3
 comboCounter =0
-# 난이도
-easy_difficulty = 0
-normal_difficulty = 1
-hard_difficulty = 2
+
 
 effect_volume = 5
 set_volume()
@@ -780,7 +777,8 @@ while not done:
                 elif event.key == K_RETURN:
                     start = False
                     pause = False
-
+                    
+                    set_difficulty = 0
                     width = DEFAULT_WIDTH
                     height = DEFAULT_HEIGHT
                     ui_variables.click_sound.play()
@@ -803,10 +801,6 @@ while not done:
                     name_location = 0
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
 
                     min_width = 700
                     min_height = 350
@@ -1786,10 +1780,7 @@ while not done:
                     name_location = 0
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
+                    set_difficulty = 0
 
                     # PvP모드
                     hold_2P = False
@@ -1934,10 +1925,9 @@ while not done:
                     name_location = 0
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    set_difficulty = 0
 
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
+                    
 
                     min_width = 700
                     min_height = 350
@@ -2401,7 +2391,7 @@ while not done:
                     "아이템 사용이 가능한 모드입니다.",
                     "방향키와 블록 등장이 반대인 리버스모드 입니다."
                 ]
-
+                set_difficulty = 0
                 current_selected = selected
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -2550,6 +2540,7 @@ while not done:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
                             page, selected = MODE_PAGE, mode_selected # 모드 선택 페이지로, 원래 선택했던 모드 화면이 뜸
+                            
                         elif event.key == K_UP:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2639,7 +2630,7 @@ while not done:
                 )
                 title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
 
-                title_info1 = ui_variables.h6.render("Press up and down to change, space to start game", 1, ui_variables.grey_1)
+                title_info1 = ui_variables.h6.render("Press up and down to change speed, space to start game", 1, ui_variables.grey_1)
                 title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
