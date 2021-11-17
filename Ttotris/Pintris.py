@@ -833,8 +833,6 @@ while not done:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 elif pvp:
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
-                elif item:
-                    draw_itemboard(next_mino, hold_mino, score, level, goal)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
 
@@ -960,10 +958,6 @@ while not done:
                 
                 if reverse:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
-
-                elif item:
-                    draw_itemboard(next_mino, hold_mino, score, level, goal)
-
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
                 pygame.display.update()
@@ -986,8 +980,7 @@ while not done:
                         draw_mino(dx, dy, mino, rotation)
                         if reverse:
                             draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                        elif item:
-                            draw_itemboard(next_mino, hold_mino, score, level, goal)
+
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
                         if is_stackable(next_mino):
@@ -1114,8 +1107,7 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                    elif item:
-                        draw_itemboard(next_mino, hold_mino, score, level, goal)
+
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
@@ -1135,8 +1127,6 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                    elif item:
-                        draw_itemboard(next_mino, hold_mino, score, level, goal)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
@@ -1174,9 +1164,7 @@ while not done:
                         rotation = 0
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)           
-                    elif item:
-                        draw_itemboard(next_mino, hold_mino, score, level, goal)          
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)                    
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
@@ -1214,8 +1202,6 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                    elif item:
-                        draw_itemboard(next_mino, hold_mino, score, level, goal)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
 
@@ -1233,9 +1219,7 @@ while not done:
                             ui_variables.move_sound.play()
                             dx -= 1
                         draw_mino(dx, dy, mino, rotation)
-                        if item:
-                            draw_itemboard(next_mino, hold_mino, score, level, goal)
-                        else: draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino, hold_mino, score, level, goal)
 
                 # 오른쪽 이동, 리버스모드에선 방향키 반대
                 elif event.key == K_RIGHT:
@@ -1251,9 +1235,7 @@ while not done:
                             ui_variables.move_sound.play()
                             dx += 1
                         draw_mino(dx, dy, mino, rotation)
-                        if item:
-                            draw_itemboard(next_mino, hold_mino, score, level, goal)
-                        else: draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino, hold_mino, score, level, goal)
             elif event.type == KEYUP:
                 pygame.key.set_repeat(300)
 
@@ -1785,9 +1767,6 @@ while not done:
 
                 if reverse_over:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
-                elif item:
-                    draw_itemboard(next_mino, hold_mino, score, level, goal)
-
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
     
@@ -2690,7 +2669,7 @@ while not done:
                                 # start game with ITEM
                                 ui_variables.click_sound.play()
                                 start = True
-                                item = True # 구현 -> item = True
+                                item = True # 구현 -> start=False 하면 될듯
                                 init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
     
                             if mode_selected == 4: # Reverse mode 
