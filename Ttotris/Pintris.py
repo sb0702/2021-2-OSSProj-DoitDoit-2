@@ -35,7 +35,8 @@ barColor    = (0, 128, 0)
 min_width = 700
 min_height = 350
 board_rate = 0.5
-
+text = ""
+input_active = True
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -126,8 +127,7 @@ def draw_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
-    text_fever = ui_variables.h5.render("NEXT FEVER", 1, ui_variables.black)
-    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
+    
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
@@ -137,8 +137,7 @@ def draw_board(next, hold, score, level, goal):
     screen.blit(text_level, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
     screen.blit(level_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
     screen.blit(text_goal, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
-    screen.blit(text_fever, (int(SCREEN_WIDTH * 0.12) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
+    screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))) 
     ##screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
 
     # Draw board
@@ -207,8 +206,7 @@ def draw_reverse_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
-    text_fever = ui_variables.h5.render("NEXT FEVER", 1, ui_variables.black)
-    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
+    
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
@@ -737,8 +735,8 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
 # 초기화 부분을 하나로 합쳐준다.
 def init_game(board_width, board_height, mode, game_difficulty):
-    global width, height, matrix, matrix_2P, difficulty, framerate, mode_selected
-    
+    global width, height, matrix, matrix_2P, difficulty, framerate, mode_selected, comboCounter
+    comboCounter =0
     width = board_width
     height = board_height
 
@@ -983,9 +981,9 @@ while not done:
                     # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한군데가 구멍나있게 증가
                     for i in range(width):
                         matrix[i][height] = 9
-                    k = randint(1, 9)
+                        k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
-
+## 밑바닥에 비어있는 곳을 랜덤화
                 # 콤보횟수에 따른 피버타임
 
                 if values.feverTimeAddScore[1] > score >=values.feverTimeAddScore[0]:
@@ -1363,8 +1361,6 @@ while not done:
                     level_2P += 1
                     goal_2P += level_2P * 2
 
-                # 상대방 시야 방해
-                # fever_score, fever_interval 값을 이용하여 나타냄
                 attack_interval = fever_interval  # attack_interval = 3
                 attack_score = fever_score  # attack_score = 500
 
@@ -1695,9 +1691,12 @@ while not done:
                 over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
 
                 if reverse_over:
+                    comboCounter = 0
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 else:
+                    comboCounter = 0
                     draw_board(next_mino, hold_mino, score, level, goal)
+            
     
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
@@ -1819,38 +1818,22 @@ while not done:
                     attack_stack_2P = 0
                     erase_stack = 0
                     erase_stack_2P = 0
-
-                elif event.key == K_RIGHT:
-                    pygame.key.set_repeat(0)
-                    if name_location != 2:
-                        name_location += 1
-                    else:
-                        name_location = 0
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_LEFT:
-                    pygame.key.set_repeat(0)
-                    if name_location != 0:
-                        name_location -= 1
-                    else:
-                        name_location = 2
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_UP:
-                    pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-                    if name[name_location] != 90:
-                        name[name_location] += 1
-                    else:
-                        name[name_location] = 65
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_DOWN:
-                    pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-                    if name[name_location] != 65:
-                        name[name_location] -= 1
-                    else:
-                        name[name_location] = 90
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    input_active = True
+                    text = ""
+                elif event.type == pygame.KEYDOWN and input_active:
+                    if event.key == pygame.K_RETURN:
+                        input_active = False
+                elif event.key == pygame.K_BACKSPACE:
+                    text =  text[:-1]
+                else:
+                    text += event.unicode
+                text_surf = font2.render(text, True, (255, 0, 0))
+                screen.blit(text_surf, text_surf.get_rect(center = screen.get_rect().center))
+                pygame.display.flip()
+            
+                
+            
     # pvp game over screen
     elif pvp_over:
         for event in pygame.event.get():
