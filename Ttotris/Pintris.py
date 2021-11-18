@@ -762,6 +762,53 @@ def use_item():
 
     
 
+    
+
+# 아이템 사용 함수
+def earthquake(y,matrix): # 맨 아래 줄 삭제 아이템
+    for i in range(width): # 가로줄 전체에 대해서
+        matrix[i][y+1] = 0 
+    #score += 50 * level # 한 줄 지운 것과 같은 효과, score을 못 읽어오는 것 같은데..
+    k = y+1 
+    while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
+        for i in range(width):
+            matrix[i][k] = matrix[i][k-1]
+        k -= 1       
+def board_reset(x,y):
+    for j in range(y+1):
+        for i in range(x):
+            matrix[i][j]=0 # 다 비워버리기
+
+def erase_row(matrix):    # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 10: # i_row 블록이면
+                #score += 50*level
+                k=j
+                matrix[i][k] = 0 # 해당 줄 삭제
+                while k>0: 
+                    for i in range(width):
+                        matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
+                    k -= 1
+
+def erase_col(matrix): # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 11: # i_col 블록이면
+                k = i # x 좌표 기억
+                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
+
+def bomb(matrix):# 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 12: # i_bomb 블록이면
+                m = i-1 # 3x3 블록 없애주니까 i-1 ~ i+1 번째 지위져야 함
+                n = j -1
+                for k in range(bomb_size): # 3x3이므로
+                    for q in range(bomb_size): # 
+                        if m+k >= 0 and n+q >= 0: # 블록이 있든 없든
+                            matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
+
 
             
 
