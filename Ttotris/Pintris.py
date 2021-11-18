@@ -745,7 +745,8 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
-# 아이템 관련 함수
+
+# 아이템 획득~인벤토리 관련 함수
 def get_item():
     if len(inven)<3:
         inven.append(item_list[random.randrange(0,5)]) # 랜덤
@@ -762,44 +763,6 @@ def use_item():
     
 
 
-
-def earthquake(y,matrix): # 맨 아래 줄 삭제 아이템
-    for i in range(width): # 가로줄 전체에 대해서
-        matrix[i][y+1] = 0 
-    #score += 50 * level # 한 줄 지운 것과 같은 효과, score을 못 읽어오는 것 같은데..
-    k = y+1 
-    while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
-        for i in range(width):
-            matrix[i][k] = matrix[i][k-1]
-        k -= 1       
-def board_reset(x,y):
-    for j in range(y+1):
-        for i in range(x):
-            matrix[i][j]=0 # 다 비워버리기
-
-def erase_row(matrix):    
-    for j in range(height+1):
-        for i in range(width):
-            if matrix[i][j] == 10: # i_row 블록이면
-                #score += 50*level
-                k=j
-                matrix[i][k] = 0 # 해당 줄 삭제
-                while k>0: 
-                    for i in range(width):
-                        matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
-                    k -= 1
-
-def erase_col(matrix):
-    for j in range(height+1):
-        for i in range(width):
-            if matrix[i][j] == 11: # i_col 블록이면
-                k = i # x 좌표 기억
-                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
-
-def bomb(matrix):
-
-    
-    
             
 
 
@@ -850,14 +813,14 @@ fever_interval = 3
 comboCounter =0
 
 # 아이템 관련 변수들
-item_list = []
-inven = []
+item_list = [] # 변하면 안 됨
+inven = [] # 변함
 dx_inven1 = int(SCREEN_WIDTH * 0.5905) # 인벤토리 1 중심의 x좌표
 dx_inven2 = int(SCREEN_WIDTH * 0.6499) # 인벤토리 2 중심의 x좌표
 dx_inven3 = int(SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x좌표
 dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
-# 이거는 ui 파일로 옮길 거
+# 여기부터는 ui 파일로 옮길 거
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
 # pygame~이거를 뭐 image_earthquake로 두고 i_earthquake = ui.image_earthquake 해야 아래 함수에서도 가독성 좋을 듯
 i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 맨 아래줄 지우기
@@ -865,16 +828,17 @@ i_reset = pygame.transform.scale(pygame.image.load("assets/images/annoying.png")
 i_row = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 가로 한 줄 삭제, 별도의 mino 필요
 i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 세로 한 줄 삭제, 별도의 mino 필요
 i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
+# 여기까지!
+# 이거도 변하는 거 아님 -> constants에 추가?
 num_i_row = 10 # 블록 그려줄 숫자 지정
 num_i_col = 11
 num_i_bomb = 12
-del_bomb = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
+bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
 item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
 item_list.append(i_reset)
 item_list.append(i_row)
 item_list.append(i_col)
 item_list.append(i_bomb)
-
 
 
 effect_volume = 5
