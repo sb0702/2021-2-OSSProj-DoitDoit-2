@@ -53,5 +53,5 @@ class ui_variables:
     pink = (242, 64, 235)  # rgb(242, 64, 235) # T
     red = (225, 13, 27)  # rgb(225, 13, 27) # Z
     # timer
-    Basictimer = 30
+    Basictimer = 50
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]
