@@ -1139,7 +1139,7 @@ while not done:
                         mino = next_mino
                         next_mino = randint(1, 7)   
 
-<<<<<<< HEAD
+
 
                 # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
                 if mode_selected==1:
@@ -1160,9 +1160,12 @@ while not done:
                                 blink2 = False
                             else:
                                 blink2 = True
+                        
 
-                            
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [450,100])
+                            #barrier = pygame.image.load(ui_variables.hard_barrier)
+                            #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
+                            #screen.blit(barrier, [450, 100]
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
                             
                         
 
@@ -1187,13 +1190,6 @@ while not done:
                             blink2 = True
                     '''
 
-=======
-                # 아이템 되는지 확인
-                #if erase_count ==2:
-                #    if item:
-                #        get_item()
-                                    
->>>>>>> cfdbd535cf377e0dc773612434bc8f3c6caa72d0
                         
                         
                         
