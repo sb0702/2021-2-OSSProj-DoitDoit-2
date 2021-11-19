@@ -1081,13 +1081,13 @@ while not done:
             # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
                 # Set speed
-                if not game_over:
-                    keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
-                    else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
-
+                # if not game_over:
+                #     keys_pressed = pygame.key.get_pressed()
+                #     if keys_pressed[K_DOWN]:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
+                #     else:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
+                pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 
@@ -1156,6 +1156,7 @@ while not done:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
+                # 점수 계산
                 # 콤보 효과?
                 if erase_count == 1:
                     ui_variables.single_sound.play()
@@ -1437,7 +1438,22 @@ while not done:
                             draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
-                        
+
+                # soft drop
+                elif event.key == K_DOWN: 
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy +=1 
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx,dy,mino, rotation)
+                    if reverse:
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    else:
+                        draw_board(next_mino, hold_mino, score, level, goal)
+                    #pygame.display.update()
+
+
                 # 아이템 사용 키
                 #elif event.key == K_z:
                 #    if item:
@@ -1485,7 +1501,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) # ㄷㅎ
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -1939,6 +1955,24 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
 
+                # soft drop
+                elif event.key == K_s:
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                elif event.key == K_DOWN:
+                    if not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                        dy_2P += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                    
 
             elif event.type == VIDEORESIZE:
 
