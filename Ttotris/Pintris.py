@@ -11,7 +11,7 @@ from ui import *
 from init_values import *
 import time
 
-# Constants
+# Constants 안 변하는 것들
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
@@ -457,23 +457,23 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 # Draw a tetrimino
-def draw_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]  # grid에 mino_map의 모양과 방향을 선택한 리스트를 넣는다.
+def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
+    grid = tetrimino.mino_map[mino - 1][r]  # 현재 블록
     tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r):
-        ty += 1
+    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
+        ty += 1 # 한 칸 밑으로 하강
 
-    # Draw ghost 이게 아마 밑바닥에 보이는 그 색깔일텐데
+    # Draw ghost 현재 블록이 쌓일 위치 보여줌
     for i in range(mino_size):
         for j in range(mino_turn):
-            if grid[i][j] != 0: # 0이면 비어있는 공간인데 비어있지 않으면이라는 뜻
-                matrix[tx + j][ty + i] = 8
+            if grid[i][j] != 0: # 비어있지 않으면
+                matrix[tx + j][ty + i] = 8 # ghost 블록 그려줌
 
     # Draw mino
     for i in range(mino_size):
         for j in range(mino_turn):
             if grid[i][j] != 0:
-                matrix[x + j][y + i] = grid[i][j]
+                matrix[x + j][y + i] = grid[i][j] # matrix에 현재 블록 넣어줌
 
 
 def draw_mino_2P(x, y, mino, r):
@@ -503,13 +503,13 @@ def erase_mino(x, y, mino, r):
     for j in range(height + 1):
         for i in range(width):
             if matrix[i][j] == 8:
-                matrix[i][j] = 0
+                matrix[i][j] = 0 # ghost 블록 없애기
 
     # Erase mino
     for i in range(mino_size):
         for j in range(mino_turn):
             if grid[i][j] != 0:
-                matrix[x + j][y + i] = 0
+                matrix[x + j][y + i] = 0 # 블록 없애기
 
 
 def erase_mino_2P(x, y, mino, r):
@@ -747,8 +747,71 @@ def DrawBar(pos, size, borderC, barC, progress):
 
 
 
-           
+# 아이템 획득~인벤토리 관련 함수
+def get_item():
+    if len(inven)<3:
+        inven.append(item_list[random.randrange(0,5)]) # 랜덤
+def show_item():
+    for i in range(len(inven)):
+        item = inven[i]
+        screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
+def use_item():
+    if len(inven)>0:
+        item=inven[0]
+        inven.pop(0) # 앞에 있는 것부터 차례로 쓴다면
+    return item
 
+    
+
+    
+
+# 아이템 사용 함수
+def earthquake(y,matrix): # 맨 아래 줄 삭제 아이템
+    for i in range(width): # 가로줄 전체에 대해서
+        matrix[i][y+1] = 0 
+    #score += 50 * level # 한 줄 지운 것과 같은 효과, score을 못 읽어오는 것 같은데..
+    k = y+1 
+    while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
+        for i in range(width):
+            matrix[i][k] = matrix[i][k-1]
+        k -= 1       
+def board_reset(x,y):
+    for j in range(y+1):
+        for i in range(x):
+            matrix[i][j]=0 # 다 비워버리기
+
+def erase_row(matrix):    # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 10: # i_row 블록이면
+                #score += 50*level
+                k=j
+                matrix[i][k] = 0 # 해당 줄 삭제
+                while k>0: 
+                    for i in range(width):
+                        matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
+                    k -= 1
+
+def erase_col(matrix): # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 11: # i_col 블록이면
+                k = i # x 좌표 기억
+                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
+
+def bomb(matrix):# 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 12: # i_bomb 블록이면
+                m = i-1 # 3x3 블록 없애주니까 i-1 ~ i+1 번째 지위져야 함
+                n = j -1
+                for k in range(bomb_size): # 3x3이므로
+                    for q in range(bomb_size): # 
+                        if m+k >= 0 and n+q >= 0: # 블록이 있든 없든
+                            matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
+
+
+            
 
 
 
@@ -779,8 +842,8 @@ item_over = False
 
 # Initial values
 speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
-mode_selected = 0
-set_difficulty = 0
+mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
+set_difficulty = 0 # difficulty page에서 선택한 초기 난이도
 score = 0
 max_score = 99999
 score_2P = 0
@@ -805,17 +868,32 @@ interval = 3
 comboCounter =0
 
 # 아이템 관련 변수들
-item_list = []
-inven = []
-item_size = 50# 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
-dx_inven1 = int(SCREEN_WIDTH * 0.5905) # 인벤토리 1의 x좌표
-dx_inven2 = int(SCREEN_WIDTH * 0.6499) # 인벤토리 2의 x좌표
-dx_inven3 = int(SCREEN_WIDTH * 0.7093) # 인벤토리 3의 x좌표
-dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표
-dx_inven = [dx_inven1,dx_inven2,dx_inven3]
-i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄
-num_i_earthquake = 10 # 블록 그려줄 숫자 지정
+item_list = [] # 변하면 안 됨
+inven = [] # 변함
+dx_inven1 = int(SCREEN_WIDTH * 0.5905) # 인벤토리 1 중심의 x좌표
+dx_inven2 = int(SCREEN_WIDTH * 0.6499) # 인벤토리 2 중심의 x좌표
+dx_inven3 = int(SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x좌표
+dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
+dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
+# 여기부터는 ui 파일로 옮길 거
+item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
+# pygame~이거를 뭐 image_earthquake로 두고 i_earthquake = ui.image_earthquake 해야 아래 함수에서도 가독성 좋을 듯
+i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 맨 아래줄 지우기
+i_reset = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
+i_row = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 가로 한 줄 삭제, 별도의 mino 필요
+i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 세로 한 줄 삭제, 별도의 mino 필요
+i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
+# 여기까지!
+# 이거도 변하는 거 아님 -> constants에 추가?
+num_i_row = 10 # 블록 그려줄 숫자 지정
+num_i_col = 11
+num_i_bomb = 12
+bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
 item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
+item_list.append(i_reset)
+item_list.append(i_row)
+item_list.append(i_col)
+item_list.append(i_bomb)
 
 
 effect_volume = 5
@@ -1003,13 +1081,13 @@ while not done:
             # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
                 # Set speed
-                if not game_over:
-                    keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
-                    else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
-
+                # if not game_over:
+                #     keys_pressed = pygame.key.get_pressed()
+                #     if keys_pressed[K_DOWN]:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
+                #     else:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
+                pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 
@@ -1078,6 +1156,8 @@ while not done:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
+                # 점수 계산
+                # 콤보 효과?
                 if erase_count == 1:
                     ui_variables.single_sound.play()
                     score += 50 * level
@@ -1161,7 +1241,7 @@ while not done:
                             else:
                                 blink2 = True
                         
-                            print(test)
+                            
 
                             #barrier = pygame.image.load(ui_variables.hard_barrier)
                             #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
@@ -1358,7 +1438,22 @@ while not done:
                             draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
-                        
+
+                # soft drop
+                elif event.key == K_DOWN: 
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy +=1 
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx,dy,mino, rotation)
+                    if reverse:
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    else:
+                        draw_board(next_mino, hold_mino, score, level, goal)
+                    #pygame.display.update()
+
+
                 # 아이템 사용 키
                 #elif event.key == K_z:
                 #    if item:
@@ -1406,7 +1501,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) # ㄷㅎ
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -1860,6 +1955,24 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
 
+                # soft drop
+                elif event.key == K_s:
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                elif event.key == K_DOWN:
+                    if not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                        dy_2P += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                    
 
             elif event.type == VIDEORESIZE:
 
