@@ -10,6 +10,7 @@ from mino import *
 from ui import *
 from init_values import *
 import time
+from pygame.rect import Rect
 
 # Constants 안 변하는 것들
 SCREEN_WIDTH = 1200
@@ -27,16 +28,21 @@ height = DEFAULT_HEIGHT  # Board height
 c =0
 mino_size = 4
 mino_turn = 4
+fever = False
 
+color_active = pygame.Color('lightskyblue3')
+color_inactive = pygame.Color('blue')
+color = color_inactive
 framerate = 30  # Bigger -> Slower
-barPos      = (400, 30)
-barSize     = (300, 20)
+barPos      = (650, 200)
+barSize     = (250, 20)
 borderColor = (0, 0, 0)
 barColor    = (0, 128, 0)
 min_width = 700
 min_height = 350
 board_rate = 0.5
-
+text = ""
+input_active = True
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -205,8 +211,7 @@ def draw_reverse_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
-    text_fever = ui_variables.h5.render("NEXT FEVER", 1, ui_variables.black)
-    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
+    
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
@@ -819,8 +824,11 @@ def bomb(matrix):# 이거를 erase_mino에 넣으면 될 것 같음
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-pygame.time.set_timer(pygame.USEREVENT, framerate * 10)
+pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
+text = ""
+font3 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 40)
+text_surf = font3.render(text, True, (0, 0, 0)) 
 
 # pages
 blink = False
@@ -856,7 +864,8 @@ bottom_count = 0
 bottom_count_2P = 0
 hard_drop = False
 hard_drop_2P = False
-
+input_box = pygame.Rect(100,300,140,32)
+active = True
 attack_point = 0
 attack_point_2P = 0
 comboCounter =0
@@ -923,8 +932,7 @@ attack_stack_2P = 0
 erase_stack = 0
 erase_stack_2P = 0
 
-name_location = 0
-name = [65, 65, 65]
+
 
 matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
 matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
@@ -932,8 +940,8 @@ matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
 
 # 초기화 부분을 하나로 합쳐준다.
 def init_game(board_width, board_height, mode, game_difficulty):
-    global width, height, matrix, matrix_2P, difficulty, framerate, mode_selected
-    
+    global width, height, matrix, matrix_2P, difficulty, framerate, mode_selected, comboCounter
+    comboCounter =0
     width = board_width
     height = board_height
 
@@ -949,9 +957,7 @@ def init_game(board_width, board_height, mode, game_difficulty):
 # Loop Start
 ###########################################################
 ## timer start
-t0 = time.time()
-dt = 0
-ADD =0
+
 while not done:
     # Pause screen
     if pause:
@@ -1011,8 +1017,8 @@ while not done:
                     goal = level * 2
                     bottom_count = 0
                     hard_drop = False
-                    name_location = 0
-                    name = [65, 65, 65]
+                   
+                   
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
                     min_width = 700
@@ -1190,9 +1196,9 @@ while not done:
                     # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한군데가 구멍나있게 증가
                     for i in range(width):
                         matrix[i][height] = 9
-                    k = randint(1, 9)
+                        k = randint(1, 9)
                     matrix[k][height] = 0 # 0은 빈칸임
-
+## 밑바닥에 비어있는 곳을 랜덤화
                 # 콤보횟수에 따른 피버타임
 
                 if values.feverTimeAddScore[1] > score >=values.feverTimeAddScore[0]:
@@ -1204,22 +1210,24 @@ while not done:
                 if  values.feverTimeAddScore[4] > score >= values.feverTimeAddScore[3]:
                     ADD = values.feverAddingTime[3]
                 if  score >= values.feverTimeAddScore[4]:
-                    ADD = values.feverAddingTime[4]    
+                    ADD = values.feverAddingTime[4]     
                 if comboCounter > values.feverBlockGoal:
-                    t1 = time.time()
-                    dt = t1 - t0
-        
-                    DrawBar(barPos,barSize,borderColor,barColor, (ui_variables.Basictimer-ADD - dt)/ (ui_variables.Basictimer-ADD))                
-                    mino = randint(1, 1)
-                    next_mino = randint(1, 1)
-                    next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                
-                    if dt >= ui_variables.Basictimer-ADD:
-                        t0 = t1
-                        comboCounter =0
-                        mino = next_mino
-                        next_mino = randint(1, 7)   
-
-
+                    if fever == False:
+                        t0 = time.time()
+                        fever = True
+                    else:
+                        t1 = time.time()
+                        dt = t1 -t0                                 
+                        DrawBar(barPos,barSize,borderColor,barColor, (values.Basictimer-ADD - dt)/ (values.Basictimer-ADD))                
+                        mino = randint(1, 1)
+                        next_mino = randint(1, 1)
+                        next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                
+                        if dt >= (values.Basictimer -ADD):
+                            comboCounter =0
+                            mino = next_mino
+                            next_mino = randint(1, 7)                       
+                            fever = False
+         
 
                 # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
                 if mode_selected==1:
@@ -1662,8 +1670,6 @@ while not done:
                     level_2P += 1
                     goal_2P += level_2P * 2
 
-                # 상대방 시야 방해
-                # fever_score, fever_interval 값을 이용하여 나타냄
                 attack_interval = fever_interval  # attack_interval = 3
                 attack_score = fever_score  # attack_score = 500
 
@@ -2011,39 +2017,20 @@ while not done:
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
                 over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
 
+
                 if reverse_over:
+                    comboCounter = 0
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 elif item: # 아이템 보드 추가
                     draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                 else:
+                    comboCounter = 0
                     draw_board(next_mino, hold_mino, score, level, goal)
-    
+            
+            
+            
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
-
-                name_1 = ui_variables.h2_i.render(chr(name[0]), 1, ui_variables.white)
-                name_2 = ui_variables.h2_i.render(chr(name[1]), 1, ui_variables.white)
-                name_3 = ui_variables.h2_i.render(chr(name[2]), 1, ui_variables.white)
-
-                underbar_1 = ui_variables.h2.render("_", 1, ui_variables.white)
-                underbar_2 = ui_variables.h2.render("_", 1, ui_variables.white)
-                underbar_3 = ui_variables.h2.render("_", 1, ui_variables.white)
-
-                screen.blit(name_1, (SCREEN_WIDTH * 0.08125, SCREEN_HEIGHT * 0.326))
-                screen.blit(name_2, (SCREEN_WIDTH * 0.11875, SCREEN_HEIGHT * 0.326))
-                screen.blit(name_3, (SCREEN_WIDTH * 0.15625, SCREEN_HEIGHT * 0.326))
-
-                if blink:
-                    screen.blit(over_start, (SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.4333))
-                    blink = False
-                else:
-                    if name_location == 0:
-                        screen.blit(underbar_1, (SCREEN_WIDTH * 0.08125 - 2, SCREEN_HEIGHT * 0.326 - 2))
-                    elif name_location == 1:
-                        screen.blit(underbar_2, (SCREEN_WIDTH * 0.11875 - 2, SCREEN_HEIGHT * 0.326 - 2))
-                    elif name_location == 2:
-                        screen.blit(underbar_3, (SCREEN_WIDTH * 0.15625, SCREEN_HEIGHT * 0.326 - 2))
-                    blink = True
                 pygame.display.update()
             
             # 마우스로 창크기조절
@@ -2072,12 +2059,30 @@ while not done:
                 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 pygame.display.update()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if  input_box.collidepoint(event.pos):
+                    active = not active
+                else:
+                    active = False
+                color = color_active if active else color_inactive
+                
             elif event.type == KEYDOWN:
+                if event.key == pygame.K_BACKSPACE: 
+                    text = text[:-1]
+                else:
+                    text += event.unicode 
+                    text_surf = font3.render(text, True, (255, 255, 255))        
+
+                window_center = screen.get_rect().center
+                screen.blit(text_surf, (input_box.x+5,input_box.y+5))
+                pygame.draw.rect(screen, color, input_box, 2)
+                pygame.display.flip()
+                clock.tick(30)
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
-                    name2 = chr(name[0]) + chr(name[1]) + chr(name[2])
+                    name2 = text
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
@@ -2136,38 +2141,11 @@ while not done:
                     attack_stack_2P = 0
                     erase_stack = 0
                     erase_stack_2P = 0
-
-                elif event.key == K_RIGHT:
-                    pygame.key.set_repeat(0)
-                    if name_location != 2:
-                        name_location += 1
-                    else:
-                        name_location = 0
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_LEFT:
-                    pygame.key.set_repeat(0)
-                    if name_location != 0:
-                        name_location -= 1
-                    else:
-                        name_location = 2
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_UP:
-                    pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-                    if name[name_location] != 90:
-                        name[name_location] += 1
-                    else:
-                        name[name_location] = 65
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-                elif event.key == K_DOWN:
-                    pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()
-                    if name[name_location] != 65:
-                        name[name_location] -= 1
-                    else:
-                        name[name_location] = 90
-                    pygame.time.set_timer(pygame.USEREVENT, 1)
-
+                
+                pygame.display.flip()
+            
+                
+            
     # pvp game over screen
     elif pvp_over:
         for event in pygame.event.get():
