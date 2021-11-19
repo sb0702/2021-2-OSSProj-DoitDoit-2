@@ -2,6 +2,7 @@ import pygame
 import operator
 import math
 from random import *
+from pygame.display import mode_ok
 from pygame.locals import *
 import pymysql
 from pymysql.cursors import Cursor
@@ -11,7 +12,7 @@ from init_values import *
 import time
 from pygame.rect import Rect
 
-# Constants
+# Constants 안 변하는 것들
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
@@ -87,7 +88,7 @@ def draw_board(next, hold, score, level, goal):
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
     )
 
     # Draw next mino
@@ -95,8 +96,8 @@ def draw_board(next, hold, score, level, goal):
 
     for i in range(mino_size):
         for j in range(mino_turn):
-            dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
-            dy = int(SCREEN_HEIGHT * 0.3743) + block_size * i
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 pygame.draw.rect(
                     screen,
@@ -132,18 +133,17 @@ def draw_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
-    
+    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.2780)))
-    screen.blit(text_score, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.5187)))
-    screen.blit(score_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.5614)))
-    screen.blit(text_level, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
-    screen.blit(level_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
-    screen.blit(text_goal, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))) 
-    ##screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
@@ -367,24 +367,118 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
     draw_2Pboard(next_2P, hold_2P)
 
 
-# Draw a tetrimino
-def draw_mino(x, y, mino, r):
-    grid = tetrimino.mino_map[mino - 1][r]  # grid에 mino_map의 모양과 방향을 선택한 리스트를 넣는다.
-    tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r):
-        ty += 1
+def draw_itemboard(next, hold, score, level, goal, inven):
+    screen.fill(ui_variables.grey_1)
+    sidebar_width = int(SCREEN_WIDTH * 0.5312)
 
-    # Draw ghost 이게 아마 밑바닥에 보이는 그 색깔일텐데
+    # Draw sidebar
+    pygame.draw.rect(
+        screen,
+        ui_variables.white,
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)
+    )
+
+    # Draw next mino
+    grid_n = tetrimino.mino_map[next - 1][0]
+
     for i in range(mino_size):
         for j in range(mino_turn):
-            if grid[i][j] != 0: # 0이면 비어있는 공간인데 비어있지 않으면이라는 뜻
-                matrix[tx + j][ty + i] = 8
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
+            if grid_n[i][j] != 0:
+                pygame.draw.rect(
+                    screen,
+                    ui_variables.t_color[grid_n[i][j]],
+                    Rect(dx, dy, block_size, block_size)
+                )
+
+    # Draw hold mino
+    grid_h = tetrimino.mino_map[hold - 1][0]
+
+    if hold_mino != -1:
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
+                if grid_h[i][j] != 0:
+                    pygame.draw.rect(
+                        screen,
+                        ui_variables.t_color[grid_h[i][j]],
+                        Rect(dx, dy, block_size, block_size)
+                    )
+
+    # Set max score
+    if score > 999999:
+        score = 999999
+
+    # Draw texts
+    text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.black)
+    text_next = ui_variables.h5.render("NEXT", 1, ui_variables.black)
+    text_score = ui_variables.h5.render("SCORE", 1, ui_variables.black)
+    score_value = ui_variables.h4.render(str(score), 1, ui_variables.black)
+    text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.black)
+    level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
+    text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
+    goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
+    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
+    text_item =  ui_variables.h5.render("ITEM", 1, ui_variables.black)
+    
+    # Place texts
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_item, text_item.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
+
+    
+     # 아이템 없는 칸은 빈 정사각형 그리기
+    if len(inven) == 0: 
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+    # 왜 len(inven)에서 invalid syntax 에러 뜨는지 모르겠음
+    #elif len(inven) == 1:
+    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+    #else len(inven) == 2: # show item 되면 elif로
+    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+    
+    #else:
+    #    show_item() # 아이템이 있으면 아이템 이미지 출력
+
+    # Draw board
+    # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
+    width_adjustment = (DEFAULT_WIDTH - width) // 2
+    height_adjustment = (DEFAULT_HEIGHT - height) // 2
+
+    for x in range(width):
+        for y in range(height):
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+
+# Draw a tetrimino
+def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
+    grid = tetrimino.mino_map[mino - 1][r]  # 현재 블록
+    tx, ty = x, y
+    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
+        ty += 1 # 한 칸 밑으로 하강
+
+    # Draw ghost 현재 블록이 쌓일 위치 보여줌
+    for i in range(mino_size):
+        for j in range(mino_turn):
+            if grid[i][j] != 0: # 비어있지 않으면
+                matrix[tx + j][ty + i] = 8 # ghost 블록 그려줌
 
     # Draw mino
     for i in range(mino_size):
         for j in range(mino_turn):
             if grid[i][j] != 0:
-                matrix[x + j][y + i] = grid[i][j]
+                matrix[x + j][y + i] = grid[i][j] # matrix에 현재 블록 넣어줌
 
 
 def draw_mino_2P(x, y, mino, r):
@@ -414,13 +508,13 @@ def erase_mino(x, y, mino, r):
     for j in range(height + 1):
         for i in range(width):
             if matrix[i][j] == 8:
-                matrix[i][j] = 0
+                matrix[i][j] = 0 # ghost 블록 없애기
 
     # Erase mino
     for i in range(mino_size):
         for j in range(mino_turn):
             if grid[i][j] != 0:
-                matrix[x + j][y + i] = 0
+                matrix[x + j][y + i] = 0 # 블록 없애기
 
 
 def erase_mino_2P(x, y, mino, r):
@@ -657,6 +751,76 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
+
+# 아이템 획득~인벤토리 관련 함수
+def get_item():
+    if len(inven)<3:
+        inven.append(item_list[random.randrange(0,5)]) # 랜덤
+def show_item():
+    for i in range(len(inven)):
+        item = inven[i]
+        screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
+def use_item():
+    if len(inven)>0:
+        item=inven[0]
+        inven.pop(0) # 앞에 있는 것부터 차례로 쓴다면
+    return item
+
+    
+
+    
+
+# 아이템 사용 함수
+def earthquake(y,matrix): # 맨 아래 줄 삭제 아이템
+    for i in range(width): # 가로줄 전체에 대해서
+        matrix[i][y+1] = 0 
+    #score += 50 * level # 한 줄 지운 것과 같은 효과, score을 못 읽어오는 것 같은데..
+    k = y+1 
+    while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
+        for i in range(width):
+            matrix[i][k] = matrix[i][k-1]
+        k -= 1       
+def board_reset(x,y):
+    for j in range(y+1):
+        for i in range(x):
+            matrix[i][j]=0 # 다 비워버리기
+
+def erase_row(matrix):    # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 10: # i_row 블록이면
+                #score += 50*level
+                k=j
+                matrix[i][k] = 0 # 해당 줄 삭제
+                while k>0: 
+                    for i in range(width):
+                        matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
+                    k -= 1
+
+def erase_col(matrix): # 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 11: # i_col 블록이면
+                k = i # x 좌표 기억
+                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
+
+def bomb(matrix):# 이거를 erase_mino에 넣으면 될 것 같음
+    for j in range(height+1):
+        for i in range(width):
+            if matrix[i][j] == 12: # i_bomb 블록이면
+                m = i-1 # 3x3 블록 없애주니까 i-1 ~ i+1 번째 지위져야 함
+                n = j -1
+                for k in range(bomb_size): # 3x3이므로
+                    for q in range(bomb_size): # 
+                        if m+k >= 0 and n+q >= 0: # 블록이 있든 없든
+                            matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
+
+
+            
+
+
+
+
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
@@ -668,7 +832,12 @@ text_surf = font3.render(text, True, (0, 0, 0))
 
 # pages
 blink = False
+blink1 = False
+blink2 = False
+blink3 = False
 start = False
+# hard
+hard = False
 pause = False
 done = False
 game_over = False
@@ -676,11 +845,13 @@ reverse = False
 pvp = False
 reverse_over = False
 pvp_over = False
+item = False
+item_over = False
 
 # Initial values
-speed_change=1 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수로, 2로 하면 hard mode 최대 levelup시 framerate=0.08로 너무 작아지는 듯함
-mode_selected = 0
-set_difficulty = 0
+speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
+mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
+set_difficulty = 0 # difficulty page에서 선택한 초기 난이도
 score = 0
 max_score = 99999
 score_2P = 0
@@ -699,13 +870,40 @@ attack_point = 0
 attack_point_2P = 0
 comboCounter =0
 fever_score = 500
+hard_score = 500
 next_fever = 500
 fever_interval = 3
+interval = 3
 comboCounter =0
-# 난이도
-easy_difficulty = 0
-normal_difficulty = 1
-hard_difficulty = 2
+
+# 아이템 관련 변수들
+item_list = [] # 변하면 안 됨
+inven = [] # 변함
+dx_inven1 = int(SCREEN_WIDTH * 0.5905) # 인벤토리 1 중심의 x좌표
+dx_inven2 = int(SCREEN_WIDTH * 0.6499) # 인벤토리 2 중심의 x좌표
+dx_inven3 = int(SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x좌표
+dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
+dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
+# 여기부터는 ui 파일로 옮길 거
+item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
+# pygame~이거를 뭐 image_earthquake로 두고 i_earthquake = ui.image_earthquake 해야 아래 함수에서도 가독성 좋을 듯
+i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 맨 아래줄 지우기
+i_reset = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
+i_row = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 가로 한 줄 삭제, 별도의 mino 필요
+i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 세로 한 줄 삭제, 별도의 mino 필요
+i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
+# 여기까지!
+# 이거도 변하는 거 아님 -> constants에 추가?
+num_i_row = 10 # 블록 그려줄 숫자 지정
+num_i_col = 11
+num_i_bomb = 12
+bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
+item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
+item_list.append(i_reset)
+item_list.append(i_row)
+item_list.append(i_col)
+item_list.append(i_bomb)
+
 
 effect_volume = 5
 set_volume()
@@ -752,7 +950,7 @@ def init_game(board_width, board_height, mode, game_difficulty):
 
     mode_selected = mode
     difficulty = game_difficulty
-    framerate -= difficulty * speed_change 
+    framerate -= difficulty * speed_change
 
 
 ###########################################################
@@ -772,6 +970,8 @@ while not done:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
                 elif pvp:
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                elif item: # 아이템 보드 추가
+                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
 
@@ -794,7 +994,8 @@ while not done:
                 elif event.key == K_RETURN:
                     start = False
                     pause = False
-
+                    
+                    set_difficulty = 0
                     width = DEFAULT_WIDTH
                     height = DEFAULT_HEIGHT
                     ui_variables.click_sound.play()
@@ -805,9 +1006,11 @@ while not done:
                     hold_mino = -1
                     framerate = 30
                     fever_score = 500
+                    hard_score = 500
                     next_fever = 500
                     max_score = 99999
                     fever_interval = 3
+                    interval = 3
                     score = 0
                     fever = 0
                     level = 1
@@ -817,10 +1020,6 @@ while not done:
                    
                    
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
 
                     min_width = 700
                     min_height = 350
@@ -851,6 +1050,9 @@ while not done:
 
                     if reverse:
                         reverse = False
+
+                    if item:
+                        item = False
 
 
             elif event.type == VIDEORESIZE:
@@ -885,19 +1087,20 @@ while not done:
             # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
                 # Set speed
-                if not game_over:
-                    keys_pressed = pygame.key.get_pressed()
-                    if keys_pressed[K_DOWN]:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
-                    else:
-                        pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
-
+                # if not game_over:
+                #     keys_pressed = pygame.key.get_pressed()
+                #     if keys_pressed[K_DOWN]:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 1)
+                #     else:
+                #         pygame.time.set_timer(pygame.USEREVENT, framerate * 5)
+                pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
                 
                 if reverse:
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
-
+                elif item: # 아이템 보드 추가
+                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                 else:
                     draw_board(next_mino, hold_mino, score, level, goal)
                     
@@ -921,6 +1124,8 @@ while not done:
                         draw_mino(dx, dy, mino, rotation)
                         if reverse:
                             draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        elif item: # 아이템 보드 추가
+                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven)                         
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
                         if is_stackable(next_mino):
@@ -935,6 +1140,9 @@ while not done:
                             if reverse:
                                 reverse = False
                                 reverse_over = True
+                            if item:
+                                item = False
+                                item_over = True
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
                         bottom_count += 1
@@ -954,6 +1162,8 @@ while not done:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k - 1]
                             k -= 1
+                # 점수 계산
+                # 콤보 효과?
                 if erase_count == 1:
                     ui_variables.single_sound.play()
                     score += 50 * level
@@ -1017,13 +1227,66 @@ while not done:
                             mino = next_mino
                             next_mino = randint(1, 7)                       
                             fever = False
+         
+
+                # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
+                if mode_selected==1:
+                    for i in range(1, max_score, interval):
+                        if score > i * hard_score and score < (i + 1) * hard_score: 
+                            if blink1:
+                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                            [150,0])
+                                blink1 = False
+                            else:
+                                blink1 = True
+                        
+                            if blink2:
+                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                            [150,250])
+                                blink2 = False
+                            else:
+                                blink2 = True
+                        
+                            
+
+                            #barrier = pygame.image.load(ui_variables.hard_barrier)
+                            #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
+                            #screen.blit(barrier, [450, 100]
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
+                            
+                        
+
+
+                '''
+                if mode_selected==1:
+                    if 100<=score<200:
+                        if blink1:
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                        [150,0])
+                            blink1 = False
+                        else:
+                            blink1 = True
+                    
+                        if blink2:
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                        [150,250])
+                            blink2 = False
+                        else:
+                            blink2 = True
+                    '''
+
+                        
                         
                         
                         
                     
                     
 
-##########키조작 부부분   
+##########키조작 부분   
 
             elif event.type == KEYDOWN:
                 erase_mino(dx, dy, mino, rotation)
@@ -1041,6 +1304,8 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
@@ -1060,6 +1325,8 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
@@ -1097,7 +1364,9 @@ while not done:
                         rotation = 0
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)                     
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)                    
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
@@ -1135,6 +1404,8 @@ while not done:
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
 
@@ -1152,7 +1423,10 @@ while not done:
                             ui_variables.move_sound.play()
                             dx -= 1
                         draw_mino(dx, dy, mino, rotation)
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        if item: # 아이템 보드 추가
+                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        else:
+                            draw_board(next_mino, hold_mino, score, level, goal)
 
                 # 오른쪽 이동, 리버스모드에선 방향키 반대
                 elif event.key == K_RIGHT:
@@ -1168,8 +1442,31 @@ while not done:
                             ui_variables.move_sound.play()
                             dx += 1
                         draw_mino(dx, dy, mino, rotation)
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        if item: # 아이템 보드 추가
+                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        else:
+                            draw_board(next_mino, hold_mino, score, level, goal)
 
+                # soft drop
+                elif event.key == K_DOWN: 
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy +=1 
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx,dy,mino, rotation)
+                    if reverse:
+                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    elif item: # 아이템 보드 추가
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    else:
+                        draw_board(next_mino, hold_mino, score, level, goal)
+                    #pygame.display.update()
+
+
+                # 아이템 사용 키
+                #elif event.key == K_z:
+                #    if item:
+                #        use_item()
+                
             elif event.type == KEYUP:
                 pygame.key.set_repeat(300)
 
@@ -1198,6 +1495,11 @@ while not done:
 
         pygame.display.update()
 
+
+
+
+
+         
 #### pvp 모드 
     elif pvp:
         pygame.key.set_repeat(0)  # 키반복 비활성화
@@ -1207,7 +1509,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6)
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) # ㄷㅎ
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -1659,6 +1961,24 @@ while not done:
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
 
+                # soft drop
+                elif event.key == K_s:
+                    if not is_bottom(dx, dy, mino, rotation):
+                        dy += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                elif event.key == K_DOWN:
+                    if not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
+                        dy_2P += 1
+                    #pygame.time.set_timer(pygame.USEREVENT, framerate*1)
+                    draw_mino(dx, dy, mino, rotation)
+                    draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
+                    draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
+                    #pygame.display.update()
+                    
 
             elif event.type == VIDEORESIZE:
 
@@ -1701,6 +2021,8 @@ while not done:
                 if reverse_over:
                     comboCounter = 0
                     draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                elif item: # 아이템 보드 추가
+                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
                 else:
                     comboCounter = 0
                     draw_board(next_mino, hold_mino, score, level, goal)
@@ -1751,11 +2073,11 @@ while not done:
                     text += event.unicode 
                     text_surf = font3.render(text, True, (255, 255, 255))        
 
-                window_center = screend.get_rect().center
+                window_center = screen.get_rect().center
                 screen.blit(text_surf, (input_box.x+5,input_box.y+5))
                 pygame.draw.rect(screen, color, input_box, 2)
                 pygame.display.flip()
-                clock.tick(3 0)
+                clock.tick(30)
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
@@ -1773,6 +2095,7 @@ while not done:
                     height = DEFAULT_HEIGHT
                     game_over = False
                     reverse_over = False
+                    item_over = False
                     hold = False
                     dx, dy = 3, 0
                     rotation = 0
@@ -1795,10 +2118,7 @@ while not done:
                     name_location = 0
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
-
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
+                    set_difficulty = 0
 
                     # PvP모드
                     hold_2P = False
@@ -1897,6 +2217,7 @@ while not done:
                     height = DEFAULT_HEIGHT
                     game_over = False
                     reverse_over = False
+                    item_over = False
                     hold = False
                     dx, dy = 3, 0
                     rotation = 0
@@ -1916,10 +2237,9 @@ while not done:
                     name_location = 0
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
+                    set_difficulty = 0
 
-                    easy_difficulty = 0
-                    normal_difficulty = 1
-                    hard_difficulty = 2
+                    
 
                     min_width = 700
                     min_height = 350
@@ -1962,7 +2282,7 @@ while not done:
         START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30 # 근데 이거 숫자 의미를 모르겠음
         page, selected = START_PAGE, 0
 
-        while not done and not start and not reverse and not pvp:
+        while not done and not start and not reverse and not pvp and not item:
             # Start Page
             if page == START_PAGE:
                 for event in pygame.event.get():
@@ -2383,7 +2703,7 @@ while not done:
                     "아이템 사용이 가능한 모드입니다.",
                     "방향키와 블록 등장이 반대인 리버스모드 입니다."
                 ]
-
+                set_difficulty = 0
                 current_selected = selected
                 for event in pygame.event.get():
                     if event.type == QUIT:
@@ -2540,6 +2860,7 @@ while not done:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
                             page, selected = MODE_PAGE, mode_selected # 모드 선택 페이지로, 원래 선택했던 모드 화면이 뜸
+                            
                         elif event.key == K_UP:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2581,7 +2902,8 @@ while not done:
                             if mode_selected == 3: # item mode
                                 # start game with ITEM
                                 ui_variables.click_sound.play()
-                                start = True # 구현 -> item = True
+                                start = True
+                                item = True # 구현 -> start=False 하면 될듯
                                 init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
     
                             if mode_selected == 4: # Reverse mode 
@@ -2629,12 +2951,13 @@ while not done:
                 )
                 title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
 
-                title_info = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
+                title_info1 = ui_variables.h6.render("Press up and down to change speed, space to start game", 1, ui_variables.grey_1)
+                title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
 
-                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
-
+                screen.blit(title_info1, title_info1.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 200)))
+                screen.blit(title_info2, title_info2.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
     
                 
                 
