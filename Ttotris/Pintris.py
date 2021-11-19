@@ -2,6 +2,7 @@ import pygame
 import operator
 import math
 from random import *
+from pygame.display import mode_ok
 from pygame.locals import *
 import pymysql
 from pymysql.cursors import Cursor
@@ -823,7 +824,12 @@ pygame.display.set_caption("TTOTRIS™")
 
 # pages
 blink = False
+blink1 = False
+blink2 = False
+blink3 = False
 start = False
+# hard
+hard = False
 pause = False
 done = False
 game_over = False
@@ -855,8 +861,10 @@ attack_point = 0
 attack_point_2P = 0
 comboCounter =0
 fever_score = 500
+hard_score = 500
 next_fever = 500
 fever_interval = 3
+interval = 3
 comboCounter =0
 
 # 아이템 관련 변수들
@@ -992,9 +1000,11 @@ while not done:
                     hold_mino = -1
                     framerate = 30
                     fever_score = 500
+                    hard_score = 500
                     next_fever = 500
                     max_score = 99999
                     fever_interval = 3
+                    interval = 3
                     score = 0
                     fever = 0
                     level = 1
@@ -1208,11 +1218,58 @@ while not done:
                         mino = next_mino
                         next_mino = randint(1, 7)   
 
-                # 아이템 되는지 확인
-                #if erase_count ==2:
-                #    if item:
-                #        get_item()
-                                    
+
+
+                # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
+                if mode_selected==1:
+                    for i in range(1, max_score, interval):
+                        if score > i * hard_score and score < (i + 1) * hard_score: 
+                            if blink1:
+                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                            [150,0])
+                                blink1 = False
+                            else:
+                                blink1 = True
+                        
+                            if blink2:
+                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                            [150,250])
+                                blink2 = False
+                            else:
+                                blink2 = True
+                        
+                            print(test)
+
+                            #barrier = pygame.image.load(ui_variables.hard_barrier)
+                            #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
+                            #screen.blit(barrier, [450, 100]
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
+                            
+                        
+
+
+                '''
+                if mode_selected==1:
+                    if 100<=score<200:
+                        if blink1:
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                        [150,0])
+                            blink1 = False
+                        else:
+                            blink1 = True
+                    
+                        if blink2:
+                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
+                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
+                                        [150,250])
+                            blink2 = False
+                        else:
+                            blink2 = True
+                    '''
+
                         
                         
                         
@@ -1414,6 +1471,11 @@ while not done:
 
         pygame.display.update()
 
+
+
+
+
+         
 #### pvp 모드 
     elif pvp:
         pygame.key.set_repeat(0)  # 키반복 비활성화

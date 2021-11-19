@@ -36,6 +36,7 @@ class ui_variables:
     pvp_lose_image = pygame.image.load("assets/images/lose.png")
     pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
     delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
+    hard_barrier = pygame.image.load("assets/images/ink.png")
 
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
