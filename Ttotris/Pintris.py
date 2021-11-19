@@ -1240,7 +1240,7 @@ while not done:
                             else:
                                 blink2 = True
                         
-                            print(test)
+                            
 
                             #barrier = pygame.image.load(ui_variables.hard_barrier)
                             #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
