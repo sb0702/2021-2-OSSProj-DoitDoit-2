@@ -908,10 +908,12 @@ i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.p
 i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
 i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
 # 블록 그려줄 숫자 지정
+no_mino = 0 # 별도의 블록 필요없는 아이템에 부여하는 숫자
 row_mino = 10  
 col_mino = 11
 bomb_mino = 12
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
+
 item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
 item_list.append(reset_inven)
 item_list.append(row_inven)
