@@ -893,16 +893,15 @@ dx_inven2 = int(SCREEN_WIDTH * 0.6499) # 인벤토리 2 중심의 x좌표
 dx_inven3 = int(SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x좌표
 dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
-# 여기부터는 ui 파일로 옮길 거
+
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
-# pygame~이거를 뭐 image_earthquake로 두고 i_earthquake = ui.image_earthquake 해야 아래 함수에서도 가독성 좋을 듯
-i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 맨 아래줄 지우기
-i_reset = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
-i_row = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 가로 한 줄 삭제, 별도의 mino 필요
-i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 세로 한 줄 삭제, 별도의 mino 필요
-i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
-# 여기까지!
-# 이거도 변하는 거 아님 -> constants에 추가?
+# 
+i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
+i_reset = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
+i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
+i_col = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
+i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
+
 row_mino = 10 # 블록 그려줄 숫자 지정
 col_mino = 11
 bomb_mino = 12
