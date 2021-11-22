@@ -64,14 +64,14 @@ def set_volume():
     ui_variables.tetris_sound.set_volume(effect_volume / 10)
 
 
-# Draw block 아 이건 전체 필드를 그리는건가???
+# Draw block 
 def draw_block(x, y, color):
     pygame.draw.rect(
         screen,
         color,
         Rect(x, y, block_size, block_size)
     )
-    pygame.draw.rect( # 얘는 줄무늬 경계를 그리는거
+    pygame.draw.rect( 
         screen,
         ui_variables.grey_4,
         Rect(x, y, block_size, block_size),
@@ -146,6 +146,7 @@ def draw_board(next, hold, score, level, goal):
     screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
     screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
     screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
+
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
     width_adjustment = (DEFAULT_WIDTH - width) // 2
@@ -505,6 +506,11 @@ def erase_mino(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0 # 블록 없애기
 
+    # 추가적인 블록 생성해서 사용하는 아이템 쓸 때
+    if item == True:
+        erase_row() # 가로줄 삭제 아이템의 효과
+        erase_col() # 세로줄 삭제 아이템의 효과
+        bomb() # 3x3 블록 삭제 아이템의 효과
     
 
 
@@ -789,11 +795,10 @@ def board_reset():
         for i in range(width):
             matrix[i][j] = 0 # 보드 내 블록 다 비워버리기
 
-def erase_row():    # 이거를 erase_mino에 넣으면 될 것 같음
+def erase_row():    # 가로줄 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 10: # i_row 블록이면
-                #score += 50*level
+            if matrix[i][j] == row_mino: # i_row 블록이면
                 k = j # y 좌표 기억
                 matrix[i][k] = 0 # 해당 줄 삭제
                 while k>0: 
@@ -801,17 +806,17 @@ def erase_row():    # 이거를 erase_mino에 넣으면 될 것 같음
                         matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
                     k -= 1
 
-def erase_col(): # 이거를 erase_mino에 넣으면 될 것 같음
+def erase_col(): # 세로줄 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 11: # i_col 블록이면
+            if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
                 matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
 
-def bomb():# 이거를 erase_mino에 넣으면 될 것 같음
+def bomb():# 3x3 블록 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 12: # i_bomb 블록이면
+            if matrix[i][j] == bomb_mino: # i_bomb 블록이면
                 m = i-1 # 3x3 블록 없애주니까 i-1 ~ i+1 번째 지위져야 함
                 n = j -1
                 for k in range(bomb_size): # 3x3이므로
@@ -898,9 +903,9 @@ i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(
 i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
 # 여기까지!
 # 이거도 변하는 거 아님 -> constants에 추가?
-num_i_row = 10 # 블록 그려줄 숫자 지정
-num_i_col = 11
-num_i_bomb = 12
+row_mino = 10 # 블록 그려줄 숫자 지정
+col_mino = 11
+bomb_mino = 12
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
 item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
 item_list.append(i_reset)
@@ -1313,7 +1318,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
-                elif event.key == K_LSHIFT or event.key == K_c:
+                elif event.key == K_LSHIFT:
                     pygame.key.set_repeat(0)
                     if hold == False:
                         ui_variables.move_sound.play()
@@ -1334,7 +1339,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_x:
+                elif event.key == K_UP:
                     pygame.key.set_repeat(0)
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
@@ -1374,7 +1379,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:
+                elif event.key == K_LCTRL:
                     pygame.key.set_repeat(0)
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
@@ -1465,12 +1470,9 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-
-                # 아이템 사용 키
-                #elif event.key == K_z:
-                #    if item:
-                #        use_item()
                 
+
+               
             elif event.type == KEYUP:
                 pygame.key.set_repeat(300)
 
