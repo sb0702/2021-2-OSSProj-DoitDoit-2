@@ -757,9 +757,15 @@ def get_item():
     if len(inven)<3:
         inven.append(item_list[random.randrange(0,5)]) # 랜덤
 def show_item():
-    for i in range(len(inven)):
-        item = inven[i]
-        screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
+    if len(inven) != 0:
+        for i in range(len(inven)):
+            item = inven[i]
+            screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
+    else:
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        
 def use_item():
     if len(inven)>0:
         item=inven[0]
