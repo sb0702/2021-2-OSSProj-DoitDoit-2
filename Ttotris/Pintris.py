@@ -435,20 +435,8 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     screen.blit(text_item, text_item.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
     
-     # 아이템 없는 칸은 빈 정사각형 그리기
-    if len(inven) == 0: 
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    # 왜 len(inven)에서 invalid syntax 에러 뜨는지 모르겠음
-    #elif len(inven) == 1:
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    #else len(inven) == 2: # show item 되면 elif로
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    
-    #else:
-    #    show_item() # 아이템이 있으면 아이템 이미지 출력
+     
+    show_inven() # 아이템이 있으면 아이템 이미지 출력
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
@@ -751,12 +739,11 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
-
 # 아이템 획득~인벤토리 관련 함수
 def get_item():
     if len(inven)<3:
-        inven.append(item_list[random.randrange(0,5)]) # 랜덤
-def show_item():
+        inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
+def show_inven():
     if len(inven) != 0:
         for i in range(len(inven)):
             item = inven[i]
@@ -765,11 +752,18 @@ def show_item():
         pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
         pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
         pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        
-def use_item():
+
+def use_item(key):
     if len(inven)>0:
-        item=inven[0]
-        inven.pop(0) # 앞에 있는 것부터 차례로 쓴다면
+        if key == 1: # 인벤토리의 첫 번째 칸 아이템 씀
+            item=inven[0]
+            inven.pop(0) # 쓴 아이템은 삭제
+        if key == 2: # 인벤토리의 두 번째 칸 아이템 씀
+            item=inven[1]
+            inven.pop(1) # 쓴 아이템은 삭제
+        if key == 3: # 인벤토리의 세 번째 칸 아이템 씀
+            item=inven[2]
+            inven.pop(2) # 쓴 아이템은 삭제
     return item
 
     
