@@ -765,16 +765,18 @@ def show_inven():
 
 def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
-        if key == 1: # 인벤토리의 첫 번째 칸 아이템 씀
-            item=inven[0]
-            inven.pop(0) # 쓴 아이템은 삭제
-        if key == 2: # 인벤토리의 두 번째 칸 아이템 씀
-            item=inven[1]
-            inven.pop(1) # 쓴 아이템은 삭제
-        if key == 3: # 인벤토리의 세 번째 칸 아이템 씀
-            item=inven[2]
-            inven.pop(2) # 쓴 아이템은 삭제
-    return item
+        item = inven[key-1] # 인벤토리의 key번째 칸 아이템
+        inven.pop(key-1) # 사용한 아이템은 삭제
+        # 해당 아이템 블록 번호 저장
+        if item == row_inven: 
+            num_item = row_mino
+        elif item == col_inven:
+            num_item = col_mino
+        elif item == bomb_inven:
+            num_item = bomb_mino
+        else:
+            num_item = no_mino
+    return num_item 
 
     
     
@@ -895,20 +897,19 @@ dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
 
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
-# 블록 출력할 크기로 리사이징
-i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
-i_reset = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
-i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
-i_col = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
-i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
 # 인벤 출력할 크기로 리사이징
 earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
-reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
+reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 전체 블록 리셋
 row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
 col_inven = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
 bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
-
-row_mino = 10 # 블록 그려줄 숫자 지정
+# 별도의 블록 필요한 아이템 - block size로 리사이징
+i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
+i_col = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(block_size,block_size)) 
+i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
+# 블록 그려줄 숫자 지정
+no_mino = 0 # 별도의 블록 필요 없는 아이템에 부여하는 숫자
+row_mino = 10  
 col_mino = 11
 bomb_mino = 12
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
@@ -1461,6 +1462,8 @@ while not done:
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
 
+                            
+
                 # soft drop
                 elif event.key == K_DOWN: 
                     if not is_bottom(dx, dy, mino, rotation):
@@ -1475,6 +1478,11 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
+                
+
+
+                        
+                    
                 
 
                
