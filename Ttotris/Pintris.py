@@ -748,7 +748,7 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
-# 아이템 획득~인벤토리 관련 함수
+# 아이템 획득~인벤토리 관련 함수 
 def get_item():
     if len(inven)<3:
         inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
@@ -898,17 +898,16 @@ dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
 
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
 # 인벤 출력할 크기로 리사이징
-earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
+earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item_1.png"),(item_size,item_size)) # 맨 아래줄 지우기
 reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 전체 블록 리셋
 row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
-col_inven = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
+col_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
 bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
 # 별도의 블록 필요한 아이템 - block size로 리사이징
 i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
-i_col = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(block_size,block_size)) 
+i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
 i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
 # 블록 그려줄 숫자 지정
-no_mino = 0 # 별도의 블록 필요 없는 아이템에 부여하는 숫자
 row_mino = 10  
 col_mino = 11
 bomb_mino = 12
@@ -1480,8 +1479,10 @@ while not done:
 
                 
 
+                
 
-                        
+
+                         
                     
                 
 
