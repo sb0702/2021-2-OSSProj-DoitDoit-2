@@ -895,22 +895,28 @@ dy_inven = int(SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
 
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
-# 
+# 블록 출력할 크기로 리사이징
 i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
 i_reset = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
 i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
 i_col = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
 i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
+# 인벤 출력할 크기로 리사이징
+earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item.png"),(item_size,item_size)) # 맨 아래줄 지우기
+reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
+row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
+col_inven = pygame.transform.scale(pygame.image.load("assets/images/earse_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
+bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
 
 row_mino = 10 # 블록 그려줄 숫자 지정
 col_mino = 11
 bomb_mino = 12
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
-item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
-item_list.append(i_reset)
-item_list.append(i_row)
-item_list.append(i_col)
-item_list.append(i_bomb)
+item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
+item_list.append(reset_inven)
+item_list.append(row_inven)
+item_list.append(col_inven)
+item_list.append(bomb_inven)
 
 
 effect_volume = 5
