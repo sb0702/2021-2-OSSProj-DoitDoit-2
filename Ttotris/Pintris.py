@@ -133,6 +133,7 @@ def draw_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
+    text_fever = ui_variables.h5.render("FEVER TIME", 1, ui_variables.black)
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
@@ -144,7 +145,7 @@ def draw_board(next, hold, score, level, goal):
     screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
     screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
     screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
-
+    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
     width_adjustment = (DEFAULT_WIDTH - width) // 2
@@ -173,9 +174,8 @@ def draw_reverse_board(next, hold, score, level, goal):
 
     for i in range(mino_size):
         for j in range(mino_turn):
-
-            dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
-            dy = int(SCREEN_HEIGHT * 0.3743) + block_size * i
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 pygame.draw.rect(
                     screen,
@@ -211,20 +211,21 @@ def draw_reverse_board(next, hold, score, level, goal):
     level_value = ui_variables.h4.render(str(level), 1, ui_variables.black)
     text_goal = ui_variables.h5.render("GOAL", 1, ui_variables.black)
     goal_value = ui_variables.h4.render(str(goal), 1, ui_variables.black)
-    
+    text_fever = ui_variables.h5.render("FEVER TIME", 1, ui_variables.black)
+    next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.2780)))
-    screen.blit(text_score, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.5187)))
-    screen.blit(score_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.5614)))
-    screen.blit(text_level, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
-    screen.blit(level_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
-    screen.blit(text_goal, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
-    screen.blit(text_fever, (int(SCREEN_WIDTH * 0.12) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
+ 
     # Draw board
     for x in range(width):
         for y in range(height):
@@ -435,20 +436,8 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     screen.blit(text_item, text_item.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
     
-     # 아이템 없는 칸은 빈 정사각형 그리기
-    if len(inven) == 0: 
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    # 왜 len(inven)에서 invalid syntax 에러 뜨는지 모르겠음
-    #elif len(inven) == 1:
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    #else len(inven) == 2: # show item 되면 elif로
-    #    pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-    
-    #else:
-    #    show_item() # 아이템이 있으면 아이템 이미지 출력
+     
+    show_inven() # 아이템이 있으면 아이템 이미지 출력
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
@@ -515,6 +504,8 @@ def erase_mino(x, y, mino, r):
         for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0 # 블록 없애기
+
+    
 
 
 def erase_mino_2P(x, y, mino, r):
@@ -751,60 +742,73 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
-
 # 아이템 획득~인벤토리 관련 함수
 def get_item():
     if len(inven)<3:
-        inven.append(item_list[random.randrange(0,5)]) # 랜덤
-def show_item():
-    for i in range(len(inven)):
-        item = inven[i]
-        screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
-def use_item():
+        inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
+
+def show_inven():
+    if len(inven) != 0:
+        for i in range(len(inven)):
+            item = inven[i]
+            screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
+    else: # 없을 때는 빈 정사각형 출력
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+
+def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
-        item=inven[0]
-        inven.pop(0) # 앞에 있는 것부터 차례로 쓴다면
+        if key == 1: # 인벤토리의 첫 번째 칸 아이템 씀
+            item=inven[0]
+            inven.pop(0) # 쓴 아이템은 삭제
+        if key == 2: # 인벤토리의 두 번째 칸 아이템 씀
+            item=inven[1]
+            inven.pop(1) # 쓴 아이템은 삭제
+        if key == 3: # 인벤토리의 세 번째 칸 아이템 씀
+            item=inven[2]
+            inven.pop(2) # 쓴 아이템은 삭제
     return item
 
     
-
     
 
 # 아이템 사용 함수
-def earthquake(y,matrix): # 맨 아래 줄 삭제 아이템
+def earthquake(): # 맨 아래 줄 삭제 아이템
     for i in range(width): # 가로줄 전체에 대해서
-        matrix[i][y+1] = 0 
-    #score += 50 * level # 한 줄 지운 것과 같은 효과, score을 못 읽어오는 것 같은데..
-    k = y+1 
+        matrix[i][height+1] = 0 
+    k = height+1 
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
             matrix[i][k] = matrix[i][k-1]
         k -= 1       
-def board_reset(x,y):
-    for j in range(y+1):
-        for i in range(x):
-            matrix[i][j]=0 # 다 비워버리기
+    # 사용하고 나면, score += 50 * level # 한 줄 지운 것과 같은 효과 주기
 
-def erase_row(matrix):    # 이거를 erase_mino에 넣으면 될 것 같음
+def board_reset():
+    for j in range(height+1):
+        for i in range(width):
+            matrix[i][j] = 0 # 보드 내 블록 다 비워버리기
+
+def erase_row():    # 이거를 erase_mino에 넣으면 될 것 같음
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == 10: # i_row 블록이면
                 #score += 50*level
-                k=j
+                k = j # y 좌표 기억
                 matrix[i][k] = 0 # 해당 줄 삭제
                 while k>0: 
                     for i in range(width):
                         matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
                     k -= 1
 
-def erase_col(matrix): # 이거를 erase_mino에 넣으면 될 것 같음
+def erase_col(): # 이거를 erase_mino에 넣으면 될 것 같음
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == 11: # i_col 블록이면
                 k = i # x 좌표 기억
                 matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
 
-def bomb(matrix):# 이거를 erase_mino에 넣으면 될 것 같음
+def bomb():# 이거를 erase_mino에 넣으면 될 것 같음
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == 12: # i_bomb 블록이면
