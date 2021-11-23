@@ -46,6 +46,10 @@ input_active = True
 pygame.init()
 pygame.key.set_repeat(500)
 
+
+
+
+
 tetris = pymysql.connect(
             user='admin',
             password='tjgus1234',
@@ -77,6 +81,7 @@ def draw_block(x, y, color):
         Rect(x, y, block_size, block_size),
         1
     )
+
 
 
 # Draw game screen
@@ -404,10 +409,10 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
-                        screen,
-                        ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, block_size, block_size)
-                    )
+                    screen,
+                    ui_variables.t_color[grid_h[i][j]],
+                    Rect(dx, dy, block_size, block_size)
+                )
 
     # Set max score
     if score > 999999:
@@ -449,7 +454,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
         for y in range(height):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) # 블록 이미지 출력 ㄷㅎ
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -728,7 +733,7 @@ def istheresaved(name2,table):
         cursor.execute(sql, (name2, score))
         tetris.commit()  
         cursor.close() ## tetris db insert 
-    else :    
+    else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
         cursor.execute(sql, name2)
@@ -765,18 +770,22 @@ def show_inven():
 
 def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
-        item = inven[key-1] # 인벤토리의 key번째 칸 아이템
+        item_u = inven[key-1] # 인벤토리의 key번째 칸 아이템
         inven.pop(key-1) # 사용한 아이템은 삭제
-        # 해당 아이템 블록 번호 저장
-        if item == row_inven: 
-            num_item = row_mino
-        elif item == col_inven:
-            num_item = col_mino
-        elif item == bomb_inven:
-            num_item = bomb_mino
-        else:
-            num_item = no_mino
-    return num_item 
+        # # 해당 아이템 블록 번호 저장
+        # if item == row_inven: 
+        #     num_item = row_mino
+        # elif item == col_inven:
+        #     num_item = col_mino
+        # elif item == bomb_inven:
+        #     num_item = bomb_mino
+        # else:
+     #     num_item = no_mino
+
+    #     return {
+
+    #     }
+    return item_u
 
     
     
@@ -904,14 +913,16 @@ row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_It
 col_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
 bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
 # 별도의 블록 필요한 아이템 - block size로 리사이징
-i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
-i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
-i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
+# i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
+# i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
+# i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
 # 블록 그려줄 숫자 지정
-no_mino = 0 # 별도의 블록 필요없는 아이템에 부여하는 숫자
+#no_mino = 0 # 별도의 블록 필요없는 아이템에 부여하는 숫자
 row_mino = 10  
 col_mino = 11
 bomb_mino = 12
+#earthquake_mino = 13
+#reset_mino = 14
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
 
 item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
@@ -1480,6 +1491,32 @@ while not done:
                     #pygame.display.update()
 
                 
+                # elif event.key == K_1:
+                #     key = 1
+                #     if item:
+                #         item_u = use_item(key) # 인벤의 아이템 반환
+                #         if item_u == row_inven:
+                #             mino = row_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == col_inven:
+                #             mino = col_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == bomb_inven:
+                #             mino = bomb_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == reset_inven:
+                #             board_reset()
+                #         elif item_u == earthquake_inven:
+                #             earthquake()
+                        
+                #         draw_mino(dx,dy, mino, rotation)
+                #         draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+
+                        
+                        
+
+
+
 
                 
 
@@ -1531,7 +1568,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) # ㄷㅎ
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
