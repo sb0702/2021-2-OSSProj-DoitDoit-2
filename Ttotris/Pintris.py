@@ -384,7 +384,7 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
     draw_1Pboard(next_1P, hold_1P)
     draw_2Pboard(next_2P, hold_2P)
 
-
+력
 def draw_itemboard(next, hold, score, level, goal, inven):
     screen.fill(ui_variables.grey_1)
     sidebar_width = int(SCREEN_WIDTH * 0.5312)
@@ -404,11 +404,12 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
             dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
-                pygame.draw.rect(
-                    screen,
-                    ui_variables.t_color[grid_n[i][j]],
-                    Rect(dx, dy, block_size, block_size)
-                )
+                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력 11/24
+                # pygame.draw.rect(
+                #     screen,
+                #     ui_variables.t_color[grid_n[i][j]],
+                #     Rect(dx, dy, block_size, block_size)
+                # )
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
@@ -419,11 +420,12 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
                 dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
-                    pygame.draw.rect(
-                    screen,
-                    ui_variables.t_color[grid_h[i][j]],
-                    Rect(dx, dy, block_size, block_size)
-                )
+                    draw_block_image(dx,dy,ui_variables.t_block[grid_h[i][j]]) # 블록 이미지 출력
+                #     pygame.draw.rect(
+                #     screen,
+                #     ui_variables.t_color[grid_h[i][j]],
+                #     Rect(dx, dy, block_size, block_size)
+                # )
 
     # Set max score
     if score > 999999:
@@ -465,7 +467,8 @@ def draw_itemboard(next, hold, score, level, goal, inven):
         for y in range(height):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) # 블록 이미지 출력 ㄷㅎ
+            #draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
+            draw_block_image(dx, dy, ui_variables.t_block[matrix[x][y + 1]]) # 아이템 모드는 이미지블록으로
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
