@@ -82,6 +82,17 @@ def draw_block(x, y, color):
         1
     )
 
+# 아이템 블록 생성을 위해서, 전체 블록을 이미지로 넣기로 함 
+def draw_image(window, img_path, x, y, w, h):
+    x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
+    y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
+    image = pygame.image.load(img_path)
+    image = pygame.transform.scale(image, (w, h))
+    window.blit(image, (x, y))
+
+# 블록을 이미지로 그릴 거임 
+def draw_block_image(x, y, image): # image에는 ui에 있는, 색깔블록~아이템 블록이 담긴 t_block이 들어감
+    draw_image(screen, image, x, y, block_size, block_size) #(window, 이미지주소, x좌표, y좌표, 너비, 높이)
 
 
 # Draw game screen
