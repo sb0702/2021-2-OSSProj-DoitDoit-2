@@ -3,11 +3,34 @@ from pygame import font
 
 class ui_variables:
     pygame.init()
+    ## 게임 보드 관련
+    SCREEN_WIDTH = 1200
+    SCREEN_HEIGHT = 600
+    DEFAULT_WIDTH = 10
+    DEFAULT_HEIGHT = 20
+    block_size = 17  # Height, width of single block
+    width = DEFAULT_WIDTH  # Board width
+    height = DEFAULT_HEIGHT  # Board height
+    min_width = 700
+    min_height = 350
+    c =0
+    mino_size = 4
+    mino_turn = 4
     # Fonts
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
     font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
-
+    # 타이머 바 관련 
+    barPos      = (650, 200)
+    barSize     = (250, 20)
+    borderColor = (0, 0, 0)
+    barColor    = (0, 128, 0)
+    # 변경할 이름 입력방식
+    text = ""
+    input_active = True
+    color_active = pygame.Color('lightskyblue3')
+    color_inactive = pygame.Color('blue')
+    
     h1 = pygame.font.Font(font_path, 50)
     h2 = pygame.font.Font(font_path, 30)
     h4 = pygame.font.Font(font_path, 20)
@@ -53,6 +76,4 @@ class ui_variables:
     green = (98, 190, 68)  # rgb(98, 190, 68) # S
     pink = (242, 64, 235)  # rgb(242, 64, 235) # T
     red = (225, 13, 27)  # rgb(225, 13, 27) # Z
-    # timer
-    Basictimer = 50
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]
