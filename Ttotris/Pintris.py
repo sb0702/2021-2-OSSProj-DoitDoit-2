@@ -261,8 +261,8 @@ def draw_1Pboard(next, hold):
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.05) + ui_variables.block_size * x
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + ui_variables.block_size * y
+            dx = int(ui_variables.SCREEN_WIDTH * 0.05) + block_size * x
+            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * y
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
@@ -302,7 +302,7 @@ def draw_2Pboard(next, hold):
                     pygame.draw.rect(
                         screen,
                         ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, ui_variables.block_size, ui_variables.block_size)
+                        Rect(dx, dy, block_size, block_size)
                     )
 
     # Draw texts
@@ -320,7 +320,7 @@ def draw_2Pboard(next, hold):
     screen.blit(text_score, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187)))
     screen.blit(score_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614)))
     screen.blit(text_at, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791)))
-    screen.blit(at_value, (int(Sui_variables.CREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
+    screen.blit(at_value, (int(ui_variables.CREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
     screen.blit(text_player, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8815)))
 
     # Draw board
@@ -359,7 +359,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 pygame.draw.rect(
                     screen,
                     ui_variables.t_color[grid_n[i][j]],
-                    Rect(dx, dy, ui_variables.block_size, ui_variables.block_size)
+                    Rect(dx, dy, block_size, block_size)
                 )
 
     # Draw hold mino
@@ -368,13 +368,13 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     if hold_mino != -1:
         for i in range(ui_variables.mino_size):
             for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + ui_variables.block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + ui_variables.block_size * i
+                dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
+                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
                         ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, ui_variables.block_size, ui_variables.block_size)
+                        Rect(dx, dy, block_size, block_size)
                     )
 
     # Set max score
@@ -427,9 +427,10 @@ def draw_itemboard(next, hold, score, level, goal, inven):
 
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + ui_variables.block_size * (width_adjustment + x)
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + ui_variables.block_size * (height_adjustment + y)
+            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+    
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -796,10 +797,12 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.time.set_timer(pygame.USEREVENT, values.framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
-text = ""
-font3 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 40)
-text_surf = font3.render(text, True, (0, 0, 0)) 
 
+color_inactive = pygame.Color('lightskyblue3')
+color_active = pygame.Color('dodgerblue2')
+color = color_inactive
+active = False
+text = ''
 # pages
 blink = False
 blink1 = False
@@ -817,8 +820,8 @@ reverse_over = False
 pvp_over = False
 item = False
 item_over = False
-
-# Initial values
+password = ''
+# Initial valuespassword = ""
 speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
 mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
 set_difficulty = 0 # difficulty page에서 선택한 초기 난이도
@@ -1055,13 +1058,6 @@ while not done:
                 done = True
             # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
-                # Set speed
-                # if not game_over:
-                #     keys_pressed = pygame.key.get_pressed()
-                #     if keys_pressed[K_DOWN]:
-                #         pygame.time.set_timer(pygame.USEREVENT, values.framerate * 1)
-                #     else:
-                #         pygame.time.set_timer(pygame.USEREVENT, values.framerate * 10)
                 pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -1181,8 +1177,8 @@ while not done:
                 if  score >= values.feverTimeAddScore[4]:
                     TimeDecreasedByScore = values.feverAddingTime[4]
                          
-                if comboCounter > values.feverBlockGoal:
-                    if fever == False:
+                if comboCounter > values.feverBlockGoal and mode_selected !=3:
+                    if fever == False :
                         t0 = time.time()
                         fever = True
                     else:
@@ -1219,7 +1215,7 @@ while not done:
                                 blink2 = False
                             else:
                                 blink2 = True
-                        
+                            
                             
 
                             #barrier = pygame.image.load(ui_variables.hard_barrier)
@@ -1229,33 +1225,6 @@ while not done:
                             
                         
 
-
-                '''
-                if mode_selected==1:
-                    if 100<=score<200:
-                        if blink1:
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                            (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5))),
-                                        [150,0])
-                            blink1 = False
-                        else:
-                            blink1 = True
-                    
-                        if blink2:
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                            (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5))),
-                                        [150,250])
-                            blink2 = False
-                        else:
-                            blink2 = True
-                    '''
-
-                        
-                        
-                        
-                        
-                    
-                    
 
 ##########키조작 부분   
 
@@ -2030,26 +1999,7 @@ while not done:
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 pygame.display.update()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if  ui_variables.input_box.collidepoint(event.pos):
-                    active = not active
-                else:
-                    active = False
-                color = ui_variables.color_active if active else ui_variables.color_inactive
-                
-            elif event.type == KEYDOWN:
-                if event.key == pygame.K_BACKSPACE: 
-                    text = text[:-1]
-                    
-                else:
-                    text += event.unicode 
-                    text_surf = font3.render(text, True, (255, 255, 255))        
-
-                window_center = screen.get_rect().center
-                screen.blit(text_surf, (input_box.x+5,input_box.y+5))
-                pygame.draw.rect(screen, color, input_box, 2)
-                pygame.display.update()
-                clock.tick(30)
+            
                 if event.key == K_RETURN:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
@@ -2261,11 +2211,24 @@ while not done:
                     if event.type == QUIT:
                         done = True
                     elif event.type == KEYDOWN:
+                        
                         if event.key == K_SPACE:
                             pygame.key.set_repeat(0)
                             # goto menu page
                             ui_variables.click_sound.play()
-                            page, selected = MENU_PAGE, 0
+                            page, selected = MENU_PAGE, 0    
+                        if event.key == K_RETURN:  
+                            password = ''
+                        else:  # Add the character to thepassword string.
+                            password += event.unicode
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    # If the user clicked on the input_box rect.
+                        if input_box.collidepoint(event.pos):
+                    # Toggle the active variable.
+                            active = not active
+                        else:
+                            active = False
+                
                     elif event.type == VIDEORESIZE:
 
                         ui_variables.SCREEN_WIDTH = event.w
@@ -2306,10 +2269,14 @@ while not done:
                     screen.blit(title_menu, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2 + 40, ui_variables.SCREEN_HEIGHT * 0.44)))
 
                 blink = not blink
-
+                input_box = pygame.Rect(100, 100, 140, 32)
                 screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
-
+                password_surface = ui_variables.h1.render('*'*len(password), True, (70, 200, 150))
+                screen.blit(password_surface, (30, 30))
+                pygame.draw.rect(screen, color, input_box, 2)
+                pygame.display.flip()
+                clock.tick(30)
             # MENU PAGE
             elif page == MENU_PAGE:
                 current_selected = selected
