@@ -384,7 +384,6 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
     draw_1Pboard(next_1P, hold_1P)
     draw_2Pboard(next_2P, hold_2P)
 
-력
 def draw_itemboard(next, hold, score, level, goal, inven):
     screen.fill(ui_variables.grey_1)
     sidebar_width = int(SCREEN_WIDTH * 0.5312)
