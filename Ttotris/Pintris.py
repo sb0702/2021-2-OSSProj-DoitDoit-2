@@ -14,8 +14,11 @@ from pygame.rect import Rect
 
 pygame.init()
 pygame.key.set_repeat(500)
-width = ui_variables.DEFAULT_WIDTH  # Board width
-height = ui_variables.DEFAULT_HEIGHT  # Board height
+
+
+
+
+
 tetris = pymysql.connect(
             user='admin',
             password='tjgus1234',
@@ -34,19 +37,31 @@ def set_volume():
     ui_variables.tetris_sound.set_volume(effect_volume / 10)
 
 
-# Draw block 아 이건 전체 필드를 그리는건가???
+# Draw block 
 def draw_block(x, y, color):
     pygame.draw.rect(
         screen,
         color,
         Rect(x, y, block_size, block_size)
     )
-    pygame.draw.rect( # 얘는 줄무늬 경계를 그리는거
+    pygame.draw.rect( 
         screen,
         ui_variables.grey_4,
         Rect(x, y, block_size, block_size),
         1
     )
+
+# 아이템 블록 생성을 위해서, 전체 블록을 이미지로 넣기로 함 
+def draw_image(window, img_path, x, y, w, h):
+    x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
+    y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
+    image = pygame.image.load(img_path)
+    image = pygame.transform.scale(image, (w, h))
+    window.blit(image, (x, y))
+
+# 블록을 이미지로 그릴 거임 
+def draw_block_image(x, y, image): # image에는 ui에 있는, 색깔블록~아이템 블록이 담긴 t_block이 들어감
+    draw_image(screen, image, x, y, block_size, block_size) #(window, 이미지주소, x좌표, y좌표, 너비, 높이)
 
 
 # Draw game screen
@@ -107,14 +122,15 @@ def draw_board(next, hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
@@ -339,7 +355,6 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
     draw_1Pboard(next_1P, hold_1P)
     draw_2Pboard(next_2P, hold_2P)
 
-
 def draw_itemboard(next, hold, score, level, goal, inven):
     screen.fill(ui_variables.grey_1)
     sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
@@ -359,11 +374,12 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
             dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
-                pygame.draw.rect(
-                    screen,
-                    ui_variables.t_color[grid_n[i][j]],
-                    Rect(dx, dy, block_size, block_size)
-                )
+                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력 11/24
+                # pygame.draw.rect(
+                #     screen,
+                #     ui_variables.t_color[grid_n[i][j]],
+                #     Rect(dx, dy, block_size, block_size)
+                # )
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
@@ -374,11 +390,12 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
                 dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
-                    pygame.draw.rect(
-                        screen,
-                        ui_variables.t_color[grid_h[i][j]],
-                        Rect(dx, dy, block_size, block_size)
-                    )
+                    draw_block_image(dx,dy,ui_variables.t_block[grid_h[i][j]]) # 블록 이미지 출력
+                #     pygame.draw.rect(
+                #     screen,
+                #     ui_variables.t_color[grid_h[i][j]],
+                #     Rect(dx, dy, block_size, block_size)
+                # )
 
     # Set max score
     if score > 999999:
@@ -418,10 +435,10 @@ def draw_itemboard(next, hold, score, level, goal, inven):
 
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
-    
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            #draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
+            draw_block_image(dx, dy, ui_variables.t_block[matrix[x][y + 1]]) # 아이템 모드는 이미지블록으로
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -478,6 +495,11 @@ def erase_mino(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0 # 블록 없애기
 
+    # 추가적인 블록 생성해서 사용하는 아이템 쓸 때
+    if item == True:
+        erase_row() # 가로줄 삭제 아이템의 효과
+        erase_col() # 세로줄 삭제 아이템의 효과
+        bomb() # 3x3 블록 삭제 아이템의 효과
     
 
 
@@ -695,7 +717,7 @@ def istheresaved(name2,table):
         cursor.execute(sql, (name2, score))
         tetris.commit()  
         cursor.close() ## tetris db insert 
-    else :    
+    else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
         cursor.execute(sql, name2)
@@ -715,7 +737,7 @@ def DrawBar(pos, size, borderC, barC, progress):
     pygame.draw.rect(screen, barC, (*innerPos, *innerSize))
 
 
-# 아이템 획득~인벤토리 관련 함수
+# 아이템 획득~인벤토리 관련 함수 
 def get_item():
     if len(inven)<3:
         inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
@@ -732,16 +754,22 @@ def show_inven():
 
 def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
-        if key == 1: # 인벤토리의 첫 번째 칸 아이템 씀
-            item=inven[0]
-            inven.pop(0) # 쓴 아이템은 삭제
-        if key == 2: # 인벤토리의 두 번째 칸 아이템 씀
-            item=inven[1]
-            inven.pop(1) # 쓴 아이템은 삭제
-        if key == 3: # 인벤토리의 세 번째 칸 아이템 씀
-            item=inven[2]
-            inven.pop(2) # 쓴 아이템은 삭제
-    return item
+        item_u = inven[key-1] # 인벤토리의 key번째 칸 아이템
+        inven.pop(key-1) # 사용한 아이템은 삭제
+        # # 해당 아이템 블록 번호 저장
+        # if item == row_inven: 
+        #     num_item = row_mino
+        # elif item == col_inven:
+        #     num_item = col_mino
+        # elif item == bomb_inven:
+        #     num_item = bomb_mino
+        # else:
+     #     num_item = no_mino
+
+    #     return {
+
+    #     }
+    return item_u
 
     
     
@@ -762,11 +790,10 @@ def board_reset():
         for i in range(width):
             matrix[i][j] = 0 # 보드 내 블록 다 비워버리기
 
-def erase_row():    # 이거를 erase_mino에 넣으면 될 것 같음
+def erase_row():    # 가로줄 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 10: # i_row 블록이면
-                #score += 50*level
+            if matrix[i][j] == row_mino: # i_row 블록이면
                 k = j # y 좌표 기억
                 matrix[i][k] = 0 # 해당 줄 삭제
                 while k>0: 
@@ -774,17 +801,17 @@ def erase_row():    # 이거를 erase_mino에 넣으면 될 것 같음
                         matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
                     k -= 1
 
-def erase_col(): # 이거를 erase_mino에 넣으면 될 것 같음
+def erase_col(): # 세로줄 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 11: # i_col 블록이면
+            if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
                 matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
 
-def bomb():# 이거를 erase_mino에 넣으면 될 것 같음
+def bomb():# 3x3 블록 삭제 아이템 효과
     for j in range(height+1):
         for i in range(width):
-            if matrix[i][j] == 12: # i_bomb 블록이면
+            if matrix[i][j] == bomb_mino: # i_bomb 블록이면
                 m = i-1 # 3x3 블록 없애주니까 i-1 ~ i+1 번째 지위져야 함
                 n = j -1
                 for k in range(bomb_size): # 3x3이므로
@@ -853,7 +880,18 @@ next_fever = 500
 color = ui_variables.color_inactive
 interval = 3
 comboCounter =0
-
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 600
+DEFAULT_WIDTH = 10
+DEFAULT_HEIGHT = 20
+block_size = 17  # Height, width of single block
+width = DEFAULT_WIDTH  # Board width
+height = DEFAULT_HEIGHT  # Board height
+min_width = 700
+min_height = 350
+c =0
+mino_size = 4
+mino_turn = 4
 # 아이템 관련 변수들
 item_list = [] # 변하면 안 됨
 inven = [] # 변함
@@ -862,25 +900,32 @@ dx_inven2 = int(ui_variables.SCREEN_WIDTH * 0.6499) # 인벤토리 2 중심의 x
 dx_inven3 = int(ui_variables.SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x좌표
 dy_inven = int(ui_variables.SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
-# 여기부터는 ui 파일로 옮길 거
+
 item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
-# pygame~이거를 뭐 image_earthquake로 두고 i_earthquake = ui.image_earthquake 해야 아래 함수에서도 가독성 좋을 듯
-i_earthquake = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 맨 아래줄 지우기
-i_reset = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨, 전체 블록 리셋
-i_row = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 가로 한 줄 삭제, 별도의 mino 필요
-i_col = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 세로 한 줄 삭제, 별도의 mino 필요
-i_bomb = pygame.transform.scale(pygame.image.load("assets/images/annoying.png"),(item_size,item_size)) # 사진 바꿔야 됨 확인차 그냥 해봄, 3x3 삭제, 별도의 mino 필요
-# 여기까지!
-# 이거도 변하는 거 아님 -> constants에 추가?
-num_i_row = 10 # 블록 그려줄 숫자 지정
-num_i_col = 11
-num_i_bomb = 12
+# 인벤 출력할 크기로 리사이징
+earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item_1.png"),(item_size,item_size)) # 맨 아래줄 지우기
+reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 전체 블록 리셋
+row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
+col_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
+bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
+# 별도의 블록 필요한 아이템 - block size로 리사이징
+# i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
+# i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
+# i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
+# 블록 그려줄 숫자 지정
+#no_mino = 0 # 별도의 블록 필요없는 아이템에 부여하는 숫자
+row_mino = 10  
+col_mino = 11
+bomb_mino = 12
+#earthquake_mino = 13
+#reset_mino = 14
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
-item_list.append(i_earthquake) # 아이템 리스트에 넣어줌
-item_list.append(i_reset)
-item_list.append(i_row)
-item_list.append(i_col)
-item_list.append(i_bomb)
+
+item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
+item_list.append(reset_inven)
+item_list.append(row_inven)
+item_list.append(col_inven)
+item_list.append(bomb_inven)
 
 
 effect_volume = 5
@@ -1255,7 +1300,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Hold
-                elif event.key == K_LSHIFT or event.key == K_c:
+                elif event.key == K_LSHIFT:
                     pygame.key.set_repeat(0)
                     if hold == False:
                         ui_variables.move_sound.play()
@@ -1276,7 +1321,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn right
-                elif event.key == K_UP or event.key == K_x:
+                elif event.key == K_UP:
                     pygame.key.set_repeat(0)
                     if is_turnable_r(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
@@ -1316,7 +1361,7 @@ while not done:
                     else:
                         draw_board(next_mino, hold_mino, score, level, goal)
                 # Turn left
-                elif event.key == K_z or event.key == K_LCTRL:
+                elif event.key == K_LCTRL:
                     pygame.key.set_repeat(0)
                     if is_turnable_l(dx, dy, mino, rotation):
                         ui_variables.move_sound.play()
@@ -1393,6 +1438,8 @@ while not done:
                         else:
                             draw_board(next_mino, hold_mino, score, level, goal)
 
+                            
+
                 # soft drop
                 elif event.key == K_DOWN: 
                     if not is_bottom(dx, dy, mino, rotation):
@@ -1407,12 +1454,42 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-
-                # 아이템 사용 키
-                #elif event.key == K_z:
-                #    if item:
-                #        use_item()
                 
+                # elif event.key == K_1:
+                #     key = 1
+                #     if item:
+                #         item_u = use_item(key) # 인벤의 아이템 반환
+                #         if item_u == row_inven:
+                #             mino = row_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == col_inven:
+                #             mino = col_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == bomb_inven:
+                #             mino = bomb_mino
+                #             erase_mino(dx, dy, mino, rotation)
+                #         elif item_u == reset_inven:
+                #             board_reset()
+                #         elif item_u == earthquake_inven:
+                #             earthquake()
+                        
+                #         draw_mino(dx,dy, mino, rotation)
+                #         draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+
+                        
+                        
+
+
+
+
+                
+
+
+                         
+                    
+                
+
+               
             elif event.type == KEYUP:
                 pygame.key.set_repeat(300)
 
@@ -1455,7 +1532,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) # ㄷㅎ
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
