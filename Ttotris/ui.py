@@ -58,7 +58,7 @@ class ui_variables:
     bomb_i = (13, 13, 13)  # row_item 넣을라고 아무거나
     # timer
     Basictimer = 50
-    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]
+    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i]
      # 0: 배경색이랑 같음->이부분은 블록 없는 효과 8: ghost, 9: 장애물
 
      # 블록 그림으로 ㄷㅎ
