@@ -76,13 +76,14 @@ def draw_block(x, y, color):
         draw_image(screen, ui_variables.col_iamge, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
     elif color == ui_variables.t_color[bomb_mino]:
         draw_image(screen, ui_variables.bomb_iamge, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
-    else:
+    else: # 기본 블록들은 정사각형 그리기 -> 속도 개선
         pygame.draw.rect(
             screen,
             color,
             Rect(x, y, block_size, block_size)
         )
-     
+
+    # 테두리 그리기 
     pygame.draw.rect( 
         screen,
         ui_variables.grey_4,
@@ -90,7 +91,6 @@ def draw_block(x, y, color):
         1
     )
 
-# 아이템 블록 생성을 위해서, 전체 블록을 이미지로 넣기로 함 
 def draw_image(window, img_path, x, y, w, h):
     x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
     y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
@@ -98,9 +98,10 @@ def draw_image(window, img_path, x, y, w, h):
     image = pygame.transform.scale(image, (w, h))
     window.blit(image, (x, y))
 
-# 블록을 이미지로 그릴 거임 
+# 블록을 이미지로 넣기 
 def draw_block_image(x, y, image): # image에는 ui에 있는, 색깔블록~아이템 블록이 담긴 t_block이 들어감
     draw_image(screen, image, x, y, block_size, block_size) #(window, 이미지주소, x좌표, y좌표, 너비, 높이)
+
 
 
 # Draw game screen
@@ -411,7 +412,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
             dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
-                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력 11/24
+                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력
                 # pygame.draw.rect(
                 #     screen,
                 #     ui_variables.t_color[grid_n[i][j]],
@@ -474,8 +475,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
         for y in range(height):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
-            #draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
-            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -1221,6 +1221,7 @@ while not done:
                 elif erase_count == 3:
                     ui_variables.triple_sound.play()
                     score += 200 * level
+                    get_item() # 아이템 테스트용
                 elif erase_count == 4:
                     ui_variables.tetris_sound.play()
                     score += 500 * level
@@ -1275,9 +1276,7 @@ while not done:
                             mino = next_mino
                             next_mino = randint(1, 7)                       
                             fever = False
-                # 테스트용 
-                if score>=100:
-                    get_item()
+                
 
                 # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
                 if mode_selected==1:
@@ -1513,38 +1512,7 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-                
-                elif event.key == K_1:
-                    key = 1
-                    if item:
-                        item_u = use_item(key) # 인벤의 아이템 반환
-                        if item_u == row_inven:
-                            mino = row_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == col_inven:
-                            mino = col_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == bomb_inven:
-                            mino = bomb_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == reset_inven:
-                            board_reset()
-                        elif item_u == earthquake_inven:
-                            earthquake()
-                        
-                        draw_mino(dx,dy, mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
-
-                        
-                        
-
-
-
-
-                
-
-
-                         
+                                       
                     
                 
 
