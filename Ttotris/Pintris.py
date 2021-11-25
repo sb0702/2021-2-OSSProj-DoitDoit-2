@@ -826,11 +826,14 @@ def erase_row():    # 가로줄 삭제 아이템 효과
                     k -= 1
 
 def erase_col(): # 세로줄 삭제 아이템 효과
-    for j in range(height+1):
-        for i in range(width):
+    for i in range(width):
+        for j in range(height+1):
             if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
-                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
+                y = height
+                while y>0:
+                    matrix[k][y] = 0 # i_col 블록이 위치한 세로줄 삭제
+                    y -= 1
 
 def bomb():# 3x3 블록 삭제 아이템 효과
     for j in range(height+1):
