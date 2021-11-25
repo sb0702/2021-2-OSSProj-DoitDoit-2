@@ -71,11 +71,11 @@ def set_volume():
 # Draw block 
 def draw_block(x, y, color): 
     if color == ui_variables.t_color[row_mino]:
-        draw_image(screen, ui_variables.row_iamge, x,y, block_size, block_size ) # 아이템 블록은 이미지로, row_item
+        draw_image(screen, ui_variables.row_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, row_item
     elif color == ui_variables.t_color[col_mino]:
-        draw_image(screen, ui_variables.col_iamge, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
+        draw_image(screen, ui_variables.col_image, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
     elif color == ui_variables.t_color[bomb_mino]:
-        draw_image(screen, ui_variables.bomb_iamge, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
+        draw_image(screen, ui_variables.bomb_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
     else: # 기본 블록들은 정사각형 그리기 -> 속도 개선
         pygame.draw.rect(
             screen,
@@ -793,19 +793,6 @@ def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
         item_u = inven[key-1] # 인벤토리의 key번째 칸 아이템
         inven.pop(key-1) # 사용한 아이템은 삭제
-        # # 해당 아이템 블록 번호 저장
-        # if item == row_inven: 
-        #     num_item = row_mino
-        # elif item == col_inven:
-        #     num_item = col_mino
-        # elif item == bomb_inven:
-        #     num_item = bomb_mino
-        # else:
-     #     num_item = no_mino
-
-    #     return {
-
-    #     }
     return item_u
 
     
@@ -853,9 +840,8 @@ def bomb():# 3x3 블록 삭제 아이템 효과
                 n = j -1
                 for k in range(bomb_size): # 3x3이므로
                     for q in range(bomb_size): # 
-                        if m+k >= 0 and n+q >= 0: # 블록이 있든 없든
+                        if m+k >= 0 and m+k<width and n+q >= 0 and n+q<=height: # 블록이 있든 없든
                             matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
-
 
             
 
