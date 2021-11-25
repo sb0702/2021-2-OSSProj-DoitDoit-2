@@ -802,7 +802,7 @@ def use_item(key): # 사용자의 키조작 전달 받기
 def earthquake(): # 맨 아래 줄 삭제 아이템
     for i in range(width): # 가로줄 전체에 대해서
         matrix[i][height] = 0 
-    k = height+1 
+    k = height
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
             matrix[i][k] = matrix[i][k-1]
@@ -1054,7 +1054,7 @@ while not done:
                     goal = level * 2
                     bottom_count = 0
                     hard_drop = False
-                   
+                    inven = [] # 인벤토리 리셋
                    
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
@@ -1294,7 +1294,8 @@ while not done:
                             #screen.blit(barrier, [450, 100]
                             screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
                             
-                        
+                if score >= 50:
+                    get_item() # 아이템 테스트용        
 
 
                 '''
@@ -1508,7 +1509,6 @@ while not done:
                         if item_u == row_inven:
                             mino = row_mino-2
                             erase_mino(dx, dy, mino, rotation)
-                            score += 50 # 한 줄 삭제했을 때의 점수
                         elif item_u == col_inven:
                             mino = col_mino-2
                             erase_mino(dx, dy, mino, rotation)
@@ -1521,7 +1521,6 @@ while not done:
                         elif item_u == earthquake_inven:
                             erase_mino(dx, dy, mino, rotation)
                             earthquake()
-                            score += 50 # 한 줄 삭제했을 때의 점수
                         
                         draw_mino(dx,dy, mino, rotation)
                         draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
