@@ -92,8 +92,8 @@ def draw_block(x, y, color):
     )
 
 def draw_image(window, img_path, x, y, w, h):
-    x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
-    y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
+    #x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
+    #y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
     image = pygame.image.load(img_path)
     image = pygame.transform.scale(image, (w, h))
     window.blit(image, (x, y))
@@ -1221,6 +1221,7 @@ while not done:
                 elif erase_count == 3:
                     ui_variables.triple_sound.play()
                     score += 200 * level
+                    get_item() # 아이템 테스트용
                 elif erase_count == 4:
                     ui_variables.tetris_sound.play()
                     score += 500 * level
@@ -1303,9 +1304,8 @@ while not done:
                             #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
                             #screen.blit(barrier, [450, 100]
                             screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
-                
-                if score == 100:            
-                    get_item() # 아이템 테스트용        
+                            
+                        
 
 
                 '''
@@ -1512,27 +1512,7 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-                # 아이템 사용키 1
-                elif event.key == K_1:
-                    key = 1
-                    if item:
-                        item_u = use_item(key) # 인벤의 아이템 반환
-                        if item_u == row_inven:
-                            mino = row_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == col_inven:
-                            mino = col_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == bomb_inven:
-                            mino = bomb_mino
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == reset_inven:
-                            board_reset()
-                        elif item_u == earthquake_inven:
-                            earthquake()
-                        
-                        draw_mino(dx,dy, mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)                                       
+                                       
                     
                 
 
