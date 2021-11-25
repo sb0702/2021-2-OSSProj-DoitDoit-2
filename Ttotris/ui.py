@@ -53,6 +53,9 @@ class ui_variables:
     green = (98, 190, 68)  # rgb(98, 190, 68) # S
     pink = (242, 64, 235)  # rgb(242, 64, 235) # T
     red = (225, 13, 27)  # rgb(225, 13, 27) # Z
+    row_i = (11, 11, 11)  # row_item 넣을라고 아무거나
+    col_i = (12, 12, 12)  # row_item 넣을라고 아무거나
+    bomb_i = (13, 13, 13)  # row_item 넣을라고 아무거나
     # timer
     Basictimer = 50
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]

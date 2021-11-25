@@ -69,12 +69,20 @@ def set_volume():
 
 
 # Draw block 
-def draw_block(x, y, color):
-    pygame.draw.rect(
-        screen,
-        color,
-        Rect(x, y, block_size, block_size)
-    )
+def draw_block(x, y, color): 
+    if color == ui_variables.t_color[row_mino]:
+        draw_image(screen, ui_variables.row_iamge, x,y, block_size, block_size ) # 아이템 블록은 이미지로, row_item
+    elif color == ui_variables.t_color[col_mino]:
+        draw_image(screen, ui_variables.col_iamge, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
+    elif color == ui_variables.t_color[bomb_mino]:
+        draw_image(screen, ui_variables.bomb_iamge, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
+    else:
+        pygame.draw.rect(
+            screen,
+            color,
+            Rect(x, y, block_size, block_size)
+        )
+     
     pygame.draw.rect( 
         screen,
         ui_variables.grey_4,
@@ -467,7 +475,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             #draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
-            draw_block_image(dx, dy, ui_variables.t_block[matrix[x][y + 1]]) # 아이템 모드는 이미지블록으로
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -769,7 +777,7 @@ def DrawBar(pos, size, borderC, barC, progress):
 # 아이템 획득~인벤토리 관련 함수 
 def get_item():
     if len(inven)<3:
-        inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
+        inven.append(item_list [randrange(0,5)]) # 랜덤으로 얻음
 
 def show_inven():
     if len(inven) != 0:
@@ -806,7 +814,7 @@ def use_item(key): # 사용자의 키조작 전달 받기
 # 아이템 사용 함수
 def earthquake(): # 맨 아래 줄 삭제 아이템
     for i in range(width): # 가로줄 전체에 대해서
-        matrix[i][height+1] = 0 
+        matrix[i][height] = 0 
     k = height+1 
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
@@ -1267,7 +1275,9 @@ while not done:
                             mino = next_mino
                             next_mino = randint(1, 7)                       
                             fever = False
-         
+                # 테스트용 
+                if score>=100:
+                    get_item()
 
                 # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
                 if mode_selected==1:
@@ -1504,26 +1514,26 @@ while not done:
                     #pygame.display.update()
 
                 
-                # elif event.key == K_1:
-                #     key = 1
-                #     if item:
-                #         item_u = use_item(key) # 인벤의 아이템 반환
-                #         if item_u == row_inven:
-                #             mino = row_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == col_inven:
-                #             mino = col_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == bomb_inven:
-                #             mino = bomb_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == reset_inven:
-                #             board_reset()
-                #         elif item_u == earthquake_inven:
-                #             earthquake()
+                elif event.key == K_1:
+                    key = 1
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == col_inven:
+                            mino = col_mino
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            earthquake()
                         
-                #         draw_mino(dx,dy, mino, rotation)
-                #         draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
 
                         
                         
