@@ -1338,7 +1338,7 @@ while not done:
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
                     hard_drop = True
-                    pygame.time.set_timer(pygame.USEREVENT, 2)
+                    # pygame.time.set_timer(pygame.USEREVENT, 2) 
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
@@ -1501,7 +1501,82 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-                                       
+                elif event.key == K_z: # 인벤토리 첫 번째 아이템 사용
+                    key = 1
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+
+                elif event.key == K_x: # 인벤토리 첫 번째 아이템 사용
+                    key = 2
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+
+                elif event.key == K_c: # 인벤토리 첫 번째 아이템 사용
+                    key = 3
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+
+                       
                     
                 
 
