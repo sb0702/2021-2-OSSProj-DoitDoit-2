@@ -29,10 +29,12 @@ c =0
 mino_size = 4
 mino_turn = 4
 fever = False
-
-color_active = pygame.Color('lightskyblue3')
-color_inactive = pygame.Color('blue')
-color = color_inactive
+color_IDactive = pygame.Color('lightskyblue3')
+color_inIDactive = pygame.Color('blue')
+color_Passactive = pygame.Color('lightskyblue3')
+color_inPassactive = pygame.Color('blue')
+IDcolor = color_inIDactive
+Passcolor = color_inPassactive
 framerate = 30  # Bigger -> Slower
 barPos      = (650, 200)
 barSize     = (250, 20)
@@ -41,8 +43,7 @@ barColor    = (0, 128, 0)
 min_width = 700
 min_height = 350
 board_rate = 0.5
-text = ""
-input_active = True
+input_IDactive = True
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -856,11 +857,11 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
-text = ""
-password = ""
-font3 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 30)
-text_surf = font3.render(text, True, (0, 0, 0)) 
-pass_surf = font3.render(password, True, (0, 0, 0)) 
+text = "ID"
+password = "PASSWORD"
+SavedPass = ""
+text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0)) 
+pass_surf = ui_variables.h2_i.render(password, True, (0, 0, 0)) 
 # pages
 blink = False
 blink1 = False
@@ -895,10 +896,10 @@ bottom_count = 0
 bottom_count_2P = 0
 hard_drop = False
 hard_drop_2P = False
-id_box = pygame.Rect(500,300,140,32)
-pass_box = pygame.Rect(500,350,140,40)
-choice = False
-active = True
+
+IDchoice = False
+Passchoice = False
+
 attack_point = 0
 attack_point_2P = 0
 comboCounter =0
@@ -1121,6 +1122,7 @@ while not done:
 
     # Game screen
     elif start:
+         
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
@@ -1229,7 +1231,7 @@ while not done:
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                     pygame.display.update()
-                    pygame.time.delay(200)
+                    pygame.time.delay(100)
                     # 기존 있던 블럭들 한 칸씩 증가
                     for j in range(height):
                         for i in range(width):
@@ -1252,7 +1254,7 @@ while not done:
                     ADD = values.feverAddingTime[3]
                 if  score >= values.feverTimeAddScore[4]:
                     ADD = values.feverAddingTime[4]     
-                if comboCounter > values.feverBlockGoal:
+                if comboCounter > values.feverBlockGoal and mode_selected != 1 and mode_selected != 3 :
                     if fever == False:
                         t0 = time.time()
                         fever = True
@@ -2166,7 +2168,8 @@ while not done:
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
                         istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])    
+                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
+                     
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2195,7 +2198,8 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-
+                    text = "ID"
+                    password = "PASSWORD"
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2219,7 +2223,7 @@ while not done:
                     erase_stack_2P = 0
                 
                 pygame.display.flip()
-            
+                pygame.key.set_repeat(0)
                 
             
     # pvp game over screen
@@ -2365,30 +2369,40 @@ while not done:
                     if event.type == QUIT:
                         done = True
                     elif event.type == KEYDOWN:
-                        if event.key == K_SPACE:
-                            pygame.key.set_repeat(0)
-                            # goto menu page
-                            ui_variables.click_sound.play()
-                            page, selected = MENU_PAGE, 0
-                        elif event.key == pygame.K_BACKSPACE:
-                            if choice == False:
-                                text = text[:-1]
+                        
+                        if event.key == pygame.K_BACKSPACE:
+                            if IDchoice == True:
+                                text = text[:-1]                               
+                                text_surf = ui_variables.h2_i.render(text, True, (0,0,0))
+                            elif Passchoice == True:
+                                IDchoice == False
                                 password = password[:-1]
-                                text_surf = font3.render(text, True, (0,0,0))
-                            else:
-                                pass_surf = font3.render('*'* len(password), True, (0, 0, 0)) 
+                                pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
                         elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
+                            SavedPass = password
+                            password = ""
+                            pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                             page, selected = MENU_PAGE, 0
                         else:
-                            if choice == False:
+                            if IDchoice == True:
+                                Passchoice == False
                                 text += event.unicode 
-                                text_surf = font3.render(text, True, (0, 0, 0))
-                            if choice == True:
+                                text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0))
+                            elif Passchoice == True:
+                                IDchoice == False
                                 password += event.unicode
-                                pass_surf = font3.render('*'* len(password), True, (0, 0, 0)) 
-                        
+                                pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
+                                
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if id_box.collidepoint(event.pos):
+                            IDchoice = not IDchoice
+
+                        elif pass_box.collidepoint(event.pos):
+                            IDchoice = not IDchoice
+                            IDchoice = False
+                            Passchoice = not Passchoice   
                                       
                     elif event.type == VIDEORESIZE:
 
@@ -2411,17 +2425,10 @@ while not done:
                             SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
                         block_size = int(SCREEN_HEIGHT * 0.045)
-
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        if  id_box.collidepoint(event.pos):
-                            active = not active
-                        elif pass_box.collidepoint(event.pos):
-                            choice = True
-                            active = not active
-                        else:
-                            choice = False
-                            active = False
+                    
+                    
+                        
                            
                 
                 
@@ -2434,24 +2441,35 @@ while not done:
                 )
 
                 title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
-                title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
+                login = ui_variables.h1.render("ID", 1, ui_variables.grey_1)
+                passwordScreen = ui_variables.h1.render("PassWord", 1, ui_variables.grey_1)
+                ID = ui_variables.h2.render("ID", 1, ui_variables.grey_1)
+                PASSWORD = ui_variables.h2.render("PASSWORD", 1, ui_variables.grey_1)
+                title_menu = ui_variables.h5.render("INSERT ID  and  PASSWORD", 1, ui_variables.grey_1)
+                pressEnter = ui_variables.h5.render("Then Press Enter to Start", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 DOITDOIT Rights Reserved.", 1, ui_variables.grey_1)
 
                 if blink:
-                    screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 40, SCREEN_HEIGHT * 0.44)))
-                    
+                    screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.45)))
+                    screen.blit(pressEnter, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.5)))
                 blink = not blink
 
+                screen.blit(ID, ID.get_rect(center=(SCREEN_WIDTH / 2.3, SCREEN_HEIGHT * 1.8)))
+                id_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.9,140,32)
+                pass_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.6,140,32)
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2.5, SCREEN_HEIGHT * 1.9)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
-                color = color_active if active else color_inactive
+                screen.blit(login,(int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT * 2)))
+                IDcolor = color_IDactive if IDchoice else color_inIDactive
+                Passcolor = color_Passactive if Passchoice else color_inPassactive
                 window_center = screen.get_rect().center
                 screen.blit(text_surf, (id_box.x+5,id_box.y+5))
-                screen.blit(pass_surf, (pass_box.x+5,pass_box.y+10))
-                
-                pygame.draw.rect(screen, color, id_box, 2)
-                pygame.draw.rect(screen, color, pass_box, 2)
+                screen.blit(pass_surf, (pass_box.x+5,pass_box.y+7))           
+                pygame.draw.rect(screen, IDcolor, id_box, 2)
+                pygame.draw.rect(screen, Passcolor, pass_box, 2)
                 pygame.display.flip()
+            
             # MENU PAGE
             elif page == MENU_PAGE:
                 current_selected = selected
