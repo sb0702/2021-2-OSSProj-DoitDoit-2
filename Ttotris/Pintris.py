@@ -860,9 +860,10 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE
 pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
 text = ""
-font3 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 40)
+password = ""
+font3 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 30)
 text_surf = font3.render(text, True, (0, 0, 0)) 
-
+pass_surf = font3.render(password, True, (0, 0, 0)) 
 # pages
 blink = False
 blink1 = False
@@ -897,7 +898,9 @@ bottom_count = 0
 bottom_count_2P = 0
 hard_drop = False
 hard_drop_2P = False
-input_box = pygame.Rect(100,300,140,32)
+id_box = pygame.Rect(500,300,140,32)
+pass_box = pygame.Rect(500,350,140,40)
+choice = False
 active = True
 attack_point = 0
 attack_point_2P = 0
@@ -1310,36 +1313,12 @@ while not done:
                                 blink2 = False
                             else:
                                 blink2 = True
-                        
-                            
-
-                            #barrier = pygame.image.load(ui_variables.hard_barrier)
-                            #barrier = pygame.transform.scale(barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5)))
-                            #screen.blit(barrier, [450, 100]
+  
                             screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
                             
    
 
 
-                '''
-                if mode_selected==1:
-                    if 100<=score<200:
-                        if blink1:
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                        [150,0])
-                            blink1 = False
-                        else:
-                            blink1 = True
-                    
-                        if blink2:
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                            (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                        [150,250])
-                            blink2 = False
-                        else:
-                            blink2 = True
-                    '''
 
                         
                         
@@ -2205,26 +2184,10 @@ while not done:
                 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 pygame.display.update()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if  input_box.collidepoint(event.pos):
-                    active = not active
-                else:
-                    active = False
-                color = color_active if active else color_inactive
                 
-            elif event.type == KEYDOWN:
-                if event.key == pygame.K_BACKSPACE: 
-                    text = text[:-1]
-                else:
-                    text += event.unicode 
-                    text_surf = font3.render(text, True, (255, 255, 255))        
+            elif event.type == KEYDOWN:        
 
-                window_center = screen.get_rect().center
-                screen.blit(text_surf, (input_box.x+5,input_box.y+5))
-                pygame.draw.rect(screen, color, input_box, 2)
-                pygame.display.flip()
-                clock.tick(30)
-                if event.key == K_RETURN:
+                if event.key == K_RETURN:  ## enter 인듯
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
@@ -2446,6 +2409,26 @@ while not done:
                             # goto menu page
                             ui_variables.click_sound.play()
                             page, selected = MENU_PAGE, 0
+                        elif event.key == pygame.K_BACKSPACE:
+                            if choice == False:
+                                text = text[:-1]
+                                password = password[:-1]
+                                text_surf = font3.render(text, True, (0,0,0))
+                            else:
+                                pass_surf = font3.render('*'* len(password), True, (0, 0, 0)) 
+                        elif event.key == K_RETURN:  ## enter 인듯
+                            pygame.key.set_repeat(0)
+                            ui_variables.click_sound.play()
+                            page, selected = MENU_PAGE, 0
+                        else:
+                            if choice == False:
+                                text += event.unicode 
+                                text_surf = font3.render(text, True, (0, 0, 0))
+                            if choice == True:
+                                password += event.unicode
+                                pass_surf = font3.render('*'* len(password), True, (0, 0, 0)) 
+                        
+                                      
                     elif event.type == VIDEORESIZE:
 
                         SCREEN_WIDTH = event.w
@@ -2469,7 +2452,18 @@ while not done:
                         block_size = int(SCREEN_HEIGHT * 0.045)
 
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if  id_box.collidepoint(event.pos):
+                            active = not active
+                        elif pass_box.collidepoint(event.pos):
+                            choice = True
+                            active = not active
+                        else:
+                            choice = False
+                            active = False
+                           
+                
+                
                 block_size = int(SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
                 pygame.draw.rect(
@@ -2484,12 +2478,19 @@ while not done:
 
                 if blink:
                     screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 40, SCREEN_HEIGHT * 0.44)))
-
+                    
                 blink = not blink
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
-
+                color = color_active if active else color_inactive
+                window_center = screen.get_rect().center
+                screen.blit(text_surf, (id_box.x+5,id_box.y+5))
+                screen.blit(pass_surf, (pass_box.x+5,pass_box.y+10))
+                
+                pygame.draw.rect(screen, color, id_box, 2)
+                pygame.draw.rect(screen, color, pass_box, 2)
+                pygame.display.flip()
             # MENU PAGE
             elif page == MENU_PAGE:
                 current_selected = selected
