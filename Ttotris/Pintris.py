@@ -1218,8 +1218,9 @@ while not done:
                         for i in range(width):
                             if matrix[i][j] == 13: # 아이템 박스 블록 깨면
                                 cnt_box +=1
-                        if cnt_box != 0: # 깬 박스 수만큼
-                            get_item() # 아이템 랜덤 생성
+                        while cnt_box > 0: # 깬 박스 수만큼
+                            get_item()
+                            cnt_box -=1  
                         while k > 0:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k - 1]
@@ -1517,13 +1518,13 @@ while not done:
                         if len(inven) != 0:
                             item_u = use_item(key) # 인벤의 아이템 반환
                             if item_u == row_inven:
-                                item_mino = row_mino
+                                mino = row_mino
                                 erase_mino(dx, dy, item_mino, rotation)
                             elif item_u == col_inven:
                                 mino = col_mino
                                 erase_mino(dx, dy, item_mino, rotation)
                             elif item_u == bomb_inven:
-                                item_mino = bomb_mino
+                                mino = bomb_mino
                                 erase_mino(dx, dy, item_mino, rotation)
                             elif item_u == reset_inven:
                                 erase_mino(dx, dy, item_mino, rotation)
@@ -1532,7 +1533,7 @@ while not done:
                                 erase_mino(dx, dy, item_mino, rotation)
                                 earthquake()
                         
-                        draw_mino(dx,dy, item_mino, rotation)
+                        draw_mino(dx, dy, mino, rotation)
                         draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_x: # 인벤토리 첫 번째 아이템 사용
