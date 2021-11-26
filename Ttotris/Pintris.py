@@ -539,6 +539,7 @@ def erase_mino(x, y, mino, r):
         erase_row() # 가로줄 삭제 아이템의 효과
         erase_col() # 세로줄 삭제 아이템의 효과
         bomb() # 3x3 블록 삭제 아이템의 효과
+         
     
 
 
@@ -802,8 +803,14 @@ def use_item(key): # 사용자의 키조작 전달 받기
 
 # 아이템 사용 함수
 def earthquake(): # 맨 아래 줄 삭제 아이템
+    cnt_box=0
     for i in range(width): # 가로줄 전체에 대해서
+        if matrix[i][height] == 13:
+            cnt_box +=1
         matrix[i][height] = 0 
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1  
     k = height
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
@@ -815,30 +822,42 @@ def board_reset():
     for j in range(height+1):
         for i in range(width):
             matrix[i][j] = 0 # 보드 내 블록 다 비워버리기
-    # 내려오는 블록도 없애야 되는데???
 
 def erase_row():    # 가로줄 삭제 아이템 효과
+    cnt_box = 0
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == row_mino: # i_row 블록이면
                 k = j # y 좌표 기억
+                if matrix[i][k] == 13:
+                    cnt_box +=1
                 matrix[i][k] = 0 # 해당 줄 삭제
                 while k>0: 
                     for i in range(width):
                         matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
                     k -= 1
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
 
 def erase_col(): # 세로줄 삭제 아이템 효과
+    cnt_box = 0
     for i in range(width):
         for j in range(height+1):
             if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
+                if matrix[k][j] == 13:
+                    cnt_box +=1
                 y = height
                 while y>0:
                     matrix[k][y] = 0 # i_col 블록이 위치한 세로줄 삭제
                     y -= 1
-
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
+    
 def bomb():# 3x3 블록 삭제 아이템 효과
+    cnt_box=0
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == bomb_mino: # i_bomb 블록이면
@@ -847,7 +866,12 @@ def bomb():# 3x3 블록 삭제 아이템 효과
                 for k in range(bomb_size): # 3x3이므로
                     for q in range(bomb_size): # 
                         if m+k >= 0 and m+k<width and n+q >= 0 and n+q<=height: # 블록이 있든 없든
+                            if matrix[m+k][n+q] == 13:
+                                cnt_box += 1
                             matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
 
             
 
@@ -1029,7 +1053,7 @@ while not done:
 
             elif event.type == KEYDOWN:
                 if item:
-                    erase_mino(dx, dy, item_mino, rotation)
+                    erase_mino(dx, dy, mino, rotation)
                 else:
                     erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
@@ -1121,7 +1145,7 @@ while not done:
 
                 if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
-                        board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+                    board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
                     SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
@@ -1251,7 +1275,7 @@ while not done:
                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                 (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                     pygame.display.update()
-                    pygame.time.delay(200)
+                    pygame.time.delay(100)
                     # 기존 있던 블럭들 한 칸씩 증가
                     for j in range(height):
                         for i in range(width):
@@ -1519,18 +1543,18 @@ while not done:
                             item_u = use_item(key) # 인벤의 아이템 반환
                             if item_u == row_inven:
                                 mino = row_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == col_inven:
                                 mino = col_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == bomb_inven:
                                 mino = bomb_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == reset_inven:
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 board_reset()
                             elif item_u == earthquake_inven:
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 earthquake()
                         
                         draw_mino(dx, dy, mino, rotation)
@@ -1542,25 +1566,25 @@ while not done:
                         if len(inven) > 1:
                             item_u = use_item(key) # 인벤의 아이템 반환
                             if item_u == row_inven:
-                                item_mino = row_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = row_mino
+                                erase_mino(dx, dy, mino, rotation)
                                 score += 50 # 한 줄 삭제했을 때의 점수
                             elif item_u == col_inven:
-                                item_mino = col_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = col_mino
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == bomb_inven:
-                                item_mino = bomb_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = bomb_mino
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == reset_inven: # 리셋 이상함
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 board_reset()
                             elif item_u == earthquake_inven:
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 earthquake()
                                 score += 50 # 한 줄 삭제했을 때의 점수
                         
-                        draw_mino(dx,dy, item_mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_c: # 인벤토리 첫 번째 아이템 사용
                     key = 3
@@ -1568,20 +1592,20 @@ while not done:
                         if len(inven) >2:
                             item_u = use_item(key) # 인벤의 아이템 반환
                             if item_u == row_inven:
-                                item_mino = row_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = row_mino
+                                erase_mino(dx, dy, mino, rotation)
                                 score += 50 # 한 줄 삭제했을 때의 점수
                             elif item_u == col_inven:
-                                item_mino = col_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = col_mino
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == bomb_inven:
-                                item_mino = bomb_mino
-                                erase_mino(dx, dy, item_mino, rotation)
+                                mino = bomb_mino
+                                erase_mino(dx, dy, mino, rotation)
                             elif item_u == reset_inven:
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 board_reset()
                             elif item_u == earthquake_inven:
-                                erase_mino(dx, dy, item_mino, rotation)
+                                erase_mino(dx, dy, mino, rotation)
                                 earthquake()
                                 score += 50 # 한 줄 삭제했을 때의 점수
                         
