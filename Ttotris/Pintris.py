@@ -177,7 +177,7 @@ def draw_hardboard(hold, score, level, goal):
     if hold_mino != -1:
         for i in range(mino_size):
             for j in range(mino_turn):
-                dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
+                dx = int(SCREEN_WIDTH * 0.16 / 2) + sidebar_width + block_size * j
                 dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
@@ -192,7 +192,7 @@ def draw_hardboard(hold, score, level, goal):
 
     # Draw texts
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.black)
-    text_next = ui_variables.h5.render(" ", 1, ui_variables.black)
+    #text_next = ui_variables.h5.render(" ", 1, ui_variables.black)
     text_score = ui_variables.h5.render("SCORE", 1, ui_variables.black)
     score_value = ui_variables.h4.render(str(score), 1, ui_variables.black)
     text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.black)
@@ -202,8 +202,8 @@ def draw_hardboard(hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    #screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
     screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
     screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
     screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
@@ -585,11 +585,26 @@ def draw_mino_2P(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix_2P[x + j][y + i] = grid[i][j]
 
-
+# 수빈 수정
 # Erase a tetrimino
+
 def erase_mino(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
-
+    '''
+    if hard_erase:
+        
+        for j in range(height + 1):
+            for i in range(width):
+                if matrix[i][j] == 8:
+                    matrix[i][j] = 0 # ghost 블록 없애기
+        # Erase mino
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                if grid[i][j] != 0:
+                    matrix[x + j][y + i] = 0 # 블록 없애기
+    '''        
+    #else:
+        #grid = tetrimino.mino_map[mino - 1][r]
     # Erase ghost
     for j in range(height + 1):
         for i in range(width):
@@ -933,7 +948,8 @@ reverse_over = False
 pvp_over = False
 item = False
 item_over = False
-
+hard_erase = False
+q = 0 #수빈
 # Initial values
 speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
 mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
@@ -1074,6 +1090,7 @@ while not done:
                 pygame.display.update()
 
             elif event.type == KEYDOWN:
+                #hard_erase=False #수빈
                 erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
                     pause = False
@@ -1201,6 +1218,7 @@ while not done:
 
                 # Erase a mino
                 if not game_over:
+                    #hard_erase=False #수빈
                     erase_mino(dx, dy, mino, rotation)
 
                 # Move mino down 떨구는 함수
@@ -1241,22 +1259,97 @@ while not done:
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
                         bottom_count += 1
-
+                '''
                 # Erase line
                 erase_count = 0
                 for j in range(height + 1):
+                    
                     is_full = True
-                    for i in range(width):
+                    for i in range(width): 
                         if matrix[i][j] == 0:
                             is_full = False
                     if is_full:
-                        erase_count += 1
-                        comboCounter += 1
-                        k = j
-                        while k > 0:
-                            for i in range(width):
-                                matrix[i][k] = matrix[i][k - 1]
-                            k -= 1
+                        if hard_erase:  #수빈
+                            is_full=False
+                            #height -= 1
+                            #bottom_count += 1
+                            for s in range(height):
+                                is_full2=True
+                                for t in range(width):
+                                    if matrix[t][s+1]==0:
+                                        is_full2=True
+                                if is_full2:
+                                    erase_count += 1
+                                    comboCounter += 1
+                                    m = s                                
+                                    while m > 0:
+                                        for w in range(width):
+                                            matrix[w][m] = matrix[w][m - 1]
+                                        m -= 1
+
+                            
+                        else:
+                            erase_count += 1
+                            comboCounter += 1
+                            k = j                                
+                            while k > 0:
+                                for i in range(width):
+                                    matrix[i][k] = matrix[i][k - 1]
+                                k -= 1
+
+                '''
+                # Erase line
+                erase_count = 0
+                #for j in range(height + 1):
+                #q=0
+                for j in range(q, height+1):   
+                    is_full = True
+                    for i in range(width): 
+                        if matrix[i][j] == 0:
+                            is_full = False
+                    if is_full:
+                        if hard_erase:  #수빈
+                            
+                            #j+=1
+                            is_full=False
+                            q+=1
+                            hard_erase=False
+                            #height -= 1
+                            #bottom_count += 1
+                        else:
+                            erase_count += 1
+                            comboCounter += 1
+                            k = j                                
+                            while k > 0:
+                                for i in range(width):
+                                    matrix[i][k] = matrix[i][k-1]
+                                k -= 1
+                    '''
+                def Erase_line():
+                    erase_count = 0
+                    for j in range(height + 1):
+                        
+                        is_full = True
+                        for i in range(width): 
+                            if matrix[i][j] == 0:
+                                is_full = False
+                        if is_full:
+                            erase_count += 1
+                            comboCounter += 1
+                            k = j                                
+                            while k > 0:
+                                for i in range(width):
+                                        matrix[i][k] = matrix[i][k - 1]
+                                    k -= 1
+
+
+
+                if hard_erase:
+                    Erase_line(bottom, height, width)
+                else:
+                    Erase_line()
+                '''
+
                 # 점수 계산
                 # 콤보 효과?
                 if erase_count == 1:
@@ -1271,28 +1364,54 @@ while not done:
                 elif erase_count == 4:
                     ui_variables.tetris_sound.play()
                     score += 500 * level
-
+                # 수빈 수정
                 # Increase level
                 goal -= erase_count
                 if goal < 1 and level < 15:
-                    level += 1
-                    goal += level * 2
-                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
-                    # 레벨업시 이미지 출력
-                    screen.blit(pygame.transform.scale(ui_variables.levelup,
-                                                    (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
-                                (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
-                    pygame.display.update()
-                    pygame.time.delay(200)
-                    # 기존 있던 블럭들 한 칸씩 증가                        
-                    for j in range(height):
+                    if hard:
+                        level += 1
+                        goal += level * 2
+                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        # 레벨업시 이미지 출력
+                        screen.blit(pygame.transform.scale(ui_variables.levelup,
+                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
+                                    (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
+                        pygame.display.update()
+                        pygame.time.delay(200)
+                        # 기존 있던 블럭들 한 칸씩 증가                        
+                        for j in range(height):
+                            for i in range(width):
+                                matrix[i][j] = matrix[i][j + 1]
+                        
+                        for i in range(width):                            
+                            matrix[i][height] = 9
+                            hard_erase=True
+
+                    else:
+                        level += 1
+                        goal += level * 2
+                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        # 레벨업시 이미지 출력
+                        screen.blit(pygame.transform.scale(ui_variables.levelup,
+                                                        (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
+                                    (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
+                        pygame.display.update()
+                        pygame.time.delay(200)
+                        # 기존 있던 블럭들 한 칸씩 증가                        
+                        for j in range(height):
+                            for i in range(width):
+                                matrix[i][j] = matrix[i][j + 1]
+                        # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한군데가 구멍나있게 증가
                         for i in range(width):
-                            matrix[i][j] = matrix[i][j + 1]
-                    # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한군데가 구멍나있게 증가
-                    for i in range(width):
-                        matrix[i][height] = 9
-                    k = randint(1, 9)
-                    matrix[k][height] = 0 # 0은 빈칸임
+                            matrix[i][height] = 9
+                        k = randint(1, 9)
+                        matrix[k][height] = 0 # 0은 빈칸
+                        '''
+                        for i in range(width):
+                            matrix[i][height] = 9
+                        k = randint(1, 9)
+                        matrix[k][height] = 0 # 0은 빈칸임
+                        '''
 ## 밑바닥에 비어있는 곳을 랜덤화
                 # 콤보횟수에 따른 피버타임
 
