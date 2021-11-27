@@ -766,6 +766,26 @@ def istheresaved(name2,table):
             tetris.commit()  
             cursor.close() ## tetris db insert 
         else: pass
+def isthereID2(ID, table, password):
+    curs = tetris.cursor()
+    sql = "SELECT * FROM {} WHERE id=%s and password = %s".format(table)
+    curs.execute(sql, (ID,password))
+    data = curs.fetchone()
+    sql = "SELECT password FROM {} WHERE id=%s".format(table)
+    curs.execute(sql, ID)
+    password2 = curs.fetchone()
+    curs.close()
+    if data:
+        return True
+    elif password != password2:
+        return False
+    else:
+        return False
+
+  
+    
+
+
 
 def DrawBar(pos, size, borderC, barC, progress):
     
@@ -899,7 +919,7 @@ hard_drop_2P = False
 
 IDchoice = False
 Passchoice = False
-
+password2 = 0
 attack_point = 0
 attack_point_2P = 0
 comboCounter =0
@@ -2381,10 +2401,26 @@ while not done:
                         elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
-                            SavedPass = password
-                            password = ""
-                            pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
-                            page, selected = MENU_PAGE, 0
+                            for mode in ("NORMAL", "HARD", "REVERSE", "ITEM"):
+                                if isthereID2(text, mode, password): 
+                                    SavedPass = password
+                                    text =""
+                                    password = ""
+                                    pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
+                                    page, selected = MENU_PAGE, 0
+                                elif isthereID2(text, mode, password)== False and password != password2 :
+                                    if password != password2:
+                                        ## password만 따지는 함수 
+                                        failMessage = ui_variables.h5.render("Password DO not match", 1, ui_variables.black)
+                                        screen.blit(failMessage,failMessage.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
+                                        
+                                    else:
+                                        print("신규가입")
+                                        page, selected = MENU_PAGE, 0
+                                        ##failMessage3 = ui_variables.h2.render("신규가입", True, (0,0,0))
+                                        ##screen.blit(failMessage3,failMessage3.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
+                                    
+                        
                         else:
                             if IDchoice == True:
                                 Passchoice == False
