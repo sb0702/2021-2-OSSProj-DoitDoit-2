@@ -978,6 +978,7 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
+SavedID = ""
 text = "ID"
 password = "PASSWORD"
 SavedPass = ""
@@ -2478,7 +2479,7 @@ while not done:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
-                    name2 = text
+                    name2 = SavedID
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
                         istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
@@ -2702,7 +2703,7 @@ while not done:
                             for mode in ("NORMAL", "HARD", "REVERSE", "ITEM"):
                                 if isthereID2(text, mode, password): 
                                     SavedPass = password
-                                    text =""
+                                    SavedID = text
                                     password = ""
                                     pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                                     page, selected = MENU_PAGE, 0
