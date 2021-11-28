@@ -62,6 +62,24 @@ class ui_variables:
     hard_barrier = pygame.image.load("assets/images/ink.png")
     loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
     
+    cyan_image ='assets/images/blocks/cyan.png' 
+    blue_image = 'assets/images/blocks/blue.png'
+    orange_image = 'assets/images/blocks/orange.png'
+    green_image = 'assets/images/blocks/green.png'
+    pink_image = 'assets/images/blocks/pink.png'
+    red_image = 'assets/images/blocks/red.png' 
+    yellow_image = 'assets/images/blocks/yellow.png' 
+    ghost_image = 'assets/images/blocks/ghost.png'
+    table_image = 'assets/images/blocks/table.png' 
+    addLine_image ='assets/images/blocks/addLine.png'
+    bomb_image = 'assets/images/blocks/bomb_Item.png'  # bomb image
+    row_image = 'assets/images/blocks/erase_row_Item.png' # erase_row image
+    col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
+    itembox_image = 'assets/images/blocks/itembox.png' 
+
+    help_eng = 'assets/images/help_eng.png'
+    help_kor = 'assets/images/help_kor.png'
+
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (255, 255, 255)  # rgb(255, 255, 255)
@@ -84,26 +102,10 @@ class ui_variables:
     
     # timer
     Basictimer = 50
-    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, i_box]
-     # 0: 배경색이랑 같음->이부분은 블록 없는 효과 8: ghost, 9: 장애물
+    
+    # blocks
+    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, i_box] # 8: ghost, 9: 장애물
 
-     
-   
-    cyan_image ='assets/images/blocks/cyan.png' 
-    blue_image = 'assets/images/blocks/blue.png'
-    orange_image = 'assets/images/blocks/orange.png'
-    green_image = 'assets/images/blocks/green.png'
-    pink_image = 'assets/images/blocks/pink.png'
-    red_image = 'assets/images/blocks/red.png' 
-    yellow_image = 'assets/images/blocks/yellow.png' 
-    ghost_image = 'assets/images/blocks/ghost.png'
-    table_image = 'assets/images/blocks/table.png' 
-    addLine_image ='assets/images/blocks/addLine.png'
-    bomb_image = 'assets/images/blocks/bomb_Item.png'  # bomb image
-    row_image = 'assets/images/blocks/erase_row_Item.png' # erase_row image
-    col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
-    itembox_image = 'assets/images/blocks/itembox.png' 
-    # item_image 넣기, draw_itemboard에서 사용
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
-                ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image]
-
+                ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image] # item_image 넣기, draw_itemboard에서 사용
+ 

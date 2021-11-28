@@ -50,6 +50,7 @@ input_IDactive = True
 pygame.init()
 pygame.key.set_repeat(500)
 
+
 tetris = pymysql.connect(
             user='admin',
             password='tjgus1234',
@@ -164,14 +165,14 @@ def draw_board(next, hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
     #screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
     # Draw board
@@ -189,13 +190,13 @@ def draw_board(next, hold, score, level, goal):
 # 하드모드 보드
 def draw_hardboard(hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
-    sidebar_width = int(SCREEN_WIDTH * 0.5312)
+    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
+        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.2375), ui_variables.SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
     )
    
     # Draw hold mino
@@ -204,8 +205,8 @@ def draw_hardboard(hold, score, level, goal):
     if hold_mino != -1:
         for i in range(mino_size):
             for j in range(mino_turn):
-                dx = int(SCREEN_WIDTH * 0.16 / 2) + sidebar_width + block_size * j
-                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
+                dx = int(ui_variables.SCREEN_WIDTH * 0.16 / 2) + sidebar_width + block_size * j
+                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -229,24 +230,24 @@ def draw_hardboard(hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
     #screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
-    width_adjustment = (DEFAULT_WIDTH - width) // 2
-    height_adjustment = (DEFAULT_HEIGHT - height) // 2
+    width_adjustment = (ui_variables.DEFAULT_WIDTH - width) // 2
+    height_adjustment = (ui_variables.DEFAULT_HEIGHT - height) // 2
 
     for x in range(width):
         for y in range(height):
-            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 def draw_reverse_board(next, hold, score, level, goal):
@@ -262,12 +263,11 @@ def draw_reverse_board(next, hold, score, level, goal):
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]
-
+    
     for i in range(ui_variables.mino_size):
         for j in range(ui_variables.mino_turn):
-
-            dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.3743) + block_size * i
+            dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 pygame.draw.rect(
                     screen,
@@ -307,15 +307,15 @@ def draw_reverse_board(next, hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
-    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
+    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_fever, text_fever.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
 
 
     # Draw board
@@ -443,7 +443,7 @@ def draw_2Pboard(next, hold):
     screen.blit(text_score, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187)))
     screen.blit(score_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614)))
     screen.blit(text_at, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791)))
-    screen.blit(at_value, (int(ui_variables.CREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
+    screen.blit(at_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
     screen.blit(text_player, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8815)))
 
     # Draw board
@@ -529,8 +529,8 @@ def draw_itemboard(next, hold, score, level, goal, inven):
 
     for x in range(width):
         for y in range(height):
-            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
 
 # Draw a tetrimino
@@ -2804,7 +2804,8 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
 
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                        
+                       
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
                 pygame.draw.rect(
@@ -2848,6 +2849,8 @@ while not done:
                     screen.blit(text_left, text_left.get_rect(center=(left_pos, height)))
                     screen.blit(text_right, text_right.get_rect(center=(right_pos, height)))
 
+                
+               
 
             # Setting Page
             elif page == SETTING_PAGE:
