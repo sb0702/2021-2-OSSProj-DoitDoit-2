@@ -78,7 +78,7 @@ class ui_variables:
     itembox_image = 'assets/images/blocks/itembox.png' 
 
     help_eng = 'assets/images/help_eng.png'
-    help_kor = 'assets/images/help_kor.png'
+    help_kor = 'assets/images/help_kor2.png'
 
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
