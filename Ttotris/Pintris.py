@@ -479,11 +479,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력
-                # pygame.draw.rect(
-                #     screen,
-                #     ui_variables.t_color[grid_n[i][j]],
-                #     Rect(dx, dy, block_size, block_size)
-                # )
+            
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
@@ -495,12 +491,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     draw_block_image(dx,dy,ui_variables.t_block[grid_h[i][j]]) # 블록 이미지 출력
-                #     pygame.draw.rect(
-                #     screen,
-                #     ui_variables.t_color[grid_h[i][j]],
-                #     Rect(dx, dy, block_size, block_size)
-                # )
-
+       
     # Set max score
     if score > 999999:
         score = 999999
@@ -529,7 +520,6 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     screen.blit(text_item, text_item.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
 
     
-     
     show_inven() # 아이템이 있으면 아이템 이미지 출력
 
     # Draw board
@@ -1370,7 +1360,7 @@ while not done:
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                     (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                         pygame.display.update()
-                        pygame.time.delay(200)
+                        pygame.time.delay(100)
                         # 기존 있던 블럭들 한 칸씩 증가                        
                         for j in range(height):
                             for i in range(width):
