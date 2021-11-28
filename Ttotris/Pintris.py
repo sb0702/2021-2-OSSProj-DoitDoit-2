@@ -2538,7 +2538,7 @@ while not done:
                     attack_stack_2P = 0
                     erase_stack = 0
                     erase_stack_2P = 0
-                
+                    page, selected = MENU_PAGE, 0
                 pygame.display.flip()
                 pygame.key.set_repeat(0)
                 
