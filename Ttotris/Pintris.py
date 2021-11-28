@@ -1668,7 +1668,8 @@ while not done:
                     #pygame.display.update()
 
                 elif event.key == K_z: # 인벤토리 첫 번째 아이템 사용
-                    key = 1                    if item:
+                    key = 1                    
+                    if item:
                         if len(inven) != 0:
                             item_u = use_item(key) # 인벤의 아이템 반환
                             if item_u == row_inven:
