@@ -1149,8 +1149,7 @@ while not done:
                     hard_drop = False
                     inven = [] # 인벤토리 리셋
                     hard_i = 1
-                    #hard = False
-                   
+                                       
                    
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
@@ -1285,8 +1284,9 @@ while not done:
                     for i in range(width): 
                         if matrix[i][j] == 0:
                             is_full = False
-                        if matrix[i][j] == 13:
-                            is_full = False 
+                        if matrix[i][j] == 9:  # 하드모드 장애물 블록 추가
+                            if hard:
+                                is_full = False 
                         
                     if is_full:
                         
@@ -1334,8 +1334,8 @@ while not done:
                                 matrix[i][j] = matrix[i][j + 1]
                         
                         for i in range(width):                            
-                            matrix[i][height] = 13
-                            hard_erase=True
+                            matrix[i][height] = 9
+                            
 
                     else:
                         level += 1
@@ -1381,7 +1381,7 @@ while not done:
                         (values.Basictimer-TimeDecreasedByScore))                 
                         mino = randint(1, 1)
                         next_mino = randint(1, 1)
-                        next_fever = (ui_variables.c + values.fever_interval) * values.fever_score # 피버모드 점수 표시                                
+                        next_fever = (ui_variables.c + fever_interval) * values.fever_score # 피버모드 점수 표시                                
                         if dt >= (values.Basictimer -TimeDecreasedByScore):
                             comboCounter =0
                             mino = next_mino
