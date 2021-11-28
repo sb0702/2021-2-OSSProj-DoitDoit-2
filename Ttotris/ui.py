@@ -17,7 +17,7 @@ class ui_variables:
     h1_b = pygame.font.Font(font_path_b, 50)
     h2_b = pygame.font.Font(font_path_b, 30)
 
-    h2_i = pygame.font.Font(font_path_i, 30)
+    h2_i = pygame.font.Font(font_path_i, 28)
     h5_i = pygame.font.Font(font_path_i, 13)
 
     # Sounds
@@ -37,7 +37,8 @@ class ui_variables:
     pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
     delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
     hard_barrier = pygame.image.load("assets/images/ink.png")
-
+    loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
+    
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (255, 255, 255)  # rgb(255, 255, 255)
