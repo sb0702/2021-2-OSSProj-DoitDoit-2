@@ -985,7 +985,7 @@ item_over = False
 hard_erase = False
 q = 0 
 # Initial values
-speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
+speed_change = 2.2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
 mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
 set_difficulty = 0 # difficulty page에서 선택한 초기 난이도
 score = 0
@@ -1095,7 +1095,7 @@ def init_game(board_width, board_height, mode, game_difficulty):
 
     mode_selected = mode
     difficulty = game_difficulty
-    values.framerate -= difficulty * speed_change
+    values.framerate -= math.ceil(difficulty * speed_change)
 
 
 ###########################################################
@@ -1157,7 +1157,7 @@ while not done:
                     item_mino = randint(1, 9)
                     item_next_mino = randint(1, 9)
                     #item_hold_mino = -1
-                    framerate = 30
+                    values.framerate = 30
                     fever_score = 500
                     hard_score = 500
                     next_fever = 500
@@ -1354,7 +1354,7 @@ while not done:
                     if hard:
                         level += 1
                         goal += level * 2
-                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                         # 레벨업시 이미지 출력
                         screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
@@ -1373,7 +1373,7 @@ while not done:
                     else:
                         level += 1
                         goal += level * 2
-                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                         # 레벨업시 이미지 출력
                         screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
@@ -1780,7 +1780,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
+                    pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) 
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -2366,7 +2366,7 @@ while not done:
                     item_mino = randint(1, 9)
                     item_next_mino = randint(1, 9)
                     #item_hold_mino = -1
-                    framerate = 30
+                    values.framerate = 30
                     fever_score = 500
                     score = 0
                     max_score = 99999
@@ -2544,7 +2544,7 @@ while not done:
         # selected는 선택지가 있는 페이지에서 몇번째  보기를 선택하고 있는지 나타내는 변수입니다.
         # 편의상 0부터 시작합니다.
 
-        START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30 # 근데 이거 숫자 의미를 모르겠음
+        START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30
         page, selected = START_PAGE, 0
 
         while not done and not start and not reverse and not pvp and not item:
@@ -3190,7 +3190,7 @@ while not done:
                         elif event.key == K_UP:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
-                            if set_difficulty >= 9: # 변수 설정 시 set_difficulty = 0으로 미리 초기화
+                            if set_difficulty >= 9: 
                                 set_difficulty = 9
                             else:
                                 set_difficulty += 1
@@ -3216,7 +3216,7 @@ while not done:
                             if mode_selected == 1: # hard mode 
                                 ui_variables.click_sound.play()
                                 hard = True
-                                start = True # 수빈이 수정하는 거에 따라서 변경
+                                start = True 
                                 init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 2: # pvp mode
@@ -3229,7 +3229,7 @@ while not done:
                                 # start game with ITEM
                                 ui_variables.click_sound.play()
                                 start = True
-                                item = True # 구현 -> start=False 하면 될듯
+                                item = True 
                                 init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
     
                             if mode_selected == 4: # Reverse mode 
@@ -3307,13 +3307,7 @@ while not done:
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0) 
                 
                 
-                # 숫자가 깜빡이면 정신 없는 것 같아서 뺌. 깜빡이고 싶으면 아래 코드 넣기
-                '''
-                if blink: 
-                    screen.blit(velocity, pos_velocity)
-
-                blink = not blink
-                '''
+               
             if not start:
                 pygame.display.update()
                 clock.tick(3)
