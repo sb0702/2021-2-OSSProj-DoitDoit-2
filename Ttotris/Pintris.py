@@ -844,8 +844,6 @@ def isthereID2(ID, table, password):
     curs.close()
     if data:
         return True
-    elif password != Findedpassword:
-        return False
     else:
         return False
 
@@ -2526,17 +2524,10 @@ while not done:
                                     password = ""
                                     pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                                     page, selected = MENU_PAGE, 0
-                                elif isthereID2(text, mode, password)== False and password != password2 :
-                                    if password != password2:
-                                        ## password만 따지는 함수 
-                                        failMessage = ui_variables.h5.render("Password DO not match", 1, ui_variables.black)
-                                        screen.blit(failMessage,failMessage.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
-                                        
-                                    else:
-                                        print("신규가입")
-                                        page, selected = MENU_PAGE, 0
-                                        ##failMessage3 = ui_variables.h2.render("신규가입", True, (0,0,0))
-                                        ##screen.blit(failMessage3,failMessage3.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
+                                else:
+                                    SavedID = text
+                                    SavedPass = password
+                                    page, selected = MENU_PAGE, 0
                                     
                         
                         else:
