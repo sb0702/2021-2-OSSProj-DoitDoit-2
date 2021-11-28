@@ -3,11 +3,34 @@ from pygame import font
 
 class ui_variables:
     pygame.init()
+    ## 게임 보드 관련
+    SCREEN_WIDTH = 1200
+    SCREEN_HEIGHT = 600
+    DEFAULT_WIDTH = 10
+    DEFAULT_HEIGHT = 20
+    block_size = 17  # Height, width of single block
+    width = DEFAULT_WIDTH  # Board width
+    height = DEFAULT_HEIGHT  # Board height
+    min_width = 700
+    min_height = 350
+    c =0
+    mino_size = 4
+    mino_turn = 4
     # Fonts
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
     font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
-
+    # 타이머 바 관련 
+    barPos      = (650, 200)
+    barSize     = (250, 20)
+    borderColor = (0, 0, 0)
+    barColor    = (0, 128, 0)
+    # 변경할 이름 입력방식
+    text = ""
+    input_active = True
+    color_active = pygame.Color('lightskyblue3')
+    color_inactive = pygame.Color('blue')
+    
     h1 = pygame.font.Font(font_path, 50)
     h2 = pygame.font.Font(font_path, 30)
     h4 = pygame.font.Font(font_path, 20)
@@ -17,7 +40,7 @@ class ui_variables:
     h1_b = pygame.font.Font(font_path_b, 50)
     h2_b = pygame.font.Font(font_path_b, 30)
 
-    h2_i = pygame.font.Font(font_path_i, 30)
+    h2_i = pygame.font.Font(font_path_i, 28)
     h5_i = pygame.font.Font(font_path_i, 13)
 
     # Sounds
@@ -37,7 +60,8 @@ class ui_variables:
     pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
     delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
     hard_barrier = pygame.image.load("assets/images/ink.png")
-
+    loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
+    
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (255, 255, 255)  # rgb(255, 255, 255)
