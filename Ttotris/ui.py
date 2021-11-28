@@ -40,7 +40,7 @@ class ui_variables:
     h1_b = pygame.font.Font(font_path_b, 50)
     h2_b = pygame.font.Font(font_path_b, 30)
 
-    h2_i = pygame.font.Font(font_path_i, 30)
+    h2_i = pygame.font.Font(font_path_i, 28)
     h5_i = pygame.font.Font(font_path_i, 13)
 
     # Sounds
@@ -60,7 +60,8 @@ class ui_variables:
     pvp_annoying_image = pygame.image.load("assets/images/annoying.png")
     delete = pygame.transform.scale(pygame.image.load("assets/images/fever.png"),(25,25))
     hard_barrier = pygame.image.load("assets/images/ink.png")
-
+    loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
+    
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
     white = (255, 255, 255)  # rgb(255, 255, 255)
@@ -76,9 +77,12 @@ class ui_variables:
     green = (98, 190, 68)  # rgb(98, 190, 68) # S
     pink = (242, 64, 235)  # rgb(242, 64, 235) # T
     red = (225, 13, 27)  # rgb(225, 13, 27) # Z
+    row_i = (11, 11, 11)  # row_item 넣을라고 아무거나
+    col_i = (12, 12, 12)  # row_item 넣을라고 아무거나
+    bomb_i = (13, 13, 13)  # row_item 넣을라고 아무거나
     # timer
     Basictimer = 50
-    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4]
+    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, grey_4]
      # 0: 배경색이랑 같음->이부분은 블록 없는 효과 8: ghost, 9: 장애물
 
      # 블록 그림으로 ㄷㅎ
@@ -96,6 +100,7 @@ class ui_variables:
     bomb_image = 'assets/images/blocks/bomb_Item.png'  # bomb image
     row_image = 'assets/images/blocks/erase_row_Item.png' # erase_row image
     col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
+    
     # item_image 2개 넣기, draw_itemboard에서 사용
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
                 ghost_image, addLine_image, row_image, col_image, bomb_image]

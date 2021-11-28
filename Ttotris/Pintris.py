@@ -31,12 +31,13 @@ c =0
 mino_size = 4
 mino_turn = 4
 fever = False
-#hard = False
+color_IDactive = pygame.Color('lightskyblue3')
+color_inIDactive = pygame.Color('blue')
+color_Passactive = pygame.Color('lightskyblue3')
+color_inPassactive = pygame.Color('blue')
+IDcolor = color_inIDactive
+Passcolor = color_inPassactive
 barrier1=False
-
-color_active = pygame.Color('lightskyblue3')
-color_inactive = pygame.Color('blue')
-color = color_inactive
 framerate = 30  # Bigger -> Slower
 barPos      = (650, 200)
 barSize     = (250, 20)
@@ -45,8 +46,7 @@ barColor    = (0, 128, 0)
 min_width = 700
 min_height = 350
 board_rate = 0.5
-text = ""
-input_active = True
+input_IDactive = True
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -69,12 +69,21 @@ def set_volume():
 
 
 # Draw block 
-def draw_block(x, y, color):
-    pygame.draw.rect(
-        screen,
-        color,
-        Rect(x, y, block_size, block_size)
-    )
+def draw_block(x, y, color): 
+    if color == ui_variables.t_color[row_mino]:
+        draw_image(screen, ui_variables.row_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, row_item
+    elif color == ui_variables.t_color[col_mino]:
+        draw_image(screen, ui_variables.col_image, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
+    elif color == ui_variables.t_color[bomb_mino]:
+        draw_image(screen, ui_variables.bomb_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
+    else: # 기본 블록들은 정사각형 그리기 -> 속도 개선
+        pygame.draw.rect(
+            screen,
+            color,
+            Rect(x, y, block_size, block_size)
+        )
+
+    # 테두리 그리기 
     pygame.draw.rect( 
         screen,
         ui_variables.grey_4,
@@ -82,17 +91,17 @@ def draw_block(x, y, color):
         1
     )
 
-# 아이템 블록 생성을 위해서, 전체 블록을 이미지로 넣기로 함 
 def draw_image(window, img_path, x, y, w, h):
-    x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
-    y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
+    #x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
+    #y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
     image = pygame.image.load(img_path)
     image = pygame.transform.scale(image, (w, h))
     window.blit(image, (x, y))
 
-# 블록을 이미지로 그릴 거임 
+# 블록을 이미지로 넣기 
 def draw_block_image(x, y, image): # image에는 ui에 있는, 색깔블록~아이템 블록이 담긴 t_block이 들어감
     draw_image(screen, image, x, y, block_size, block_size) #(window, 이미지주소, x좌표, y좌표, 너비, 높이)
+
 
 
 # Draw game screen
@@ -297,15 +306,14 @@ def draw_reverse_board(next, hold, score, level, goal):
 
     # Place texts
     screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
-    #screen.blit(text_next, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.2780)))
-    screen.blit(text_score, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.5187)))
-    screen.blit(score_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.5614)))
-    screen.blit(text_level, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
-    screen.blit(level_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
-    screen.blit(text_goal, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    screen.blit(goal_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
-    #screen.blit(text_fever, (int(SCREEN_WIDTH * 0.12) + sidebar_width, int(SCREEN_HEIGHT * 0.8395)))
-    #screen.blit(next_fever_value, (int(SCREEN_WIDTH * 0.13) + sidebar_width, int(SCREEN_HEIGHT * 0.8823)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
 
     # Draw board
@@ -468,7 +476,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
             dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
-                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력 11/24
+                draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력
                 # pygame.draw.rect(
                 #     screen,
                 #     ui_variables.t_color[grid_n[i][j]],
@@ -531,8 +539,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
         for y in range(height):
             dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
-            #draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
-            draw_block_image(dx, dy, ui_variables.t_block[matrix[x][y + 1]]) # 아이템 모드는 이미지블록으로
+            draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
 
 # Draw a tetrimino
 def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
@@ -553,26 +560,7 @@ def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = grid[i][j] # matrix에 현재 블록 넣어줌
 
-'''
-# levelup 코드에서 hard일 때, 함수 호출 --> ghost 층 나오게
-def draw_mino_hard(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
-    grid = tetrimino.mino_map[mino - 1][r]  # 현재 블록
-    tx, ty = x, y
-    while not is_bottom(tx, ty, mino, r): #테트리스가 바닥에 존재하면 true -> not이니까 바닥에 없는 상태
-        ty += 1 # 한 칸 밑으로 하강
 
-    # Draw ghost 현재 블록이 쌓일 위치 보여줌
-    for i in range(mino_size):
-        for j in range(mino_turn):
-            if grid[i][j] != 0: # 비어있지 않으면
-                matrix[tx + j][ty + i] = 8 # ghost 블록 그려줌
-
-    # Draw mino
-    for i in range(mino_size):
-        for j in range(mino_turn):
-            if grid[i][j] != 0:
-                matrix[x + j][y + i] = grid[i][j] # matrix에 현재 블록 넣어줌
-    '''
 
 
 
@@ -594,27 +582,13 @@ def draw_mino_2P(x, y, mino, r):
             if grid[i][j] != 0:
                 matrix_2P[x + j][y + i] = grid[i][j]
 
-# 수빈 수정
+
 # Erase a tetrimino
 
 def erase_mino(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
-    '''
-    if hard_erase:
-        
-        for j in range(height + 1):
-            for i in range(width):
-                if matrix[i][j] == 8:
-                    matrix[i][j] = 0 # ghost 블록 없애기
-        # Erase mino
-        for i in range(mino_size):
-            for j in range(mino_turn):
-                if grid[i][j] != 0:
-                    matrix[x + j][y + i] = 0 # 블록 없애기
-    '''        
-    #else:
-        #grid = tetrimino.mino_map[mino - 1][r]
-    # Erase ghost
+           
+    
     for j in range(height + 1):
         for i in range(width):
             if matrix[i][j] == 8:
@@ -841,11 +815,11 @@ def isthereID(ID, table):
         return False
     else:
         return True
-def istheresaved(name2,table):
+def istheresaved(name2,SavedPass,table):
     if isthereID(name2,table):
         cursor = tetris.cursor()
-        sql = "INSERT INTO {} (id, score) VALUES (%s,%s)".format(table)
-        cursor.execute(sql, (name2, score))
+        sql = "INSERT INTO {} (id, password,score) VALUES (%s,%s,%s)".format(table)
+        cursor.execute(sql, (name2, SavedPass,score))
         tetris.commit()  
         cursor.close() ## tetris db insert 
     else :      
@@ -859,6 +833,26 @@ def istheresaved(name2,table):
             tetris.commit()  
             cursor.close() ## tetris db insert 
         else: pass
+def isthereID2(ID, table, password):
+    curs = tetris.cursor()
+    sql = "SELECT * FROM {} WHERE id=%s and password = %s".format(table)
+    curs.execute(sql, (ID,password))
+    data = curs.fetchone()
+    sql = "SELECT password FROM {} WHERE id=%s".format(table)
+    curs.execute(sql, ID)
+    Findedpassword = curs.fetchone()
+    curs.close()
+    if data:
+        return True
+    elif password != Findedpassword:
+        return False
+    else:
+        return False
+
+  
+    
+
+
 
 def DrawBar(pos, size, borderC, barC, progress):
     
@@ -871,7 +865,7 @@ def DrawBar(pos, size, borderC, barC, progress):
 # 아이템 획득~인벤토리 관련 함수 
 def get_item():
     if len(inven)<3:
-        inven.append(item_list[random.randrange(0,5)]) # 랜덤으로 얻음
+        inven.append(item_list [randrange(0,5)]) # 랜덤으로 얻음
 
 def show_inven():
     if len(inven) != 0:
@@ -887,19 +881,6 @@ def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
         item_u = inven[key-1] # 인벤토리의 key번째 칸 아이템
         inven.pop(key-1) # 사용한 아이템은 삭제
-        # # 해당 아이템 블록 번호 저장
-        # if item == row_inven: 
-        #     num_item = row_mino
-        # elif item == col_inven:
-        #     num_item = col_mino
-        # elif item == bomb_inven:
-        #     num_item = bomb_mino
-        # else:
-     #     num_item = no_mino
-
-    #     return {
-
-    #     }
     return item_u
 
     
@@ -908,8 +889,8 @@ def use_item(key): # 사용자의 키조작 전달 받기
 # 아이템 사용 함수
 def earthquake(): # 맨 아래 줄 삭제 아이템
     for i in range(width): # 가로줄 전체에 대해서
-        matrix[i][height+1] = 0 
-    k = height+1 
+        matrix[i][height] = 0 
+    k = height
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
             matrix[i][k] = matrix[i][k-1]
@@ -933,11 +914,14 @@ def erase_row():    # 가로줄 삭제 아이템 효과
                     k -= 1
 
 def erase_col(): # 세로줄 삭제 아이템 효과
-    for j in range(height+1):
-        for i in range(width):
+    for i in range(width):
+        for j in range(height+1):
             if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
-                matrix[k][j] = 0 # i_col 블록이 위치한 세로줄 삭제
+                y = height
+                while y>0:
+                    matrix[k][y] = 0 # i_col 블록이 위치한 세로줄 삭제
+                    y -= 1
 
 def bomb():# 3x3 블록 삭제 아이템 효과
     for j in range(height+1):
@@ -947,9 +931,8 @@ def bomb():# 3x3 블록 삭제 아이템 효과
                 n = j -1
                 for k in range(bomb_size): # 3x3이므로
                     for q in range(bomb_size): # 
-                        if m+k >= 0 and n+q >= 0: # 블록이 있든 없든
+                        if m+k >= 0 and m+k<width and n+q >= 0 and n+q<=height: # 블록이 있든 없든
                             matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
-
 
             
 
@@ -961,12 +944,12 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.time.set_timer(pygame.USEREVENT, values.framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
-
-color_inactive = pygame.Color('lightskyblue3')
-color_active = pygame.Color('dodgerblue2')
-color = color_inactive
-active = False
-text = ''
+SavedID = ""
+text = "ID"
+password = "PASSWORD"
+SavedPass = ""
+text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0)) 
+pass_surf = ui_variables.h2_i.render(password, True, (0, 0, 0)) 
 # pages
 blink = False
 blink1 = False
@@ -985,7 +968,7 @@ pvp_over = False
 item = False
 item_over = False
 hard_erase = False
-q = 0 #수빈
+q = 0 
 # Initial values
 speed_change=2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
 mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
@@ -1002,8 +985,10 @@ bottom_count = 0
 bottom_count_2P = 0
 hard_drop = False
 hard_drop_2P = False
-input_box = pygame.Rect(100,300,140,32)
-active = True
+
+IDchoice = False
+Passchoice = False
+password2 = 0
 attack_point = 0
 attack_point_2P = 0
 comboCounter =0  
@@ -1132,7 +1117,6 @@ while not done:
                 pygame.display.update()
 
             elif event.type == KEYDOWN:
-                #hard_erase=False #수빈
                 erase_mino(dx, dy, mino, rotation)
                 if event.key == K_ESCAPE:
                     pause = False
@@ -1165,6 +1149,7 @@ while not done:
                     goal = level * 2
                     bottom_count = 0
                     hard_drop = False
+                    inven = [] # 인벤토리 리셋
                     hard_i = 1
                     #hard = False
                    
@@ -1231,6 +1216,7 @@ while not done:
 
     # Game screen
     elif start:
+         
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
@@ -1253,7 +1239,6 @@ while not done:
 
                 # Erase a mino
                 if not game_over:
-                    #hard_erase=False #수빈
                     erase_mino(dx, dy, mino, rotation)
 
                 # Move mino down 떨구는 함수
@@ -1294,66 +1279,19 @@ while not done:
                             pygame.time.set_timer(pygame.USEREVENT, 1)
                     else:
                         bottom_count += 1
-                '''
+                
                 # Erase line
                 erase_count = 0
-                for j in range(height + 1):
-                    
-                    is_full = True
-                    for i in range(width): 
-                        if matrix[i][j] == 0:
-                            is_full = False
-                    if is_full:
-                        if hard_erase:  #수빈
-                            is_full=False
-                            #height -= 1
-                            #bottom_count += 1
-                            for s in range(height):
-                                is_full2=True
-                                for t in range(width):
-                                    if matrix[t][s+1]==0:
-                                        is_full2=True
-                                if is_full2:
-                                    erase_count += 1
-                                    comboCounter += 1
-                                    m = s                                
-                                    while m > 0:
-                                        for w in range(width):
-                                            matrix[w][m] = matrix[w][m - 1]
-                                        m -= 1
-
-                            
-                        else:
-                            erase_count += 1
-                            comboCounter += 1
-                            k = j                                
-                            while k > 0:
-                                for i in range(width):
-                                    matrix[i][k] = matrix[i][k - 1]
-                                k -= 1
-
-                '''
-                # Erase line
-                erase_count = 0
-                #for j in range(height + 1):
-                #q=0
                 for j in range(q, height+1):   
                     is_full = True
                     for i in range(width): 
                         if matrix[i][j] == 0:
                             is_full = False
-                        if matrix[i][j]==10:
-                            is_full=False
+                        if matrix[i][j] == 13:
+                            is_full = False 
+                        
                     if is_full:
-                        #if hard_erase:  #수빈
-                            
-                            #j+=1
-                            #is_full=False
-                            #q+=1
-                            #hard_erase=False
-                            #height -= 1
-                            #bottom_count += 1
-                        #else:
+                        
                         erase_count += 1
                         comboCounter += 1
                         k = j                                
@@ -1361,31 +1299,7 @@ while not done:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k-1]
                             k -= 1
-                    '''
-                def Erase_line():
-                    erase_count = 0
-                    for j in range(height + 1):
-                        
-                        is_full = True
-                        for i in range(width): 
-                            if matrix[i][j] == 0:
-                                is_full = False
-                        if is_full:
-                            erase_count += 1
-                            comboCounter += 1
-                            k = j                                
-                            while k > 0:
-                                for i in range(width):
-                                        matrix[i][k] = matrix[i][k - 1]
-                                    k -= 1
-
-
-
-                if hard_erase:
-                    Erase_line(bottom, height, width)
-                else:
-                    Erase_line()
-                '''
+                    
 
                 # 점수 계산
                 # 콤보 효과?
@@ -1398,10 +1312,11 @@ while not done:
                 elif erase_count == 3:
                     ui_variables.triple_sound.play()
                     score += 200 * level
+                    get_item() # 아이템 테스트용
                 elif erase_count == 4:
                     ui_variables.tetris_sound.play()
                     score += 500 * level
-                # 수빈 수정
+                
                 # Increase level
                 goal -= erase_count
                 if goal < 1 and level < 15:
@@ -1421,7 +1336,7 @@ while not done:
                                 matrix[i][j] = matrix[i][j + 1]
                         
                         for i in range(width):                            
-                            matrix[i][height] = 10
+                            matrix[i][height] = 13
                             hard_erase=True
 
                     else:
@@ -1443,12 +1358,7 @@ while not done:
                             matrix[i][height] = 9
                         k = randint(1, 9)
                         matrix[k][height] = 0 # 0은 빈칸
-                        '''
-                        for i in range(width):
-                            matrix[i][height] = 9
-                        k = randint(1, 9)
-                        matrix[k][height] = 0 # 0은 빈칸임
-                        '''
+                        
 ## 밑바닥에 비어있는 곳을 랜덤화
                 # 콤보횟수에 따른 피버타임
 
@@ -1461,10 +1371,9 @@ while not done:
                 if  values.feverTimeAddScore[4] > score >= values.feverTimeAddScore[3]:
                     TimeDecreasedByScore = values.feverAddingTime[3]
                 if  score >= values.feverTimeAddScore[4]:
-                    TimeDecreasedByScore = values.feverAddingTime[4]
-                         
-                if comboCounter > values.feverBlockGoal and mode_selected !=3:
-                    if fever == False :
+                    ADD = values.feverAddingTime[4]     
+                if comboCounter > values.feverBlockGoal and mode_selected != 1 and mode_selected != 3 :
+                    if fever == False:
                         t0 = time.time()
                         fever = True
                     else:
@@ -1480,46 +1389,7 @@ while not done:
                             mino = next_mino
                             next_mino = randint(1, 7)                       
                             fever = False
-                '''
-                if hard==True:
-                    #if score>200 and score<1000:
-                        #hard_barrier()
-                        #size=[800,600]
-                        #SCREEN=pygame.display.set_mode(size)
-                        #BLACK=(0,0,0)
-                        #pygame.draw.rect(screen, BLACK, ((650,200),(250,20)),0)
-                    hard_dt=0
-                    for i in range(1, max_score, interval):
-                        if score >= i * hard_score and score<=(i+1)*hard_score:
-                            if barrier1 == False:
-                                hard_t0=time.time()
-                                barrier1=True
-                            else:
-                                
-                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
-                                if blink1:
-                                    screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                    (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                                [150,0])
-                                    blink1 = False
-                                else:
-                                    blink1 = True
-                            
-                                if blink2:
-                                    screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                    (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                                [150,250])
-                                    blink2 = False
-                                else:
-                                    blink2 = True
-                                hard_t1=time.time()
-                                hard_dt=hard_t1-hard_t0
-                            if hard_dt>5:
-                                barrier1=False
-                                
-                                
-                                #screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
-                 '''             
+                
 
 
 
@@ -1552,39 +1422,7 @@ while not done:
                                 blink2 = True
                 
 
-                '''
-                if mode_selected==1:
-                    if hard == True:
-                        hard_t0 = time.time()
-                        hard = False
-                    else:
-                        hard_t1 = time.time()
-                        hard_dt = hard_t1 -hard_t0                                 
-                                                       
-                        if dt >= (values.barriertimer):
-                            if blink1:
-                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                            [150,0])
-                                blink1 = False
-                            else:
-                                blink1 = True
-                        
-                            if blink2:
-                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))),
-                                            [150,250])
-                                blink2 = False
-                            else:
-                                blink2 = True                       
-                            hard = True           
-
-                            #barrier = pygame.image.load(ui_variables.hard_barrier)
-                            #barrier = pygame.transform.scale(barrier, (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5)))
-                            #screen.blit(barrier, [450, 100]
-                            screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5))), [550,-50])
-                            
-                        '''
+                
                         
                         
                     
@@ -1604,7 +1442,7 @@ while not done:
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
                     hard_drop = True
-                    pygame.time.set_timer(pygame.USEREVENT, 2)
+                    # pygame.time.set_timer(pygame.USEREVENT, 2) 
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino, hold_mino, score, level, goal)
@@ -1781,38 +1619,80 @@ while not done:
                         draw_board(next_mino, hold_mino, score, level, goal)
                     #pygame.display.update()
 
-                
-                # elif event.key == K_1:
-                #     key = 1
-                #     if item:
-                #         item_u = use_item(key) # 인벤의 아이템 반환
-                #         if item_u == row_inven:
-                #             mino = row_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == col_inven:
-                #             mino = col_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == bomb_inven:
-                #             mino = bomb_mino
-                #             erase_mino(dx, dy, mino, rotation)
-                #         elif item_u == reset_inven:
-                #             board_reset()
-                #         elif item_u == earthquake_inven:
-                #             earthquake()
+                elif event.key == K_z: # 인벤토리 첫 번째 아이템 사용
+                    key = 1
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
                         
-                #         draw_mino(dx,dy, mino, rotation)
-                #         draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
 
+                elif event.key == K_x: # 인벤토리 첫 번째 아이템 사용
+                    key = 2
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
+                            score += 50 # 한 줄 삭제했을 때의 점수
                         
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+
+                elif event.key == K_c: # 인벤토리 첫 번째 아이템 사용
+                    key = 3
+                    if item:
+                        item_u = use_item(key) # 인벤의 아이템 반환
+                        if item_u == row_inven:
+                            mino = row_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                            score += 50 # 한 줄 삭제했을 때의 점수
+                        elif item_u == col_inven:
+                            mino = col_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == bomb_inven:
+                            mino = bomb_mino-2
+                            erase_mino(dx, dy, mino, rotation)
+                        elif item_u == reset_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            board_reset()
+                        elif item_u == earthquake_inven:
+                            erase_mino(dx, dy, mino, rotation)
+                            earthquake()
+                            score += 50 # 한 줄 삭제했을 때의 점수
                         
+                        draw_mino(dx,dy, mino, rotation)
+                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
 
-
-
-
-                
-
-
-                         
+                       
                     
                 
 
@@ -2411,22 +2291,25 @@ while not done:
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
                 pygame.display.update()
-            
-                if event.key == K_RETURN:
+                
+            elif event.type == KEYDOWN:        
+
+                if event.key == K_RETURN:  ## enter 인듯
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
-                    name2 = text
+                    name2 = SavedID
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(name2,DIFFICULTY_NAMES[mode_selected])    
-                    width = ui_variables.DEFAULT_WIDTH  # Board width
-                    height = ui_variables.DEFAULT_HEIGHT
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                     
+                    width = DEFAULT_WIDTH  # Board width
+                    height = DEFAULT_HEIGHT
                     game_over = False
                     reverse_over = False
                     item_over = False
@@ -2453,7 +2336,8 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-
+                    text = "ID"
+                    password = "PASSWORD"
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2477,7 +2361,7 @@ while not done:
                     erase_stack_2P = 0
                 
                 pygame.display.flip()
-            
+                pygame.key.set_repeat(0)
                 
             
     # pvp game over screen
@@ -2624,23 +2508,56 @@ while not done:
                         done = True
                     elif event.type == KEYDOWN:
                         
-                        if event.key == K_SPACE:
+                        if event.key == pygame.K_BACKSPACE:
+                            if IDchoice == True:
+                                text = text[:-1]                               
+                                text_surf = ui_variables.h2_i.render(text, True, (0,0,0))
+                            elif Passchoice == True:
+                                IDchoice == False
+                                password = password[:-1]
+                                pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
+                        elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
-                            # goto menu page
                             ui_variables.click_sound.play()
-                            page, selected = MENU_PAGE, 0    
-                        if event.key == K_RETURN:  
-                            password = ''
-                        else:  # Add the character to thepassword string.
-                            password += event.unicode
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                    # If the user clicked on the input_box rect.
-                        if input_box.collidepoint(event.pos):
-                    # Toggle the active variable.
-                            active = not active
+                            for mode in ("NORMAL", "HARD", "REVERSE", "ITEM"):
+                                if isthereID2(text, mode, password): 
+                                    SavedPass = password
+                                    SavedID = text
+                                    password = ""
+                                    pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
+                                    page, selected = MENU_PAGE, 0
+                                elif isthereID2(text, mode, password)== False and password != password2 :
+                                    if password != password2:
+                                        ## password만 따지는 함수 
+                                        failMessage = ui_variables.h5.render("Password DO not match", 1, ui_variables.black)
+                                        screen.blit(failMessage,failMessage.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
+                                        
+                                    else:
+                                        print("신규가입")
+                                        page, selected = MENU_PAGE, 0
+                                        ##failMessage3 = ui_variables.h2.render("신규가입", True, (0,0,0))
+                                        ##screen.blit(failMessage3,failMessage3.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 1.9)))
+                                    
+                        
                         else:
-                            active = False
-                
+                            if IDchoice == True:
+                                Passchoice == False
+                                text += event.unicode 
+                                text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0))
+                            elif Passchoice == True:
+                                IDchoice == False
+                                password += event.unicode
+                                pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
+                                
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if id_box.collidepoint(event.pos):
+                            IDchoice = not IDchoice
+
+                        elif pass_box.collidepoint(event.pos):
+                            IDchoice = not IDchoice
+                            IDchoice = False
+                            Passchoice = not Passchoice   
+                                      
                     elif event.type == VIDEORESIZE:
 
                         ui_variables.SCREEN_WIDTH = event.w
@@ -2661,11 +2578,15 @@ while not done:
 
                             ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                    
+                    
+                        
+                           
+                
+                
+                block_size = int(SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
                 pygame.draw.rect(
                     screen,
@@ -2674,21 +2595,35 @@ while not done:
                 )
 
                 title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
-                title_menu = ui_variables.h5.render("Press space to MENU", 1, ui_variables.grey_1)
+                login = ui_variables.h1.render("ID", 1, ui_variables.grey_1)
+                passwordScreen = ui_variables.h1.render("PassWord", 1, ui_variables.grey_1)
+                ID = ui_variables.h2.render("ID", 1, ui_variables.grey_1)
+                PASSWORD = ui_variables.h2.render("PASSWORD", 1, ui_variables.grey_1)
+                title_menu = ui_variables.h5.render("INSERT ID  and  PASSWORD", 1, ui_variables.grey_1)
+                pressEnter = ui_variables.h5.render("Then Press Enter to Start", 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Copyright (c) 2021 DOITDOIT Rights Reserved.", 1, ui_variables.grey_1)
 
                 if blink:
-                    screen.blit(title_menu, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2 + 40, ui_variables.SCREEN_HEIGHT * 0.44)))
-
+                    screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.45)))
+                    screen.blit(pressEnter, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.5)))
                 blink = not blink
-                input_box = pygame.Rect(100, 100, 140, 32)
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
-                screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
-                password_surface = ui_variables.h1.render('*'*len(password), True, (70, 200, 150))
-                screen.blit(password_surface, (30, 30))
-                pygame.draw.rect(screen, color, input_box, 2)
+
+                screen.blit(ID, ID.get_rect(center=(SCREEN_WIDTH / 2.3, SCREEN_HEIGHT * 1.8)))
+                id_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.9,140,32)
+                pass_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.6,140,32)
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2.5, SCREEN_HEIGHT * 1.9)))
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
+                screen.blit(login,(int(SCREEN_WIDTH / 3), int(SCREEN_HEIGHT * 2)))
+                IDcolor = color_IDactive if IDchoice else color_inIDactive
+                Passcolor = color_Passactive if Passchoice else color_inPassactive
+                window_center = screen.get_rect().center
+                screen.blit(text_surf, (id_box.x+5,id_box.y+5))
+                screen.blit(pass_surf, (pass_box.x+5,pass_box.y+7))           
+                pygame.draw.rect(screen, IDcolor, id_box, 2)
+                pygame.draw.rect(screen, Passcolor, pass_box, 2)
                 pygame.display.flip()
-                clock.tick(30)
+            
             # MENU PAGE
             elif page == MENU_PAGE:
                 current_selected = selected
