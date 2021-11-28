@@ -1162,7 +1162,7 @@ while not done:
                     hard_score = 500
                     next_fever = 500
                     max_score = 99999
-                    fever_interval = 3
+                    values.fever_interval = 3
                     interval = 3
                     score = 0
                     fever = 0
@@ -1414,7 +1414,7 @@ while not done:
                         (values.Basictimer-TimeDecreasedByScore))                 
                         mino = randint(1, 1)
                         next_mino1 = randint(1, 1)
-                        next_fever = (ui_variables.c + fever_interval) * values.fever_score # 피버모드 점수 표시                                
+                        next_fever = (ui_variables.c + values.fever_interval) * values.fever_score # 피버모드 점수 표시                                
                         if dt >= (values.Basictimer -TimeDecreasedByScore):
                             comboCounter =0
                             mino = next_mino1
@@ -1941,7 +1941,7 @@ while not done:
                     level_2P += 1
                     goal_2P += level_2P * 2
 
-                attack_interval = fever_interval  # attack_interval = 3
+                attack_interval = values.fever_interval  # attack_interval = 3
                 attack_score = fever_score  # attack_score = 500
 
                 # 1P
@@ -2371,7 +2371,7 @@ while not done:
                     score = 0
                     max_score = 99999
                     next_fever = 500
-                    fever_interval = 3
+                    values.fever_interval = 3
                     level = 1
                     goal = level * 5
                     bottom_count = 0
@@ -2494,7 +2494,7 @@ while not done:
                     max_score = 99999
                     score = 0
                     next_fever = 500
-                    fever_interval = 3
+                    values.fever_interval = 3
                     level = 1
                     goal = level * 5
                     bottom_count = 0
