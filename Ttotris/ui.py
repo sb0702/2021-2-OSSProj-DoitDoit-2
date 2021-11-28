@@ -77,15 +77,17 @@ class ui_variables:
     green = (98, 190, 68)  # rgb(98, 190, 68) # S
     pink = (242, 64, 235)  # rgb(242, 64, 235) # T
     red = (225, 13, 27)  # rgb(225, 13, 27) # Z
-    row_i = (11, 11, 11)  # row_item 넣을라고 아무거나
-    col_i = (12, 12, 12)  # row_item 넣을라고 아무거나
-    bomb_i = (13, 13, 13)  # row_item 넣을라고 아무거나
+    row_i = (11, 11, 11)  # row_item 
+    col_i = (12, 12, 12)  # row_item 
+    bomb_i = (13, 13, 13)  # row_item 
+    i_box = (14, 14, 14) # item_box
+    
     # timer
     Basictimer = 50
-    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, grey_4]
+    t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, i_box]
      # 0: 배경색이랑 같음->이부분은 블록 없는 효과 8: ghost, 9: 장애물
 
-     # 블록 그림으로 ㄷㅎ
+     
    
     cyan_image ='assets/images/blocks/cyan.png' 
     blue_image = 'assets/images/blocks/blue.png'
@@ -100,8 +102,8 @@ class ui_variables:
     bomb_image = 'assets/images/blocks/bomb_Item.png'  # bomb image
     row_image = 'assets/images/blocks/erase_row_Item.png' # erase_row image
     col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
-    
-    # item_image 2개 넣기, draw_itemboard에서 사용
+    itembox_image = 'assets/images/blocks/itembox.png' 
+    # item_image 넣기, draw_itemboard에서 사용
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
-                ghost_image, addLine_image, row_image, col_image, bomb_image]
+                ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image]
 

@@ -76,6 +76,8 @@ def draw_block(x, y, color):
         draw_image(screen, ui_variables.col_image, x, y, block_size, block_size ) # 아이템 블록은 이미지로, col_item
     elif color == ui_variables.t_color[bomb_mino]:
         draw_image(screen, ui_variables.bomb_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
+    elif color == ui_variables.t_color[itembox_mino]: # ㄷㅎ
+        draw_image(screen, ui_variables.itembox_image, x,y, block_size, block_size ) # 아이템 블록은 이미지로, bomb_item
     else: # 기본 블록들은 정사각형 그리기 -> 속도 개선
         pygame.draw.rect(
             screen,
@@ -477,11 +479,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
             dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력
-                # pygame.draw.rect(
-                #     screen,
-                #     ui_variables.t_color[grid_n[i][j]],
-                #     Rect(dx, dy, block_size, block_size)
-                # )
+            
 
     # Draw hold mino
     grid_h = tetrimino.mino_map[hold - 1][0]
@@ -493,12 +491,7 @@ def draw_itemboard(next, hold, score, level, goal, inven):
                 dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     draw_block_image(dx,dy,ui_variables.t_block[grid_h[i][j]]) # 블록 이미지 출력
-                #     pygame.draw.rect(
-                #     screen,
-                #     ui_variables.t_color[grid_h[i][j]],
-                #     Rect(dx, dy, block_size, block_size)
-                # )
-
+       
     # Set max score
     if score > 999999:
         score = 999999
@@ -527,7 +520,6 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     screen.blit(text_item, text_item.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
 
     
-     
     show_inven() # 아이템이 있으면 아이템 이미지 출력
 
     # Draw board
@@ -605,6 +597,7 @@ def erase_mino(x, y, mino, r):
         erase_row() # 가로줄 삭제 아이템의 효과
         erase_col() # 세로줄 삭제 아이템의 효과
         bomb() # 3x3 블록 삭제 아이템의 효과
+         
     
 
 
@@ -871,9 +864,9 @@ def show_inven():
             item = inven[i]
             screen.blit(item, item.get_rect(center=(dx_inven[i],dy_inven))) # 인벤에 들어간 아이템 이미지 출력
     else: # 없을 때는 빈 정사각형 출력
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
-        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-item_size/2, dy_inven-item_size/2, item_size,item_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[0]-inven_size/2, dy_inven-inven_size/2, inven_size,inven_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[1]-inven_size/2, dy_inven-inven_size/2, inven_size,inven_size),1)
+        pygame.draw.rect(screen,ui_variables.black, (dx_inven[2]-inven_size/2, dy_inven-inven_size/2, inven_size,inven_size),1)
 
 def use_item(key): # 사용자의 키조작 전달 받기
     if len(inven)>0:
@@ -886,8 +879,14 @@ def use_item(key): # 사용자의 키조작 전달 받기
 
 # 아이템 사용 함수
 def earthquake(): # 맨 아래 줄 삭제 아이템
+    cnt_box=0
     for i in range(width): # 가로줄 전체에 대해서
+        if matrix[i][height] == itembox_mino:
+            cnt_box +=1
         matrix[i][height] = 0 
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1  
     k = height
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
         for i in range(width):
@@ -901,27 +900,40 @@ def board_reset():
             matrix[i][j] = 0 # 보드 내 블록 다 비워버리기
 
 def erase_row():    # 가로줄 삭제 아이템 효과
+    cnt_box = 0
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == row_mino: # i_row 블록이면
                 k = j # y 좌표 기억
+                if matrix[i][k] == itembox_mino:
+                    cnt_box +=1
                 matrix[i][k] = 0 # 해당 줄 삭제
                 while k>0: 
                     for i in range(width):
                         matrix[i][k] = matrix[i][k-1] # 지워진 줄 위에 있던 블록 한 줄씩 내리기
                     k -= 1
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
 
 def erase_col(): # 세로줄 삭제 아이템 효과
+    cnt_box = 0
     for i in range(width):
         for j in range(height+1):
             if matrix[i][j] == col_mino: # i_col 블록이면
                 k = i # x 좌표 기억
+                if matrix[k][j] == itembox_mino:
+                    cnt_box +=1
                 y = height
                 while y>0:
                     matrix[k][y] = 0 # i_col 블록이 위치한 세로줄 삭제
                     y -= 1
-
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
+    
 def bomb():# 3x3 블록 삭제 아이템 효과
+    cnt_box=0
     for j in range(height+1):
         for i in range(width):
             if matrix[i][j] == bomb_mino: # i_bomb 블록이면
@@ -930,7 +942,12 @@ def bomb():# 3x3 블록 삭제 아이템 효과
                 for k in range(bomb_size): # 3x3이므로
                     for q in range(bomb_size): # 
                         if m+k >= 0 and m+k<width and n+q >= 0 and n+q<=height: # 블록이 있든 없든
+                            if matrix[m+k][n+q] == itembox_mino:
+                                cnt_box += 1
                             matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
+    while cnt_box > 0: # 깬 박스 수만큼
+        get_item()
+        cnt_box -=1 
 
             
 
@@ -1006,24 +1023,19 @@ dx_inven3 = int(ui_variables.SCREEN_WIDTH * 0.7093) # 인벤토리 3 중심의 x
 dy_inven = int(ui_variables.SCREEN_HEIGHT * 0.3983) # 인벤토리 y좌표(중심)
 dx_inven = [dx_inven1,dx_inven2,dx_inven3] # 인벤토리 x 좌표 모음
 
-item_size = 50 # 아이템 이미지 scale할 때 크기. 추후 출력 결과 보고 수정
+inven_size = 50 # 인벤토리 사이즈
 # 인벤 출력할 크기로 리사이징
-earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item_1.png"),(item_size,item_size)) # 맨 아래줄 지우기
-reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(item_size,item_size)) # 전체 블록 리셋
-row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(item_size,item_size)) # 가로 한 줄 삭제, 별도의 mino 필요
-col_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(item_size,item_size)) # 세로 한 줄 삭제, 별도의 mino 필요
-bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(item_size,item_size)) # 3x3 삭제, 별도의 mino 필요
-# 별도의 블록 필요한 아이템 - block size로 리사이징
-# i_row = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(block_size,block_size)) 
-# i_col = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(block_size,block_size)) 
-# i_bomb = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(block_size,block_size)) 
-# 블록 그려줄 숫자 지정
-#no_mino = 0 # 별도의 블록 필요없는 아이템에 부여하는 숫자
+earthquake_inven = pygame.transform.scale(pygame.image.load("assets/images/earthquake_Item_1.png"),(inven_size,inven_size)) # 맨 아래줄 지우기
+reset_inven = pygame.transform.scale(pygame.image.load("assets/images/reset_Item.png"),(inven_size,inven_size)) # 전체 블록 리셋
+row_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_row_Item.png"),(inven_size,inven_size)) # 가로 한 줄 삭제, 별도의 mino 필요
+col_inven = pygame.transform.scale(pygame.image.load("assets/images/erase_col_Item.png"),(inven_size,inven_size)) # 세로 한 줄 삭제, 별도의 mino 필요
+bomb_inven = pygame.transform.scale(pygame.image.load("assets/images/bomb_Item.png"),(inven_size,inven_size)) # 3x3 삭제, 별도의 mino 필요
+
 row_mino = 10  
 col_mino = 11
 bomb_mino = 12
-#earthquake_mino = 13
-#reset_mino = 14
+itembox_mino = 13 # ㄷㅎ
+
 bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
 
 item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
@@ -1044,14 +1056,19 @@ rotation_2P = 0
 
 mino = randint(1, 7)  # Current mino 
 mino_2P = randint(1, 7)
-fever = values.fever
-next_mino = randint(1, 7)  # Next mino
-next_mino_2P = randint(1, 7)  # Next mino2
+item_mino = randint(1,9) # 아이템 모드에서 사용할 mino ㄷㅎ
+
+next_mino1 = randint(1, 7)  # Next mino
+next_mino2 = randint(1, 7) # ㄷㅎ 다다음 블록
+
+next_mino = randint(1,7) # pvp용
+next_mino_2P = randint(1, 7)  
 
 hold = False  # Hold status
 hold_2P = False
 
 hold_mino = -1  # Holded mino
+#item_hold_mino = -1 # ㄷㅎ
 hold_mino_2P = -1
 
 player = 0
@@ -1095,15 +1112,15 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
                 if reverse:
-                    draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                 elif pvp:
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
                 elif item: # 아이템 보드 추가
-                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                 elif hard: # 하드모드 보드 추가
                     draw_hardboard(hold_mino, score, level, goal)
                 else:
-                    draw_board(next_mino, hold_mino, score, level, goal)
+                    draw_board(next_mino1, hold_mino, score, level, goal)
 
                 pause_text = ui_variables.h2_b.render("PAUSED", 1, ui_variables.white)
                 pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white)
@@ -1133,8 +1150,14 @@ while not done:
                     rotation = 0
                     mino = randint(1, 7)
                     next_mino = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7)
                     hold_mino = -1
-                    values.framerate = 30
+                    # ㄷㅎ
+                    item_mino = randint(1, 9)
+                    item_next_mino = randint(1, 9)
+                    #item_hold_mino = -1
+                    framerate = 30
                     fever_score = 500
                     hard_score = 500
                     next_fever = 500
@@ -1202,7 +1225,7 @@ while not done:
 
                 if not ((values.board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
 
-                        board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+                    board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
                     ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
@@ -1222,16 +1245,17 @@ while not done:
             elif event.type == USEREVENT:
                 pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) 
                 # Draw a mino
+
                 draw_mino(dx, dy, mino, rotation)
                 
                 if reverse:
-                    draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                 elif item: # 아이템 보드 추가
-                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                 elif hard: # 하드모드 보드 추가
                     draw_hardboard(hold_mino, score, level, goal)
                 else:
-                    draw_board(next_mino, hold_mino, score, level, goal)
+                    draw_board(next_mino1, hold_mino, score, level, goal)
                     
                 pygame.display.update()
 
@@ -1242,26 +1266,29 @@ while not done:
                 # Move mino down 떨구는 함수
                 if not is_bottom(dx, dy, mino, rotation):
                     dy += 1 # 떨어지는 변화량
-
+                
                 # Create new mino
                 else:
                     if hard_drop or bottom_count == 6:
                         hard_drop = False
                         bottom_count = 0
                         score += 10 * level
-
                         draw_mino(dx, dy, mino, rotation)
                         if reverse:
-                            draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                            draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                         elif item: # 아이템 보드 추가
-                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven) 
+                            draw_itemboard(next_mino1, hold_mino, score, level, goal, inven) 
                         elif hard: # 하드모드 보드 추가
                             draw_hardboard(hold_mino, score, level, goal)                        
                         else:
-                            draw_board(next_mino, hold_mino, score, level, goal)
-                        if is_stackable(next_mino):
-                            mino = next_mino
-                            next_mino = randint(1, 7)
+                            draw_board(next_mino1, hold_mino, score, level, goal)
+                        if is_stackable(next_mino1):
+                            mino = next_mino1
+                            next_mino1 = next_mino2
+                            if item:
+                                next_mino2 = randint(1, 9)
+                            else:
+                                next_mino2 = randint(1, 7)
                             dx, dy = 3, 0
                             rotation = 0
                             hold = False
@@ -1285,14 +1312,21 @@ while not done:
                     for i in range(width): 
                         if matrix[i][j] == 0:
                             is_full = False
-                        if matrix[i][j] == 13:
-                            is_full = False 
+                        if matrix[i][j] == 9: 
+                            if hard:
+                                is_full = False 
                         
                     if is_full:
-                        
                         erase_count += 1
                         comboCounter += 1
-                        k = j                                
+                        k = j
+                        cnt_box =0 # 한 줄에 아이템 박스 몇 개 깨졌는지
+                        for i in range(width):
+                            if matrix[i][j] == itembox_mino: # 아이템 박스 블록 깨면
+                                cnt_box +=1
+                        while cnt_box > 0: # 깬 박스 수만큼
+                            get_item()
+                            cnt_box -=1  
                         while k > 0:
                             for i in range(width):
                                 matrix[i][k] = matrix[i][k-1]
@@ -1310,7 +1344,6 @@ while not done:
                 elif erase_count == 3:
                     ui_variables.triple_sound.play()
                     score += 200 * level
-                    get_item() # 아이템 테스트용
                 elif erase_count == 4:
                     ui_variables.tetris_sound.play()
                     score += 500 * level
@@ -1327,15 +1360,15 @@ while not done:
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                     (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                         pygame.display.update()
-                        pygame.time.delay(200)
+                        pygame.time.delay(100)
                         # 기존 있던 블럭들 한 칸씩 증가                        
                         for j in range(height):
                             for i in range(width):
                                 matrix[i][j] = matrix[i][j + 1]
                         
                         for i in range(width):                            
-                            matrix[i][height] = 13
-                            hard_erase=True
+                            matrix[i][height] = 9 # 고쳐
+                            # hard_erase=True 지워도 됨 
 
                     else:
                         level += 1
@@ -1380,12 +1413,12 @@ while not done:
                         DrawBar(ui_variables.barPos,ui_variables.barSize,ui_variables.borderColor,ui_variables.barColor, (values.Basictimer-TimeDecreasedByScore - dt)/ 
                         (values.Basictimer-TimeDecreasedByScore))                 
                         mino = randint(1, 1)
-                        next_mino = randint(1, 1)
-                        next_fever = (ui_variables.c + values.fever_interval) * values.fever_score # 피버모드 점수 표시                                
+                        next_mino1 = randint(1, 1)
+                        next_fever = (ui_variables.c + fever_interval) * values.fever_score # 피버모드 점수 표시                                
                         if dt >= (values.Basictimer -TimeDecreasedByScore):
                             comboCounter =0
-                            mino = next_mino
-                            next_mino = randint(1, 7)                       
+                            mino = next_mino1
+                            next_mino1 = randint(1, 7)                       
                             fever = False
                 
 
@@ -1443,36 +1476,43 @@ while not done:
                     # pygame.time.set_timer(pygame.USEREVENT, 2) 
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     elif item: # 아이템 보드 추가
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                     elif hard: # 하드모드 보드 추가
                         draw_hardboard(hold_mino, score, level, goal)
                     else:
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino1, hold_mino, score, level, goal)
                 # Hold
                 elif event.key == K_LSHIFT:
                     pygame.key.set_repeat(0)
                     if hold == False:
                         ui_variables.move_sound.play()
-                        if hold_mino == -1:
+                        if hold_mino == -1: # ㄷㅎ
                             hold_mino = mino
-                            mino = next_mino
-                            next_mino = randint(1, 7)
-                        else:
+                            mino = next_mino1
+                            next_mino1 = next_mino2
+                            if item:
+                                next_mino2 = randint(1, 9)
+                            else: 
+                                next_mino2 = randint(1, 7)
+
+                        else: # hold가 있는 상태
+                            # if item: # ㄷㅎ
+                            #     hold_mino, item_mino = item_mino, hold_mino 
                             hold_mino, mino = mino, hold_mino
                         dx, dy = 3, 0
                         rotation = 0
                         hold = True
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     elif item: # 아이템 보드 추가
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                     elif hard: # 하드모드 보드 추가
                         draw_hardboard(hold_mino, score, level, goal)
                     else:
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino1, hold_mino, score, level, goal)
                 # Turn right
                 elif event.key == K_UP:
                     pygame.key.set_repeat(0)
@@ -1508,13 +1548,13 @@ while not done:
                         rotation = 0
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)                    
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)                    
                     elif item: # 아이템 보드 추가
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                     elif hard: # 하드모드 보드 추가
                         draw_hardboard(hold_mino, score, level, goal)
                     else:
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino1, hold_mino, score, level, goal)
                 # Turn left
                 elif event.key == K_LCTRL:
                     pygame.key.set_repeat(0)
@@ -1549,13 +1589,13 @@ while not done:
                         rotation = 3
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     elif item: # 아이템 보드 추가
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                     elif hard: # 하드모드 보드 추가
                         draw_hardboard(hold_mino, score, level, goal)
                     else:
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino1, hold_mino, score, level, goal)
 
                 # 왼쪽 이동, 리버스모드에선 방향키 반대
                 elif event.key == K_LEFT:
@@ -1565,18 +1605,18 @@ while not done:
                             ui_variables.move_sound.play()
                             dx += 1
                         draw_mino(dx, dy, mino, rotation)
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     else:
                         if not is_leftedge(dx, dy, mino, rotation):
                             ui_variables.move_sound.play()
                             dx -= 1
                         draw_mino(dx, dy, mino, rotation)
                         if item: # 아이템 보드 추가
-                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                            draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                         elif hard: # 하드모드 보드 추가
                             draw_hardboard(hold_mino, score, level, goal)
                         else:
-                            draw_board(next_mino, hold_mino, score, level, goal)
+                            draw_board(next_mino1, hold_mino, score, level, goal)
 
                 # 오른쪽 이동, 리버스모드에선 방향키 반대
                 elif event.key == K_RIGHT:
@@ -1586,18 +1626,18 @@ while not done:
                             ui_variables.move_sound.play()
                             dx -= 1
                         draw_mino(dx, dy, mino, rotation)
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     else:
                         if not is_rightedge(dx, dy, mino, rotation):
                             ui_variables.move_sound.play()
                             dx += 1
                         draw_mino(dx, dy, mino, rotation)
                         if item: # 아이템 보드 추가
-                            draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                            draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                         elif hard: # 하드모드 보드 추가
                             draw_hardboard(hold_mino, score, level, goal)
                         else:
-                            draw_board(next_mino, hold_mino, score, level, goal)
+                            draw_board(next_mino1, hold_mino, score, level, goal)
 
                             
 
@@ -1608,87 +1648,90 @@ while not done:
                     #pygame.time.set_timer(pygame.USEREVENT, values.framerate*1)
                     draw_mino(dx,dy,mino, rotation)
                     if reverse:
-                        draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                        draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                     elif item: # 아이템 보드 추가
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                     elif hard: # 하드모드 보드 추가
                         draw_hardboard(hold_mino, score, level, goal)
                     else:
-                        draw_board(next_mino, hold_mino, score, level, goal)
+                        draw_board(next_mino1, hold_mino, score, level, goal)
                     #pygame.display.update()
 
                 elif event.key == K_z: # 인벤토리 첫 번째 아이템 사용
-                    key = 1
+                    key = 1                    
                     if item:
-                        item_u = use_item(key) # 인벤의 아이템 반환
-                        if item_u == row_inven:
-                            mino = row_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == col_inven:
-                            mino = col_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == bomb_inven:
-                            mino = bomb_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == reset_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            board_reset()
-                        elif item_u == earthquake_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            earthquake()
+                        if len(inven) != 0:
+                            item_u = use_item(key) # 인벤의 아이템 반환
+                            if item_u == row_inven:
+                                mino = row_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == col_inven:
+                                mino = col_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == bomb_inven:
+                                mino = bomb_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == reset_inven:
+                                erase_mino(dx, dy, mino, rotation)
+                                board_reset()
+                            elif item_u == earthquake_inven:
+                                erase_mino(dx, dy, mino, rotation)
+                                earthquake()
                         
-                        draw_mino(dx,dy, mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+                        draw_mino(dx, dy, mino, rotation)
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_x: # 인벤토리 첫 번째 아이템 사용
                     key = 2
                     if item:
-                        item_u = use_item(key) # 인벤의 아이템 반환
-                        if item_u == row_inven:
-                            mino = row_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                            score += 50 # 한 줄 삭제했을 때의 점수
-                        elif item_u == col_inven:
-                            mino = col_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == bomb_inven:
-                            mino = bomb_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == reset_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            board_reset()
-                        elif item_u == earthquake_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            earthquake()
-                            score += 50 # 한 줄 삭제했을 때의 점수
+                        if len(inven) > 1:
+                            item_u = use_item(key) # 인벤의 아이템 반환
+                            if item_u == row_inven:
+                                mino = row_mino
+                                erase_mino(dx, dy, mino, rotation)
+                                score += 50 # 한 줄 삭제했을 때의 점수
+                            elif item_u == col_inven:
+                                mino = col_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == bomb_inven:
+                                mino = bomb_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == reset_inven: # 리셋 이상함
+                                erase_mino(dx, dy, mino, rotation)
+                                board_reset()
+                            elif item_u == earthquake_inven:
+                                erase_mino(dx, dy, mino, rotation)
+                                earthquake()
+                                score += 50 # 한 줄 삭제했을 때의 점수
                         
                         draw_mino(dx,dy, mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_c: # 인벤토리 첫 번째 아이템 사용
                     key = 3
                     if item:
-                        item_u = use_item(key) # 인벤의 아이템 반환
-                        if item_u == row_inven:
-                            mino = row_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                            score += 50 # 한 줄 삭제했을 때의 점수
-                        elif item_u == col_inven:
-                            mino = col_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == bomb_inven:
-                            mino = bomb_mino-2
-                            erase_mino(dx, dy, mino, rotation)
-                        elif item_u == reset_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            board_reset()
-                        elif item_u == earthquake_inven:
-                            erase_mino(dx, dy, mino, rotation)
-                            earthquake()
-                            score += 50 # 한 줄 삭제했을 때의 점수
+                        if len(inven) >2:
+                            item_u = use_item(key) # 인벤의 아이템 반환
+                            if item_u == row_inven:
+                                mino = row_mino
+                                erase_mino(dx, dy, mino, rotation)
+                                score += 50 # 한 줄 삭제했을 때의 점수
+                            elif item_u == col_inven:
+                                mino = col_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == bomb_inven:
+                                mino = bomb_mino
+                                erase_mino(dx, dy, mino, rotation)
+                            elif item_u == reset_inven:
+                                erase_mino(dx, dy, mino, rotation)
+                                board_reset()
+                            elif item_u == earthquake_inven:
+                                erase_mino(dx, dy, mino, rotation)
+                                earthquake()
+                                score += 50 # 한 줄 삭제했을 때의 점수
                         
                         draw_mino(dx,dy, mino, rotation)
-                        draw_itemboard(next_mino, hold_mino, score, level, goal, inven)   
+                        draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                        
                     
@@ -2248,14 +2291,14 @@ while not done:
 
                 if reverse_over:
                     comboCounter = 0
-                    draw_reverse_board(next_mino, hold_mino, score, level, goal)
+                    draw_reverse_board(next_mino1, hold_mino, score, level, goal)
                 elif item: # 아이템 보드 추가
-                    draw_itemboard(next_mino, hold_mino, score, level, goal, inven)
+                    draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)
                 elif hard: # 하드모드 보드 추가
                     draw_hardboard(hold_mino, score, level, goal)
                 else:
                     comboCounter = 0
-                    draw_board(next_mino, hold_mino, score, level, goal)
+                    draw_board(next_mino1, hold_mino, score, level, goal)
             
             
             
@@ -2316,8 +2359,14 @@ while not done:
                     rotation = 0
                     mino = randint(1, 7)
                     next_mino = randint(1, 7)
+                    next_mino1 = randint(1, 7)
+                    next_mino2 = randint(1, 7)
                     hold_mino = -1
-                    values.framerate = 30
+                    # ㄷㅎ
+                    item_mino = randint(1, 9)
+                    item_next_mino = randint(1, 9)
+                    #item_hold_mino = -1
+                    framerate = 30
                     fever_score = 500
                     score = 0
                     max_score = 99999
