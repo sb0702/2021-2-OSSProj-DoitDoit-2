@@ -77,7 +77,7 @@ class ui_variables:
     col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
     itembox_image = 'assets/images/blocks/itembox.png' 
 
-    help_eng = 'assets/images/help_eng.png'
+    help_eng = 'assets/images/keyhelp_eng.png'
     help_kor = 'assets/images/help_kor2.png'
 
     # Background colors

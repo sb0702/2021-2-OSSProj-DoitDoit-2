@@ -2805,10 +2805,6 @@ while not done:
 
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
-                        # help_img = pygame.transform.scale(help_img,(ui_variables.SCREEN_WIDTH*0.9, ui_variables.SCREEN_HEIGHT*0.5))
-                        # help_img_r = help_img.get_rect()
-                        # help_img_r.center= (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
-                        
                        
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
@@ -2829,32 +2825,8 @@ while not done:
                 screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
 
-                # font2 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 15)
-                # title_2 = font2.render("Key help", 1, ui_variables.grey_1)
-                # screen.blit(title_2, title_2.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 5 / 16)))
-
-                # help_text = [
-                #     (0, "   ", "1p      2p"),
-                #     (1, "조작법", "WASD    방향키"),
-                #     (2, "블록 홀드", "Lshift    Rshift"),
-                #     (3, "블록 변형", "CONTROL"),
-                #     (4, "하드 드롭", "E    SPACE"),
-                #     (5, "일시정지", "ESC")
-                # ]
-
-                # for h, left, right in help_text:
-                #     text_left = font2.render(left, 1, ui_variables.grey_1)
-                #     text_right = font2.render(right, 1, ui_variables.grey_1)
-
-                #     height = ui_variables.SCREEN_HEIGHT * (h + 6) / 16
-                #     left_pos = ui_variables.SCREEN_WIDTH * 4 / 10
-                #     right_pos = ui_variables.SCREEN_WIDTH * 6 / 10
-
-                #     screen.blit(text_left, text_left.get_rect(center=(left_pos, height)))
-                #     screen.blit(text_right, text_right.get_rect(center=(right_pos, height)))
-
-                help_img = pygame.image.load(ui_variables.help_kor)
-                help_img = pygame.transform.scale(help_img,(ui_variables.SCREEN_WIDTH*0.9, ui_variables.SCREEN_HEIGHT*0.5))
+                help_img = pygame.image.load(ui_variables.help_eng)
+                help_img = pygame.transform.scale(help_img,(ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
                 help_img_r = help_img.get_rect()
                 help_img_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
                 screen.blit(help_img, help_img.get_rect(center=help_img_r.center))
