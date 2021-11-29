@@ -13,3 +13,4 @@ class values:
     feverBlockGoal = 3 ## 몇개의 블럭을 격파해야 피버가 주어지는지를 정하는 변수
     Basictimer = 15
     barriertimer=10
+    fever_score = 500 # 수빈
