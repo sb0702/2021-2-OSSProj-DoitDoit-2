@@ -109,3 +109,4 @@ class ui_variables:
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
                 ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image] # item_image 넣기, draw_itemboard에서 사용
  
+ 
