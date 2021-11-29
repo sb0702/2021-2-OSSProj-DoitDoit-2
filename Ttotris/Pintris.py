@@ -2383,8 +2383,8 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                    text = "ID"
-                    password = "PASSWORD"
+                    text = ""
+                    password = ""
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
