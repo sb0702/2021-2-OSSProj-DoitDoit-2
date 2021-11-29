@@ -808,21 +808,21 @@ def isthereID(ID, table):
         return False
     else:
         return True
-def istheresaved(SavedID,SavedPass,table):
-    if isthereID(SavedID,table):
+def istheresaved(name2,SavedPass,table):
+    if isthereID(name2,table):
         cursor = tetris.cursor()
         sql = "INSERT INTO {} (id, password,score) VALUES (%s,%s,%s)".format(table)
-        cursor.execute(sql, (SavedID, SavedPass,score))
+        cursor.execute(sql, (name2, SavedPass,score))
         tetris.commit()  
         cursor.close() ## tetris db insert 
     else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
-        cursor.execute(sql, SavedID)
+        cursor.execute(sql, name2)
         result = cursor.fetchone()
         if result[0] < score:                           
             sql = "Update {} set score = %s where id =%s".format(table)
-            cursor.execute(sql, (score,SavedID))
+            cursor.execute(sql, (score,name2))
             tetris.commit()  
             cursor.close() ## tetris db insert 
         else: pass
@@ -2338,16 +2338,17 @@ while not done:
                 if event.key == K_RETURN:  ## enter 인듯
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
-                    ## 여기서부터 기록 저장                    
+                    ## 여기서부터 기록 저장
+                    name2 = SavedID
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
-                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
-                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
-                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                    page, selected = MENU_PAGE, 0 
+                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                     
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2378,9 +2379,12 @@ while not done:
                     ui_variables.min_height = 350
                     values.board_rate = 0.5
                     hard_drop = False
+                    name_location = 0
+                    name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-    
+                    text = "ID"
+                    password = "PASSWORD"
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2566,6 +2570,7 @@ while not done:
                                 if isthereID2(text, mode, password): 
                                     SavedPass = password
                                     SavedID = text
+                                    password = ""
                                     pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                                     page, selected = MENU_PAGE, 0
                                 else:
@@ -2776,9 +2781,21 @@ while not done:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
                             page, selected = MENU_PAGE, 0
-                        # elif event.key == K_RIGHT:
-                        #     pygame.key.set_repeat(0)
-                        #     # if selected <2:
+                        elif event.key == K_RIGHT:
+                            pygame.key.set_repeat(0)
+                            if selected == 0:
+                                ui_variables.click_sound.play()
+                                selected = selected + 1
+                        elif event.key == K_LEFT:
+                            pygame.key.set_repeat(0)
+                            if selected > 0:
+                                # previous difficulty select
+                                ui_variables.click_sound.play()
+                                selected = selected - 1
+                        
+                        
+
+                        
 
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
@@ -2825,13 +2842,17 @@ while not done:
                 screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
                 screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
 
-                help_img = pygame.image.load(ui_variables.help_eng)
-                help_img = pygame.transform.scale(help_img,(ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
-                help_img_r = help_img.get_rect()
-                help_img_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
-                screen.blit(help_img, help_img.get_rect(center=help_img_r.center))
+                keyhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_key), (ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
+                keyhelp_r = keyhelp_img.get_rect()
+                keyhelp_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
 
-               
+                itemhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_item), (ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
+                itemhelp_r = itemhelp_img.get_rect()
+                itemhelp_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
+                
+                
+
+              
 
             # Setting Page
             elif page == SETTING_PAGE:
