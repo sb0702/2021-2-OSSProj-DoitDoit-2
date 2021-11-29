@@ -1139,9 +1139,11 @@ while not done:
                     pygame.time.set_timer(pygame.USEREVENT, 1)
 
                 elif event.key == K_RETURN:
+                    
                     start = False
                     pause = False
                     
+                    page, selected = MENU_PAGE, 0
                     set_difficulty = 0
                     width = ui_variables.DEFAULT_WIDTH
                     height = ui_variables.DEFAULT_HEIGHT
@@ -1153,10 +1155,8 @@ while not done:
                     next_mino1 = randint(1, 7)
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
-                    # ㄷㅎ
                     item_mino = randint(1, 9)
-                    item_next_mino = randint(1, 9)
-                    #item_hold_mino = -1
+
                     values.framerate = 30
                     fever_score = 500
                     hard_score = 500
@@ -1173,8 +1173,7 @@ while not done:
                     inven = [] # 인벤토리 리셋
                     hard_i = 1
                     #hard = False
-                   
-                   
+
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
                     ui_variables.min_width = 700
@@ -2335,7 +2334,7 @@ while not done:
                 
             elif event.type == KEYDOWN:        
 
-                if event.key == K_RETURN:  ## enter 인듯
+                if event.key == K_RETURN: 
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
@@ -2362,10 +2361,8 @@ while not done:
                     next_mino1 = randint(1, 7)
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
-                    # ㄷㅎ
                     item_mino = randint(1, 9)
-                    item_next_mino = randint(1, 9)
-                    #item_hold_mino = -1
+
                     values.framerate = 30
                     fever_score = 500
                     score = 0
@@ -3302,7 +3299,6 @@ while not done:
                 
                 velocity = ui_variables.h2.render(str(set_difficulty), 1, ui_variables.black)
                 pos_velocity = velocity.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 15 ))
-		            # center: 지정한 좌표가 velocity 텍스트의 중심에  가게
                 screen.blit(velocity, pos_velocity)
                 
                 if set_difficulty > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
@@ -3310,13 +3306,11 @@ while not done:
                            [ui_variables.SCREEN_WIDTH / 2 - 30, ui_variables.SCREEN_HEIGHT / 2 + 60],
                            [ui_variables.SCREEN_WIDTH / 2 + 30, ui_variables.SCREEN_HEIGHT / 2 + 60]]
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0) # 원하는 좌표에 삼각형 그리기
-			            # pos, 1하면 두께 1로 선만, 0 하면 채우기
 
                 if set_difficulty < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
                     pos = [[ui_variables.SCREEN_WIDTH / 2 , ui_variables.SCREEN_HEIGHT / 2 - 60],
                            [ui_variables.SCREEN_WIDTH / 2 - 30 , ui_variables.SCREEN_HEIGHT / 2 - 30],
                            [ui_variables.SCREEN_WIDTH / 2 + 30, ui_variables.SCREEN_HEIGHT / 2 - 30]]
-		                    # 좌표 계산해서 넣기
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0) 
                 
                 
