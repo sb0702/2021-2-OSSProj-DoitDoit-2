@@ -808,21 +808,21 @@ def isthereID(ID, table):
         return False
     else:
         return True
-def istheresaved(name2,SavedPass,table):
-    if isthereID(name2,table):
+def istheresaved(SavedID,SavedPass,table):
+    if isthereID(SavedID,table):
         cursor = tetris.cursor()
         sql = "INSERT INTO {} (id, password,score) VALUES (%s,%s,%s)".format(table)
-        cursor.execute(sql, (name2, SavedPass,score))
+        cursor.execute(sql, (SavedID, SavedPass,score))
         tetris.commit()  
         cursor.close() ## tetris db insert 
     else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
-        cursor.execute(sql, name2)
+        cursor.execute(sql, SavedID)
         result = cursor.fetchone()
         if result[0] < score:                           
             sql = "Update {} set score = %s where id =%s".format(table)
-            cursor.execute(sql, (score,name2))
+            cursor.execute(sql, (score,SavedID))
             tetris.commit()  
             cursor.close() ## tetris db insert 
         else: pass
@@ -2338,17 +2338,16 @@ while not done:
                 if event.key == K_RETURN:  ## enter 인듯
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
-                    ## 여기서부터 기록 저장
-                    name2 = SavedID
+                    ## 여기서부터 기록 저장                    
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                     
+                        istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                    page, selected = MENU_PAGE, 0 
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2379,12 +2378,9 @@ while not done:
                     ui_variables.min_height = 350
                     values.board_rate = 0.5
                     hard_drop = False
-                    name_location = 0
-                    name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                    text = "ID"
-                    password = "PASSWORD"
+    
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2570,7 +2566,6 @@ while not done:
                                 if isthereID2(text, mode, password): 
                                     SavedPass = password
                                     SavedID = text
-                                    password = ""
                                     pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                                     page, selected = MENU_PAGE, 0
                                 else:
