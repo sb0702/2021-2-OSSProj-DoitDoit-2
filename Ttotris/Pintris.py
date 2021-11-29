@@ -2850,7 +2850,15 @@ while not done:
                 itemhelp_r = itemhelp_img.get_rect()
                 itemhelp_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
                 
-                
+                if current_selected == 0:
+                    screen.blit(keyhelp_img, keyhelp_img.get_rect(center=keyhelp_r.center))
+                    pos = [[ui_variables.SCREEN_WIDTH - 10, ui_variables.SCREEN_HEIGHT / 2], [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 - 5],
+                           [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
+                else:
+                    screen.blit(itemhelp_img, itemhelp_img.get_rect(center=itemhelp_r.center))
+                    pos = [[10, ui_variables.SCREEN_HEIGHT / 2], [15, ui_variables.SCREEN_HEIGHT / 2 - 5], [15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
 
               
 
