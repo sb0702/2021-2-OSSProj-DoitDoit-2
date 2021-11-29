@@ -3036,11 +3036,11 @@ while not done:
                 DIFFICULTY_COUNT = 5
                 DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
-                    "기본 테트리스 모드입니다.",
-                    "게임 중 방해 요소가 포함된 모드입니다.",
-                    "1P 2P 로 플레이 할 수 있는 PvP모드 입니다.",
-                    "아이템 사용이 가능한 모드입니다.",
-                    "방향키와 블록 등장이 반대인 리버스모드 입니다."
+                    "Noraml tetris mode",
+                    "Includes obstacles during the game",
+                    "Player versus Player",
+                    "A variety of items will appearing",
+                    "Game key reversed"
                 ]
                 set_difficulty = 0
                 current_selected = selected
