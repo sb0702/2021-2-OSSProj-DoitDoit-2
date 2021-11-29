@@ -2697,7 +2697,7 @@ while not done:
                             elif selected == 1:
                                 # select help menu, goto help page
                                 ui_variables.click_sound.play()
-                                page = HELP_PAGE
+                                page, selected = HELP_PAGE, 0
                             elif selected == 2:
                                 # select settings menu, goto settings menu
                                 ui_variables.click_sound.play()
@@ -2771,6 +2771,7 @@ while not done:
 
             # HELP PAGE
             elif page == HELP_PAGE:
+                current_selected = selected
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         done = True
@@ -2780,6 +2781,10 @@ while not done:
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
                             page, selected = MENU_PAGE, 0
+                        # elif event.key == K_RIGHT:
+                        #     pygame.key.set_repeat(0)
+                        #     # if selected <2:
+
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
