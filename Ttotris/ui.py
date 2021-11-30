@@ -20,6 +20,8 @@ class ui_variables:
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
     font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
+    font_path_s = "./assets/fonts/OpenSans-Semibold.ttf"
+
     # 타이머 바 관련 
     barPos      = (650, 200)
     barSize     = (250, 20)
@@ -39,6 +41,8 @@ class ui_variables:
 
     h1_b = pygame.font.Font(font_path_b, 50)
     h2_b = pygame.font.Font(font_path_b, 30)
+
+    h1_s = pygame.font.Font(font_path_s, 50)
 
     h2_i = pygame.font.Font(font_path_i, 28)
     h5_i = pygame.font.Font(font_path_i, 13)

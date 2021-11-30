@@ -2650,7 +2650,7 @@ while not done:
                     Rect(0, 0, int(ui_variables.SCREEN_WIDTH), int(ui_variables.SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("TTOTRIS™", 1, ui_variables.white)
                 login = ui_variables.h1.render("ID", 1, ui_variables.grey_1)
                 passwordScreen = ui_variables.h1.render("PassWord", 1, ui_variables.grey_1)
                 ID = ui_variables.h2.render("ID", 1, ui_variables.grey_1)
@@ -2752,7 +2752,7 @@ while not done:
                          int(ui_variables.SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("TTOTRIS™", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press up and down to change, space to select", 1,
                                                     ui_variables.grey_1)
 
@@ -2986,7 +2986,7 @@ while not done:
                     )
                 )
 
-                title = ui_variables.h1.render("SETTINGS", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("SETTINGS", 1, ui_variables.white)
 
                 title_info = ui_variables.h6.render("Press esc to return menu", 1, ui_variables.grey_1)
 
@@ -3188,7 +3188,7 @@ while not done:
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(ui_variables.SCREEN_WIDTH / 11, ((ui_variables.SCREEN_HEIGHT * 0.05*(i+1))))))
                 
-                title = ui_variables.h1.render(difficulty_name, 1, ui_variables.white)
+                title = ui_variables.h1_s.render(difficulty_name, 1, ui_variables.white)
                 title_explain = font2.render(difficulty_explain, 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Press left and right to change, space to select difficulty", 1,
                                                     ui_variables.grey_1)
@@ -3307,7 +3307,7 @@ while not done:
                              int(ui_variables.SCREEN_HEIGHT * 0.24))
                     )
                 )
-                title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("DIFFICULTY", 1, ui_variables.white)
 
                 title_info1 = ui_variables.h6.render("Press up and down to change speed, space to start game", 1, ui_variables.grey_1)
                 title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
