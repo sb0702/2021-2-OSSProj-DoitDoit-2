@@ -818,7 +818,7 @@ def istheresaved(SavedID,SavedPass,table):
     else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
-        cursor.execute(sql, SavedID)
+        cursor.execute(sql, SavedID)   ## 명섭
         result = cursor.fetchone()
         if result[0] < score:                           
             sql = "Update {} set score = %s where id =%s".format(table)
@@ -2339,13 +2339,13 @@ while not done:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장                    
-                    if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
+                    if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal  명섭
                         istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
                         istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
                         istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                    if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
+                    if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal   명섭
                         istheresaved(SavedID,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     page, selected = MENU_PAGE, 0 
                     width = DEFAULT_WIDTH  # Board width
@@ -2565,7 +2565,7 @@ while not done:
                             for mode in ("NORMAL", "HARD", "REVERSE", "ITEM"):
                                 if isthereID2(text, mode, password): 
                                     SavedPass = password
-                                    SavedID = text
+                                    SavedID = text ## 명섭 
                                     pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                                     page, selected = MENU_PAGE, 0
                                 else:
