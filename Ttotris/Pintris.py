@@ -191,7 +191,7 @@ def draw_board(next, hold, score, level, goal):
 def draw_hardboard(hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
     sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
-
+    
     # Draw sidebar
     pygame.draw.rect(
         screen,
@@ -220,7 +220,6 @@ def draw_hardboard(hold, score, level, goal):
 
     # Draw texts
     text_hold = ui_variables.h5.render("HOLD", 1, ui_variables.black)
-    #text_next = ui_variables.h5.render(" ", 1, ui_variables.black)
     text_score = ui_variables.h5.render("SCORE", 1, ui_variables.black)
     score_value = ui_variables.h4.render(str(score), 1, ui_variables.black)
     text_level = ui_variables.h5.render("LEVEL", 1, ui_variables.black)
@@ -231,7 +230,6 @@ def draw_hardboard(hold, score, level, goal):
 
     # Place texts
     screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    #screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
     screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
     screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
     screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
@@ -249,6 +247,7 @@ def draw_hardboard(hold, score, level, goal):
             dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
             dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
+
 
 def draw_reverse_board(next, hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
@@ -316,6 +315,7 @@ def draw_reverse_board(next, hold, score, level, goal):
     screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
     screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
     screen.blit(text_fever, text_fever.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
+    
 
 
     # Draw board
@@ -972,7 +972,6 @@ def bomb():# 3x3 블록 삭제 아이템 효과
 
 
 
-
 # Start game
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
@@ -1003,6 +1002,8 @@ item = False
 item_over = False
 hard_erase = False
 q = 0 
+barrier_size = 1200 # 장애물 크기
+
 # Initial values
 speed_change = 2.2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
 mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
@@ -1037,7 +1038,7 @@ hard_i = 1
 item_list = [] # 변하면 안 됨
 inven = [] # 변함
 inven_size = 50 # 인벤토리 사이즈
-
+barrier_size = 1200 # 장애물 
 earthquake_inven = pygame.image.load("assets/images/earthquake_Item_1.png") # 맨 아래줄 지우기
 reset_inven = pygame.image.load("assets/images/reset_Item.png") # 전체 블록 리셋
 row_inven = pygame.image.load("assets/images/erase_row_Item.png") # 가로 한 줄 삭제, 별도의 mino 필요
@@ -1085,7 +1086,6 @@ attack_stack = 0
 attack_stack_2P = 0
 erase_stack = 0
 erase_stack_2P = 0
-
 
 
 matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
@@ -1238,11 +1238,11 @@ while not done:
                     ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
                     ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
-
+                
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
     # Game screen
     elif start:        
         for event in pygame.event.get():
@@ -1319,9 +1319,9 @@ while not done:
                     for i in range(width): 
                         if matrix[i][j] == 0:
                             is_full = False
-                        if matrix[i][j] == 9: 
+                        if matrix[i][j] == 9: # 맨 밑줄 꽉 차있는데 하드모드이면
                             if hard:
-                                is_full = False 
+                                is_full = False # 꽉 차지 않은 걸로 인식 -> 방해블록 안 깨짐
                         
                     if is_full:
                         erase_count += 1
@@ -1358,6 +1358,7 @@ while not done:
                 # Increase level
                 goal -= erase_count
                 if goal < 1 and level < 15:
+                    # 하드모드 레벨업 시 방해블록 생성
                     if hard:
                         level += 1
                         # 레벨업시 이미지 출력
@@ -1375,7 +1376,8 @@ while not done:
                                 matrix[i][j] = matrix[i][j + 1]
                         
                         for i in range(width):                            
-                            matrix[i][height] = 9 
+                            matrix[i][height] = 9 # 꽉 찬 방해블록 생성
+                            
 
                     else:
                         level += 1
@@ -1429,33 +1431,24 @@ while not done:
                             next_mino1 = randint(1, 7)                       
                             fever = False
                 
-
-
-
-                                     
-
-
                 
-                # 500~1000, 2000~2500, 3500~4000,, 단위로 장애물 등장
+                # 하드모드에서 500~750, 2000~2250, 3500~3750,, 단위로 장애물 등장
                 if mode_selected == 1:
-                    
                     for i in range(1, max_score, interval):
-                        
-                        if score > i * hard_score and score < (i + 1) * hard_score: 
+                        if score > i * hard_score and score < (i + 0.5) * hard_score: 
                             
-                            #screen.blit(pygame.transform.scale(ui_variables.hard_barrier, (int(SCREEN_WIDTH * 0.5), int(SCREEN_HEIGHT * 0.5))), [550,-50])
+                            barrier = pygame.transform.scale(ui_variables.hard_barrier, (barrier_size, barrier_size*0.5))
+                            dx_barrier = barrier_size * 0.35 # 장애물 x축
+                            dy_barrier1 = barrier_size * 0.001 # 장애물1 y축
+                            dy_barrier2 = barrier_size * 0.5 # 장애물2 y축
                             if blink1:
-                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5))),
-                                            [150,0])
+                                screen.blit(barrier,(dx_barrier, dy_barrier1))
                                 blink1 = False
                             else:
                                 blink1 = True
-                        
+                            
                             if blink2:
-                                screen.blit(pygame.transform.scale(ui_variables.hard_barrier,
-                                                                (int(ui_variables.SCREEN_WIDTH * 0.5), int(ui_variables.SCREEN_HEIGHT * 0.5))),
-                                            [150,250])
+                                screen.blit(barrier,(dx_barrier, dy_barrier2))
                                 blink2 = False
                             else:
                                 blink2 = True
@@ -1769,8 +1762,9 @@ while not done:
                     ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * values.board_rate)  # 높이를 적정 비율로 바꿔줌
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
         pygame.display.update()
 
 
@@ -2280,11 +2274,11 @@ while not done:
                     ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / values.board_rate)  # 너비를 적정 비율로 바꿔줌
 
                     ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * values.board_rate)  # 높이를 적정 비율로 바꿔줌
-
+                
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
         pygame.display.update()
 
     # Game over screen
@@ -2340,7 +2334,7 @@ while not done:
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.display.update()
                 
             elif event.type == KEYDOWN:        
@@ -2479,7 +2473,7 @@ while not done:
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.display.update()
 
             elif event.type == KEYDOWN:
@@ -2635,7 +2629,7 @@ while not done:
                         block_size = int(SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-                    
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                     
                         
                            
@@ -2644,6 +2638,7 @@ while not done:
                 block_size = int(SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
@@ -2742,9 +2737,10 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                
                 screen.fill(ui_variables.white)
+                block_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
@@ -2837,7 +2833,7 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                        
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
@@ -2971,10 +2967,12 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
@@ -3116,10 +3114,12 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
@@ -3293,10 +3293,12 @@ while not done:
                         block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                         inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                         
                 block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
                 inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
+                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
