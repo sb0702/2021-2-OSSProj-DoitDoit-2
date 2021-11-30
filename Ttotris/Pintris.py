@@ -1977,30 +1977,33 @@ while not done:
                 if erase_stack >= 3 and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
                                 (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, values.framerate)
                 elif erase_stack > erase_stack_2P and erase_stack >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
                                 (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, values.framerate)
                 elif erase_stack < erase_stack_2P and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                        (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
                                 (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, values.framerate)
 
 
             elif event.type == KEYDOWN:
@@ -3054,7 +3057,7 @@ while not done:
                     "Can you play Tetris while overcoming obstacles? ",
                     "Player versus Player",
                     "Lots of items will be appeared in game",
-                    "Can you play Tetris with reverse direction keys?"
+                    "Can you play Tetris with reversed direction keys?"
                 ]
                 set_difficulty = 0
                 current_selected = selected
