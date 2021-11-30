@@ -77,8 +77,8 @@ class ui_variables:
     col_image = 'assets/images/blocks/erase_col_Item.png' # erase_col image
     itembox_image = 'assets/images/blocks/itembox.png' 
 
-    help_eng = 'assets/images/help_eng.png'
-    help_kor = 'assets/images/help_kor2.png'
+    help_key = 'assets/images/keyhelp_eng.png'
+    help_item = 'assets/images/help_item.png'
 
     # Background colors
     black = (10, 10, 10)  # rgb(10, 10, 10)
@@ -108,4 +108,5 @@ class ui_variables:
 
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
                 ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image] # item_image 넣기, draw_itemboard에서 사용
+ 
  
