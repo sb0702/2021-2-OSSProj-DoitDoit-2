@@ -1,37 +1,15 @@
 import pygame
+import wave
 from pygame import font
+from pygame.locals import *
 
 class ui_variables:
     pygame.init()
-    ## 게임 보드 관련
-    SCREEN_WIDTH = 1200
-    SCREEN_HEIGHT = 600
-    DEFAULT_WIDTH = 10
-    DEFAULT_HEIGHT = 20
-    block_size = 17  # Height, width of single block
-    width = DEFAULT_WIDTH  # Board width
-    height = DEFAULT_HEIGHT  # Board height
-    min_width = 700
-    min_height = 350
-    c =0
-    mino_size = 4
-    mino_turn = 4
     # Fonts
     font_path = "./assets/fonts/OpenSans-Light.ttf"
     font_path_b = "./assets/fonts/OpenSans-Bold.ttf"
     font_path_i = "./assets/fonts/Inconsolata/Inconsolata.otf"
     font_path_s = "./assets/fonts/OpenSans-Semibold.ttf"
-
-    # 타이머 바 관련 
-    barPos      = (650, 200)
-    barSize     = (250, 20)
-    borderColor = (0, 0, 0)
-    barColor    = (0, 128, 0)
-    # 변경할 이름 입력방식
-    text = ""
-    input_active = True
-    color_active = pygame.Color('lightskyblue3')
-    color_inactive = pygame.Color('blue')
     
     h1 = pygame.font.Font(font_path, 50)
     h2 = pygame.font.Font(font_path, 30)
@@ -46,6 +24,12 @@ class ui_variables:
 
     h2_i = pygame.font.Font(font_path_i, 28)
     h5_i = pygame.font.Font(font_path_i, 13)
+
+    # 로그인 관련
+    text = ""
+    input_active = True
+    color_active = pygame.Color('lightskyblue3')
+    color_inactive = pygame.Color('blue')
 
     # Sounds
     click_sound = pygame.mixer.Sound("assets/sounds/SFX_ButtonUp.wav")
@@ -66,6 +50,12 @@ class ui_variables:
     hard_barrier = pygame.image.load("assets/images/ink.png")
     loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
     
+    earthquake_inven = pygame.image.load("assets/images/earthquake_Item_1.png") # 맨 마지막 줄 지우기
+    reset_inven = pygame.image.load("assets/images/reset_Item.png") # 전체 블록 리셋
+    row_inven = pygame.image.load("assets/images/erase_row_Item.png") # 가로 한 줄 삭제, 별도의 mino 필요
+    col_inven = pygame.image.load("assets/images/erase_col_Item.png") # 세로 한 줄 삭제, 별도의 mino 필요
+    bomb_inven = pygame.image.load("assets/images/bomb_Item.png") # 3x3 삭제, 별도의 mino 필요
+
     cyan_image ='assets/images/blocks/cyan.png' 
     blue_image = 'assets/images/blocks/blue.png'
     orange_image = 'assets/images/blocks/orange.png'
@@ -104,13 +94,12 @@ class ui_variables:
     bomb_i = (13, 13, 13)  # row_item 
     i_box = (14, 14, 14) # item_box
     
-    # timer
-    Basictimer = 50
-    
     # blocks
     t_color = [grey_2, cyan, blue, orange, yellow, green, pink, red, grey_3, grey_4, row_i, col_i, bomb_i, i_box] # 8: ghost, 9: 장애물
 
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
                 ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image] # item_image 넣기, draw_itemboard에서 사용
  
- 
+        
+    # timer
+    Basictimer = 50
