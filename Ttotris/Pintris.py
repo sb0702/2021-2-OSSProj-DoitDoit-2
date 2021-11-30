@@ -1362,14 +1362,15 @@ while not done:
 
                     else:
                         level += 1
-                        goal += level * 2
-                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                         # 레벨업시 이미지 출력
                         screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                     (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                         pygame.display.update()
-                        pygame.time.delay(200)
+                        pygame.time.delay(100)
+                        goal += level * 2
+                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        pygame.time.set_timer(pygame.USEREVENT, values.framerate)
                         # 기존 있던 블럭들 한 칸씩 증가                        
                         for j in range(height):
                             for i in range(width):
