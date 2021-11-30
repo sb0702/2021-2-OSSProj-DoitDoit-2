@@ -833,7 +833,7 @@ def istheresaved(name2,SavedPass,table):
     else :      
         cursor = tetris.cursor()
         sql = "select score from {} where id =%s".format(table)
-        cursor.execute(sql, name2)
+        cursor.execute(sql, SavedID)   ## 명섭
         result = cursor.fetchone()
         if result[0] < score:                           
             sql = "Update {} set score = %s where id =%s".format(table)
@@ -841,24 +841,41 @@ def istheresaved(name2,SavedPass,table):
             tetris.commit()  
             cursor.close() ## tetris db insert 
         else: pass
-def isthereID2(ID, table, password):
+def LoginPass(ID, table, password):
     curs = tetris.cursor()
     sql = "SELECT * FROM {} WHERE id=%s and password = %s".format(table)
     curs.execute(sql, (ID,password))
-    data = curs.fetchone()
+    Findedpassword = curs.fetchone()
+    if Findedpassword:
+        return True
+    else:
+        return False
+  
+def LoginID(table, ID):
+    curs = tetris.cursor()
     sql = "SELECT password FROM {} WHERE id=%s".format(table)
     curs.execute(sql, ID)
-    Findedpassword = curs.fetchone()
+    data = curs.fetchone()
     curs.close()
     if data:
         return True
     else:
         return False
 
-  
-    
-
-
+def LoginCom(ID,table,password):   
+    if LoginID(table,ID):
+        if LoginPass(ID, table, password): 
+            ## 명섭 
+            print("정답")
+            return True
+        else:
+            print("암호 틀림")
+            return False             
+    else:
+        print("신규")
+        return False
+        
+        
 
 def DrawBar(pos, size, borderC, barC, progress):
     
@@ -1227,8 +1244,7 @@ while not done:
                 screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
 
     # Game screen
-    elif start:
-         
+    elif start:        
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
@@ -1392,7 +1408,7 @@ while not done:
                 if  values.feverTimeAddScore[4] > score >= values.feverTimeAddScore[3]:
                     TimeDecreasedByScore = values.feverAddingTime[3]
                 if  score >= values.feverTimeAddScore[4]:
-                    ADD = values.feverAddingTime[4]     
+                    TimeDecreasedByScore = values.feverAddingTime[4]     
                 if comboCounter > values.feverBlockGoal and mode_selected != 1 and mode_selected != 3 :
                     if fever == False:
                         t0 = time.time()
@@ -1931,7 +1947,7 @@ while not done:
                     goal_2P += level_2P * 2
 
                 attack_interval = values.fever_interval  # attack_interval = 3
-                attack_score = fever_score  # attack_score = 500
+                attack_score = values.fever_score  # attack_score = 500
 
                 # 1P
                 for i in range(2, max_score, attack_interval):
@@ -2328,16 +2344,16 @@ while not done:
                     pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()                
                     ## 여기서부터 기록 저장
-                    name2 = SavedID
-                    if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                    istheresaved(text,SavedPass,"PLAYER")            
+                    if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal  명섭
+                        istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "ITEM": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                        istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "HARD": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                    if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal
-                        istheresaved(name2,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                     
+                        istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                    if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal   명섭
+                        istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
+                    page, selected = MENU_PAGE, 0 
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2352,7 +2368,6 @@ while not done:
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
                     item_mino = randint(1, 9)
-
                     values.framerate = 30
                     fever_score = 500
                     score = 0
@@ -2370,8 +2385,7 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                    text = "ID"
-                    password = "PASSWORD"
+                     ## 게임 끝나면 패스워드 초기화
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2393,7 +2407,9 @@ while not done:
                     attack_stack_2P = 0
                     erase_stack = 0
                     erase_stack_2P = 0
-                    page, selected = MENU_PAGE, 0
+                    text=""
+                    password =""
+                    page, selected = START_PAGE, 0
                 pygame.display.flip()
                 pygame.key.set_repeat(0)
                 
@@ -2537,6 +2553,10 @@ while not done:
         while not done and not start and not reverse and not pvp and not item:
             # Start Page
             if page == START_PAGE:
+                if text == "":
+                    text = SavedID
+                if password =="":
+                    password = SavedPass
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         done = True
@@ -2553,18 +2573,20 @@ while not done:
                         elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
-                            for mode in ("NORMAL", "HARD", "REVERSE", "ITEM"):
-                                if isthereID2(text, mode, password): 
-                                    SavedPass = password
-                                    SavedID = text
-                                    password = ""
-                                    pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
-                                    page, selected = MENU_PAGE, 0
-                                else:
-                                    SavedID = text
-                                    SavedPass = password
-                                    page, selected = MENU_PAGE, 0
-                                    
+                            if LoginCom(text,"PLAYER",password):
+                                print("등록된") 
+                                SavedID = text
+                                SavedPass = password    
+                                page, selected = MODE_PAGE,0
+                            elif LoginID("PLAYER",text) == False:
+                                print("신규")   
+                                SavedID = text
+                                SavedPass = password 
+                                page, selected = MODE_PAGE,0
+                                
+                            elif LoginID("PLAYER",text) == True and LoginPass(text,"PLAYER",password) == False:
+                                print("비밀번호 틀림")    
+                                page, selected = START_PAGE,0
                         
                         else:
                             if IDchoice == True:
@@ -3027,10 +3049,10 @@ while not done:
                 DIFFICULTY_NAMES = ["NORMAL", "HARD","PVP", "ITEM", "REVERSE"]
                 DIFFICULTY_EXPLAINES = [
                     "Noraml tetris mode",
-                    "Includes obstacles during the game",
+                    "Can you play Tetris while overcoming obstacles? ",
                     "Player versus Player",
-                    "A variety of items will appearing",
-                    "Game key reversed"
+                    "Lots of items will be appeared in game",
+                    "Can you play Tetris with reverse direction keys?"
                 ]
                 set_difficulty = 0
                 current_selected = selected
