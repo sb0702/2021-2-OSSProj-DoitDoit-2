@@ -2419,7 +2419,7 @@ while not done:
                     if event.type == QUIT:
                         done = True
                     elif event.type == KEYDOWN:
-                        
+                        ## 아이디 입력
                         if event.key == pygame.K_BACKSPACE:
                             if IDchoice == True:
                                 text = text[:-1]                               
@@ -2428,6 +2428,8 @@ while not done:
                                 IDchoice == False
                                 password = password[:-1]
                                 pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
+                        elif event.key == K_SPACE:
+                            pass
                         elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
