@@ -2146,11 +2146,9 @@ while not done:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
                 over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
-                over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
-
-                screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
-                screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
-                screen.blit(over_start, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.3333))
+                #over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
+                over_text_3 = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
+                
                 
                 if reverse_over:
                     comboCounter = 0
@@ -2162,11 +2160,10 @@ while not done:
                 else:
                     comboCounter = 0
                     draw_board(next_mino1, hold_mino, score, level, goal)
-            
-            
-            
+                
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
+                screen.blit(over_text_3, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.3333))
                 pygame.display.update()
             
             # 마우스로 창크기조절
