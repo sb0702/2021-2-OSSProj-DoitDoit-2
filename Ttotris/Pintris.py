@@ -13,40 +13,7 @@ import time
 from pygame.rect import Rect
 
 
-# Constants 안 변하는 것들
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 600
 
-
-FRAMERATE_MULTIFLIER_BY_DIFFCULTY = [0.9, 0.8, 0.9, 0.9, 0.9] # pvp, item, reverse는 normal과 같은 비율
-DEFAULT_WIDTH = 10
-DEFAULT_HEIGHT = 20
-
-
-# Define
-block_size = 17  # Height, width of single block
-width = DEFAULT_WIDTH  # Board width
-height = DEFAULT_HEIGHT  # Board height
-c =0
-mino_size = 4
-mino_turn = 4
-fever = False
-color_IDactive = pygame.Color('lightskyblue3')
-color_inIDactive = pygame.Color('blue')
-color_Passactive = pygame.Color('lightskyblue3')
-color_inPassactive = pygame.Color('blue')
-IDcolor = color_inIDactive
-Passcolor = color_inPassactive
-barrier1=False
-framerate = 30  # Bigger -> Slower
-barPos      = (650, 200)
-barSize     = (250, 20)
-borderColor = (0, 0, 0)
-barColor    = (0, 128, 0)
-min_width = 700
-min_height = 350
-board_rate = 0.5
-input_IDactive = True
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -95,8 +62,6 @@ def draw_block(x, y, color):
     )
 
 def draw_image(window, img_path, x, y, w, h):
-    #x = x - (w / 2) #해당 이미지의 가운데 x좌표, 가운데 좌표이기 때문에 2로 나눔
-    #y = y - (h / 2) #해당 이미지의 가운데 y좌표, 가운데 좌표이기 때문에 2로 나눔
     image = pygame.image.load(img_path)
     image = pygame.transform.scale(image, (w, h))
     window.blit(image, (x, y))
@@ -110,22 +75,22 @@ def draw_block_image(x, y, image): # image에는 ui에 있는, 색깔블록~아�
 # Draw game screen
 def draw_board(next, hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
+    sidebar_width = int(SCREEN_WIDTH * 0.5312)
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.2375), ui_variables.SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
     )
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+    for i in range(mino_size):
+        for j in range(mino_turn):
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 pygame.draw.rect(
                     screen,
@@ -137,10 +102,10 @@ def draw_board(next, hold, score, level, goal):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino != -1:
-        for i in range(ui_variables.mino_size):
-            for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -165,38 +130,38 @@ def draw_board(next, hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
     #screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
-    width_adjustment = (ui_variables.DEFAULT_WIDTH - width) // 2
-    height_adjustment = (ui_variables.DEFAULT_HEIGHT - height) // 2
+    width_adjustment = (DEFAULT_WIDTH - width) // 2
+    height_adjustment = (DEFAULT_HEIGHT - height) // 2
 
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
 # 하드모드 보드
 def draw_hardboard(hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
+    sidebar_width = int(SCREEN_WIDTH * 0.5312)
     
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.2375), ui_variables.SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)  #(X축, y축, 가로, 세로)
     )
    
     # Draw hold mino
@@ -205,8 +170,8 @@ def draw_hardboard(hold, score, level, goal):
     if hold_mino != -1:
         for i in range(mino_size):
             for j in range(mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.16 / 2) + sidebar_width + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+                dx = int(SCREEN_WIDTH * 0.16 / 2) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -229,44 +194,44 @@ def draw_hardboard(hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.21 / 2) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
-    width_adjustment = (ui_variables.DEFAULT_WIDTH - width) // 2
-    height_adjustment = (ui_variables.DEFAULT_HEIGHT - height) // 2
+    width_adjustment = (DEFAULT_WIDTH - width) // 2
+    height_adjustment = (DEFAULT_HEIGHT - height) // 2
 
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
 def draw_reverse_board(next, hold, score, level, goal):
     screen.fill(ui_variables.grey_1)
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.5312)
+    sidebar_width = int(SCREEN_WIDTH * 0.5312)
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.2375), ui_variables.SCREEN_HEIGHT)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.2375), SCREEN_HEIGHT)
     )
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]
     
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+    for i in range(mino_size):
+        for j in range(mino_turn):
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 pygame.draw.rect(
                     screen,
@@ -278,10 +243,10 @@ def draw_reverse_board(next, hold, score, level, goal):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino != -1:
-        for i in range(ui_variables.mino_size):
-            for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.025) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -306,42 +271,42 @@ def draw_reverse_board(next, hold, score, level, goal):
     next_fever_value = ui_variables.h4.render(str(next_fever), 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
-    screen.blit(text_fever, text_fever.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_fever, text_fever.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_width, int(SCREEN_HEIGHT * 0.2780))))
     
 
 
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * x
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * y
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * x
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * y
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
 def draw_1Pboard(next, hold):
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.3112)  # 크기 비율 고정, 전체 board 가로길이에서 원하는 비율을 곱해줌
+    sidebar_width = int(SCREEN_WIDTH * 0.3112)  # 크기 비율 고정, 전체 board 가로길이에서 원하는 비율을 곱해줌
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.1875), ui_variables.SCREEN_HEIGHT)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.1875), SCREEN_HEIGHT)
     )
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]  # 다음 블록의 원래 모양
 
-    for i in range(ui_variables.mino_size):  # 다음 블록
-        for j in range(ui_variables.mino_turn):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.3743) + block_size * i
+    for i in range(mino_size):  # 다음 블록
+        for j in range(mino_turn):
+            dx = int(SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.3743) + block_size * i
             if grid_n[i][j] != 0:  # 해당 부분에 블록이 있으면
                 pygame.draw.rect(
                     screen,
@@ -352,10 +317,10 @@ def draw_1Pboard(next, hold):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino != -1:
-        for i in range(ui_variables.mino_size):
-            for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1336) + block_size * i
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -373,39 +338,39 @@ def draw_1Pboard(next, hold):
     text_player = ui_variables.h5.render("1Player", 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780)))
-    screen.blit(text_score, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187)))
-    screen.blit(score_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614)))
-    screen.blit(text_at, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791)))
-    screen.blit(at_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
-    screen.blit(text_player, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8815)))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.2780)))
+    screen.blit(text_score, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.5187)))
+    screen.blit(score_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.5614)))
+    screen.blit(text_at, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
+    screen.blit(at_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
+    screen.blit(text_player, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8815)))
 
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.05) + block_size * x
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * y
+            dx = int(SCREEN_WIDTH * 0.05) + block_size * x
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * y
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]])
 
 
 def draw_2Pboard(next, hold):
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.7867)  # 크기 비율 고정, 전체 board 가로길이에서 원하는 비율을 곱해줌
+    sidebar_width = int(SCREEN_WIDTH * 0.7867)  # 크기 비율 고정, 전체 board 가로길이에서 원하는 비율을 곱해줌
 
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_width, 0, int(ui_variables.SCREEN_WIDTH * 0.1875), ui_variables.SCREEN_HEIGHT)
+        Rect(sidebar_width, 0, int(SCREEN_WIDTH * 0.1875), SCREEN_HEIGHT)
     )
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]  # 다음 블록의 원래 모양
 
-    for i in range(ui_variables.mino_size):  # 다음 블록
-        for j in range(ui_variables.mino_turn):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.3743) + block_size * i
+    for i in range(mino_size):  # 다음 블록
+        for j in range(mino_turn):
+            dx = int(SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.3743) + block_size * i
             if grid_n[i][j] != 0:  # 해당 부분에 블록이 있으면
                 pygame.draw.rect(
                     screen,
@@ -417,10 +382,10 @@ def draw_2Pboard(next, hold):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino_2P != -1:
-        for i in range(ui_variables.mino_size):
-            for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1336) + block_size * i
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.045) + sidebar_width + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1336) + block_size * i
                 if grid_h[i][j] != 0:
                     pygame.draw.rect(
                         screen,
@@ -438,19 +403,19 @@ def draw_2Pboard(next, hold):
     text_player = ui_variables.h5.render("2Player", 1, ui_variables.black)
 
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.2780)))
-    screen.blit(text_score, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5187)))
-    screen.blit(score_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.5614)))
-    screen.blit(text_at, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.6791)))
-    screen.blit(at_value, (int(ui_variables.SCREEN_WIDTH * 0.055) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.7219)))
-    screen.blit(text_player, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_width, int(ui_variables.SCREEN_HEIGHT * 0.8815)))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.2780)))
+    screen.blit(text_score, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.5187)))
+    screen.blit(score_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.5614)))
+    screen.blit(text_at, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.6791)))
+    screen.blit(at_value, (int(SCREEN_WIDTH * 0.055) + sidebar_width, int(SCREEN_HEIGHT * 0.7219)))
+    screen.blit(text_player, (int(SCREEN_WIDTH * 0.045) + sidebar_width, int(SCREEN_HEIGHT * 0.8815)))
 
     # Draw board
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.53) + block_size * x
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * y
+            dx = int(SCREEN_WIDTH * 0.53) + block_size * x
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * y
             draw_block(dx, dy, ui_variables.t_color[matrix_2P[x][y + 1]])
 
 
@@ -461,22 +426,22 @@ def draw_multiboard(next_1P, hold_1P, next_2P, hold_2P):
 
 def draw_itemboard(next, hold, score, level, goal, inven):
     screen.fill(ui_variables.grey_1)
-    sidebar_x = int(ui_variables.SCREEN_WIDTH * 0.5312)
-    sidebar_width = int(ui_variables.SCREEN_WIDTH * 0.2375)
+    sidebar_x = int(SCREEN_WIDTH * 0.5312)
+    sidebar_width = int(SCREEN_WIDTH * 0.2375)
     # Draw sidebar
     pygame.draw.rect(
         screen,
         ui_variables.white,
-        Rect(sidebar_x, 0, sidebar_width, ui_variables.SCREEN_HEIGHT)
+        Rect(sidebar_x, 0, sidebar_width, SCREEN_HEIGHT)
     )
 
     # Draw next mino
     grid_n = tetrimino.mino_map[next - 1][0]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.13) + sidebar_x + block_size * j
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+    for i in range(mino_size):
+        for j in range(mino_turn):
+            dx = int(SCREEN_WIDTH * 0.13) + sidebar_x + block_size * j
+            dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
             if grid_n[i][j] != 0:
                 draw_block_image(dx,dy,ui_variables.t_block[grid_n[i][j]]) # 블록 이미지 출력
             
@@ -485,10 +450,10 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     grid_h = tetrimino.mino_map[hold - 1][0]
 
     if hold_mino != -1:
-        for i in range(ui_variables.mino_size):
-            for j in range(ui_variables.mino_turn):
-                dx = int(ui_variables.SCREEN_WIDTH * 0.025) + sidebar_x + block_size * j
-                dy = int(ui_variables.SCREEN_HEIGHT * 0.1) + block_size * i
+        for i in range(mino_size):
+            for j in range(mino_turn):
+                dx = int(SCREEN_WIDTH * 0.025) + sidebar_x + block_size * j
+                dy = int(SCREEN_HEIGHT * 0.1) + block_size * i
                 if grid_h[i][j] != 0:
                     draw_block_image(dx,dy,ui_variables.t_block[grid_h[i][j]]) # 블록 이미지 출력
        
@@ -509,20 +474,20 @@ def draw_itemboard(next, hold, score, level, goal, inven):
     text_item =  ui_variables.h5.render("ITEM", 1, ui_variables.black)
     
     # Place texts
-    screen.blit(text_hold, (int(ui_variables.SCREEN_WIDTH * 0.045) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_next, (int(ui_variables.SCREEN_WIDTH * 0.15) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.0374)))
-    screen.blit(text_score, text_score.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.5187))))
-    screen.blit(score_value, score_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.5614))))
-    screen.blit(text_level, text_level.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.6791))))
-    screen.blit(level_value, level_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.7219))))
-    screen.blit(text_goal, text_goal.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.8395))))
-    screen.blit(goal_value, goal_value.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.8823))))
-    screen.blit(text_item, text_item.get_rect(center=(int(ui_variables.SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(ui_variables.SCREEN_HEIGHT * 0.2780))))
+    screen.blit(text_hold, (int(SCREEN_WIDTH * 0.045) + sidebar_x, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_next, (int(SCREEN_WIDTH * 0.15) + sidebar_x, int(SCREEN_HEIGHT * 0.0374)))
+    screen.blit(text_score, text_score.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.5187))))
+    screen.blit(score_value, score_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.5614))))
+    screen.blit(text_level, text_level.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.6791))))
+    screen.blit(level_value, level_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.7219))))
+    screen.blit(text_goal, text_goal.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.8395))))
+    screen.blit(goal_value, goal_value.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.8823))))
+    screen.blit(text_item, text_item.get_rect(center=(int(SCREEN_WIDTH * 0.2375/ 2) + sidebar_x, int(SCREEN_HEIGHT * 0.2780))))
 
     dx_inven1 = int(sidebar_x + sidebar_width * 0.25 - inven_size / 2)
     dx_inven2 = int(sidebar_x + sidebar_width * 0.5 - inven_size / 2)
     dx_inven3 = int(sidebar_x + sidebar_width * 0.75 - inven_size / 2)
-    dy_inven = int(ui_variables.SCREEN_HEIGHT * 0.3983) - inven_size / 2
+    dy_inven = int(SCREEN_HEIGHT * 0.3983) - inven_size / 2
     dx_inven = [dx_inven1, dx_inven2, dx_inven3]
     
     if len(inven) > 0:
@@ -539,13 +504,13 @@ def draw_itemboard(next, hold, score, level, goal, inven):
 
     # Draw board
     # 기본 크기에 맞춰 레이아웃이 설정되어 있으므로 조정해준다.
-    width_adjustment = (ui_variables.DEFAULT_WIDTH - width) // 2
-    height_adjustment = (ui_variables.DEFAULT_HEIGHT - height) // 2
+    width_adjustment = (DEFAULT_WIDTH - width) // 2
+    height_adjustment = (DEFAULT_HEIGHT - height) // 2
 
     for x in range(width):
         for y in range(height):
-            dx = int(ui_variables.SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
-            dy = int(ui_variables.SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
+            dx = int(SCREEN_WIDTH * 0.25) + block_size * (width_adjustment + x)
+            dy = int(SCREEN_HEIGHT * 0.055) + block_size * (height_adjustment + y)
             draw_block(dx, dy, ui_variables.t_color[matrix[x][y + 1]]) 
 
 # Draw a tetrimino
@@ -556,14 +521,14 @@ def draw_mino(x, y, mino, r): # 블록 위치 x,y 블록 모양, 블록 방향
         ty += 1 # 한 칸 밑으로 하강
 
     # Draw ghost 현재 블록이 쌓일 위치 보여줌
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0: # 비어있지 않으면
                 matrix[tx + j][ty + i] = 8 # ghost 블록 그려줌
 
     # Draw mino
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = grid[i][j] # matrix에 현재 블록 넣어줌
 
@@ -578,14 +543,14 @@ def draw_mino_2P(x, y, mino, r):
         ty += 1
 
     # Draw ghost
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix_2P[tx + j][ty + i] = 8
 
     # Draw mino
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix_2P[x + j][y + i] = grid[i][j]
 
@@ -602,8 +567,8 @@ def erase_mino(x, y, mino, r):
                 matrix[i][j] = 0 # ghost 블록 없애기
 
     # Erase mino
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix[x + j][y + i] = 0 # 블록 없애기
 
@@ -626,8 +591,8 @@ def erase_mino_2P(x, y, mino, r):
                 matrix_2P[i][j] = 0
 
     # Erase mino
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 matrix_2P[x + j][y + i] = 0
 
@@ -636,8 +601,8 @@ def erase_mino_2P(x, y, mino, r):
 def is_bottom(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (y + i + 1) > height:
                     return True
@@ -650,8 +615,8 @@ def is_bottom(x, y, mino, r):
 def is_bottom_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (y + i + 1) > height:
                     return True
@@ -665,8 +630,8 @@ def is_bottom_2P(x, y, mino, r):
 def is_leftedge(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j - 1) < 0:
                     return True
@@ -679,8 +644,8 @@ def is_leftedge(x, y, mino, r):
 def is_leftedge_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j - 1) < 0:
                     return True
@@ -694,8 +659,8 @@ def is_leftedge_2P(x, y, mino, r):
 def is_rightedge(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j + 1) > width - 1:
                     return True
@@ -708,8 +673,8 @@ def is_rightedge(x, y, mino, r):
 def is_rightedge_2P(x, y, mino, r):
     grid = tetrimino.mino_map[mino - 1][r]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j + 1) > width - 1:
                     return True
@@ -726,7 +691,7 @@ def is_turnable_r(x, y, mino, r):
     else:
         grid = tetrimino.mino_map[mino - 1][0]
 
-    for i in range(ui_variables.mino_size):
+    for i in range(mino_size):
         for j in range(4):
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > width - 1 or (y + i) < 0 or (y + i) > height:
@@ -743,8 +708,8 @@ def is_turnable_r_2P(x, y, mino, r):
     else:
         grid = tetrimino.mino_map[mino - 1][0]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > width - 1 or (y + i) < 0 or (y + i) > height:
                     return False
@@ -761,8 +726,8 @@ def is_turnable_l(x, y, mino, r):
     else:
         grid = tetrimino.mino_map[mino - 1][3]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > width - 1 or (y + i) < 0 or (y + i) > height:
                     return False
@@ -778,8 +743,8 @@ def is_turnable_l_2P(x, y, mino, r):
     else:
         grid = tetrimino.mino_map[mino - 1][3]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             if grid[i][j] != 0:
                 if (x + j) < 0 or (x + j) > width - 1 or (y + i) < 0 or (y + i) > height:
                     return False
@@ -793,8 +758,8 @@ def is_turnable_l_2P(x, y, mino, r):
 def is_stackable(mino):
     grid = tetrimino.mino_map[mino - 1][0]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             # print(grid[i][j], matrix[3 + j][i])
             if grid[i][j] != 0 and matrix[3 + j][i] != 0:
                 return False
@@ -805,8 +770,8 @@ def is_stackable(mino):
 def is_stackable_2P(mino):
     grid = tetrimino.mino_map[mino - 1][0]
 
-    for i in range(ui_variables.mino_size):
-        for j in range(ui_variables.mino_turn):
+    for i in range(mino_size):
+        for j in range(mino_turn):
             # print(grid[i][j], matrix[3 + j][i])
             if grid[i][j] != 0 and matrix_2P[3 + j][i] != 0:
                 return False
@@ -968,129 +933,24 @@ def bomb():# 3x3 블록 삭제 아이템 효과
         get_item()
         cnt_box -=1 
 
-            
-
 
 
 # Start game
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-pygame.time.set_timer(pygame.USEREVENT, values.framerate * 7)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+pygame.time.set_timer(pygame.USEREVENT, framerate * 7)
 pygame.display.set_caption("TTOTRIS™")
+set_volume()
+background = True # 수빈
+
+            
 SavedID = ""
 text = "ID"
 password = "PASSWORD"
 SavedPass = ""
 text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0)) 
 pass_surf = ui_variables.h2_i.render(password, True, (0, 0, 0)) 
-# pages
-blink = False
-blink1 = False
-blink2 = False
-blink3 = False
-start = False
-# hard
-hard = False
-pause = False
-done = False
-game_over = False
-reverse = False
-pvp = False
-reverse_over = False
-pvp_over = False
-item = False
-item_over = False
-hard_erase = False
-q = 0 
-barrier_size = 1200 # 장애물 크기
-
-# Initial values
-speed_change = 2.2 # 게임 시작 시 difficulty에 곱해 초기 속도 변경하는 변수
-mode_selected = 0 # mode page에서 선택한 모드 저장할 변수
-set_difficulty = 0 # difficulty page에서 선택한 초기 난이도
-score = 0
-max_score = 99999
-score_2P = 0
-level = 1
-level_2P = 1
-difficulty = 0
-goal = level * 2
-goal_2P = level_2P * 2
-bottom_count = 0
-bottom_count_2P = 0
-hard_drop = False
-hard_drop_2P = False
-
-IDchoice = False
-Passchoice = False
-password2 = 0
-attack_point = 0
-attack_point_2P = 0
-comboCounter =0  
-hard_score = 500
-next_fever = 500
 color = ui_variables.color_inactive
-interval = 3
-comboCounter =0
-hard_i = 1
-
-# 아이템 관련 변수들
-item_list = [] # 변하면 안 됨
-inven = [] # 변함
-inven_size = 50 # 인벤토리 사이즈
-barrier_size = 1200 # 장애물 
-earthquake_inven = pygame.image.load("assets/images/earthquake_Item_1.png") # 맨 아래줄 지우기
-reset_inven = pygame.image.load("assets/images/reset_Item.png") # 전체 블록 리셋
-row_inven = pygame.image.load("assets/images/erase_row_Item.png") # 가로 한 줄 삭제, 별도의 mino 필요
-col_inven = pygame.image.load("assets/images/erase_col_Item.png") # 세로 한 줄 삭제, 별도의 mino 필요
-bomb_inven = pygame.image.load("assets/images/bomb_Item.png") # 3x3 삭제, 별도의 mino 필요
-item_list.append(earthquake_inven) # 아이템 리스트에 넣어줌
-item_list.append(reset_inven)
-item_list.append(row_inven)
-item_list.append(col_inven)
-item_list.append(bomb_inven)
-
-row_mino = 10  
-col_mino = 11
-bomb_mino = 12
-itembox_mino = 13 
-bomb_size = 3 # bomb 아이템 썼을 때 지워줄 크기(3x3 블록 삭제이므로 3으로 설정)
-
-effect_volume = 5
-set_volume()
-
-dx, dy = 3, 0  # Minos location status
-dx_2P, dy_2P = 3, 0
-
-rotation = 0  # Minos rotation status
-rotation_2P = 0
-
-mino = randint(1, 7)  # Current mino 
-mino_2P = randint(1, 7)
-item_mino = randint(1,9) # 아이템 모드에서 사용할 mino
-
-next_mino1 = randint(1, 7)  # Next mino
-next_mino2 = randint(1, 7) # 다다음 블록
-
-next_mino = randint(1,7) # pvp용
-next_mino_2P = randint(1, 7)  
-
-hold = False  # Hold status
-hold_2P = False
-
-hold_mino = -1  # Holded mino
-hold_mino_2P = -1
-
-player = 0
-attack_stack = 0
-attack_stack_2P = 0
-erase_stack = 0
-erase_stack_2P = 0
-
-
-matrix = [[0 for y in range(height + 1)] for x in range(width)]  # Board matrix
-matrix_2P = [[0 for y in range(height + 1)] for x in range(width)]
-
 
 # 초기화 부분을 하나로 합쳐준다.
 def init_game(board_width, board_height, mode, game_difficulty):
@@ -1104,7 +964,7 @@ def init_game(board_width, board_height, mode, game_difficulty):
 
     mode_selected = mode
     difficulty = game_difficulty
-    values.framerate -= math.ceil(difficulty * speed_change)
+    framerate -= math.ceil(difficulty * speed_change)
 
 
 ###########################################################
@@ -1135,9 +995,9 @@ while not done:
                 pause_start = ui_variables.h5.render("Press esc to continue", 1, ui_variables.white)
                 back_main = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
 
-                screen.blit(pause_text, (ui_variables.SCREEN_WIDTH * 0.0367, ui_variables.SCREEN_HEIGHT * 0.1667))
-                screen.blit(pause_start, (ui_variables.SCREEN_WIDTH * 0.033, ui_variables.SCREEN_HEIGHT * 0.2667))
-                screen.blit(back_main, (ui_variables.SCREEN_WIDTH * 0.033, ui_variables.SCREEN_HEIGHT * 0.3333))
+                screen.blit(pause_text, (SCREEN_WIDTH * 0.0367, SCREEN_HEIGHT * 0.1667))
+                screen.blit(pause_start, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.2667))
+                screen.blit(back_main, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.3333))
                 pygame.display.update()
 
             elif event.type == KEYDOWN:
@@ -1154,8 +1014,8 @@ while not done:
                     
                     page, selected = MENU_PAGE, 0
                     set_difficulty = 0
-                    width = ui_variables.DEFAULT_WIDTH
-                    height = ui_variables.DEFAULT_HEIGHT
+                    width = DEFAULT_WIDTH
+                    height = DEFAULT_HEIGHT
                     ui_variables.click_sound.play()
                     dx, dy = 3, 0
                     rotation = 0
@@ -1166,12 +1026,12 @@ while not done:
                     hold_mino = -1
                     item_mino = randint(1, 9)
 
-                    values.framerate = 30
+                    framerate = 30
                     fever_score = 500
                     hard_score = 500
                     next_fever = 500
                     max_score = 99999
-                    values.fever_interval = 3
+                    fever_interval = 3
                     interval = 3
                     score = 0
                     fever = 0
@@ -1181,13 +1041,13 @@ while not done:
                     hard_drop = False
                     inven = [] # 인벤토리 리셋
                     hard_i = 1
-                    #hard = False
+                    
 
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
 
-                    ui_variables.min_width = 700
-                    ui_variables.min_height = 350
-                    values.board_rate = 0.5
+                    min_width = 700
+                    min_height = 350
+                    board_rate = 0.5
 
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -1221,28 +1081,28 @@ while not done:
 
             elif event.type == VIDEORESIZE:
 
-                ui_variables.SCREEN_WIDTH = event.w
+                SCREEN_WIDTH = event.w
 
-                ui_variables.SCREEN_HEIGHT = event.h
+                SCREEN_HEIGHT = event.h
 
-                if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                    ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                    SCREEN_WIDTH = min_width
 
-                    ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                    SCREEN_HEIGHT = min_height
 
-                if not ((values.board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                     board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                    ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                    SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                    ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                    SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
                 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
     # Game screen
     elif start:        
         for event in pygame.event.get():
@@ -1250,8 +1110,7 @@ while not done:
                 done = True
             # 여기서 부터 겜 스타트
             elif event.type == USEREVENT:
-                #ui_variables.background_sound.play() # 배경음 추가
-                pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) 
+                pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
                 # Draw a mino
 
                 draw_mino(dx, dy, mino, rotation)
@@ -1362,14 +1221,15 @@ while not done:
                     # 하드모드 레벨업 시 방해블록 생성
                     if hard:
                         level += 1
-                        goal += level * 2
-                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                         # 레벨업시 이미지 출력
                         screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                     (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                         pygame.display.update()
                         pygame.time.delay(100)
+                        goal += level * 2
+                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        pygame.time.set_timer(pygame.USEREVENT, framerate)
                         # 기존 있던 블럭들 한 칸씩 증가                        
                         for j in range(height):
                             for i in range(width):
@@ -1381,50 +1241,51 @@ while not done:
 
                     else:
                         level += 1
-                        goal += level * 2
-                        values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                         # 레벨업시 이미지 출력
                         screen.blit(pygame.transform.scale(ui_variables.levelup,
                                                         (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
                                     (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))
                         pygame.display.update()
-                        pygame.time.delay(200)
+                        pygame.time.delay(100)
+                        goal += level * 2
+                        framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                        pygame.time.set_timer(pygame.USEREVENT, framerate)
                         # 기존 있던 블럭들 한 칸씩 증가                        
                         for j in range(height):
                             for i in range(width):
                                 matrix[i][j] = matrix[i][j + 1]
-                        # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한군데가 구멍나있게 증가
+                        # 방해블록이 맨밑줄을 채움 # 회색블록 = 9 ,  한 군데가 구멍나있게 증가
                         for i in range(width):
                             matrix[i][height] = 9
-                        k = randint(1, 9)
+                        k = randint(1, 9) # 밑바닥에 비어있는 곳을 랜덤화
                         matrix[k][height] = 0 # 0은 빈칸
                         
-## 밑바닥에 비어있는 곳을 랜덤화
+
                 # 콤보횟수에 따른 피버타임
 
-                if values.feverTimeAddScore[1] > score >=values.feverTimeAddScore[0]:
-                    TimeDecreasedByScore = values.feverAddingTime[0]
-                if values.feverTimeAddScore[2] > score >= values.feverTimeAddScore[1]:
-                    TimeDecreasedByScore = values.feverAddingTime[1]
-                if  values.feverTimeAddScore[3] > score >= values.feverTimeAddScore[2]:
-                    TimeDecreasedByScore = values.feverAddingTime[2]
-                if  values.feverTimeAddScore[4] > score >= values.feverTimeAddScore[3]:
-                    TimeDecreasedByScore = values.feverAddingTime[3]
-                if  score >= values.feverTimeAddScore[4]:
-                    TimeDecreasedByScore = values.feverAddingTime[4]     
-                if comboCounter > values.feverBlockGoal and mode_selected != 1 and mode_selected != 3 :
+                if feverTimeAddScore[1] > score >=feverTimeAddScore[0]:
+                    TimeDecreasedByScore = feverAddingTime[0]
+                if feverTimeAddScore[2] > score >= feverTimeAddScore[1]:
+                    TimeDecreasedByScore = feverAddingTime[1]
+                if  feverTimeAddScore[3] > score >= feverTimeAddScore[2]:
+                    TimeDecreasedByScore = feverAddingTime[2]
+                if  feverTimeAddScore[4] > score >= feverTimeAddScore[3]:
+                    TimeDecreasedByScore = feverAddingTime[3]
+                if  score >= feverTimeAddScore[4]:
+                    TimeDecreasedByScore = feverAddingTime[4]     
+                if comboCounter > feverBlockGoal and mode_selected != 1 and mode_selected != 3 :
                     if fever == False:
                         t0 = time.time()
                         fever = True
                     else:
                         t1 = time.time()
                         dt = t1 -t0                                 
-                        DrawBar(ui_variables.barPos,ui_variables.barSize,ui_variables.borderColor,ui_variables.barColor, (values.Basictimer-TimeDecreasedByScore - dt)/ 
-                        (values.Basictimer-TimeDecreasedByScore))                 
+                        DrawBar(barPos,barSize,borderColor,barColor, (Basictimer-TimeDecreasedByScore - dt)/ 
+                        (Basictimer-TimeDecreasedByScore))                 
                         mino = randint(1, 1)
                         next_mino1 = randint(1, 1)
-                        next_fever = (ui_variables.c + values.fever_interval) * values.fever_score # 피버모드 점수 표시                                
-                        if dt >= (values.Basictimer -TimeDecreasedByScore):
+                        next_fever = (c + fever_interval) * fever_score # 피버모드 점수 표시                                
+                        if dt >= (Basictimer -TimeDecreasedByScore):
                             comboCounter =0
                             mino = next_mino1
                             next_mino1 = randint(1, 7)                       
@@ -1472,8 +1333,7 @@ while not done:
                     ui_variables.drop_sound.play()
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
-                    hard_drop = True
-                    # pygame.time.set_timer(pygame.USEREVENT, 2) 
+                    hard_drop = True 
                     draw_mino(dx, dy, mino, rotation)
                     if reverse:
                         draw_reverse_board(next_mino1, hold_mino, score, level, goal)
@@ -1742,28 +1602,28 @@ while not done:
 
             elif event.type == VIDEORESIZE:
 
-                ui_variables.SCREEN_WIDTH = event.w
+                SCREEN_WIDTH = event.w
 
-                ui_variables.SCREEN_HEIGHT = event.h
+                SCREEN_HEIGHT = event.h
 
-                if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                    ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                    SCREEN_WIDTH = min_width
 
-                    ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                    SCREEN_HEIGHT = min_height
 
-                if not ((values.board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
-                        values.board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+                        board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                    ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / values.board_rate)  # 너비를 적정 비율로 바꿔줌
+                    SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                    ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * values.board_rate)  # 높이를 적정 비율로 바꿔줌
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                    SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
                 
-                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
         pygame.display.update()
 
 
@@ -1780,7 +1640,7 @@ while not done:
             elif event.type == USEREVENT:
                 # Set speed
                 if not pvp_over:
-                    pygame.time.set_timer(pygame.USEREVENT, values.framerate * 6) 
+                    pygame.time.set_timer(pygame.USEREVENT, framerate * 6) 
 
                 # Draw a mino
                 draw_mino(dx, dy, mino, rotation)
@@ -1941,16 +1801,16 @@ while not done:
                     level_2P += 1
                     goal_2P += level_2P * 2
 
-                attack_interval = values.fever_interval  # attack_interval = 3
-                attack_score = values.fever_score  # attack_score = 500
+                attack_interval = fever_interval  # attack_interval = 3
+                attack_score = fever_score  # attack_score = 500
 
                 # 1P
                 for i in range(2, max_score, attack_interval):
                     if score > i * attack_score and score < (i * attack_score + 300):  # 1000~1300,2500~2800,4000~4300
                         if blink:
                             screen.blit(pygame.transform.scale(ui_variables.pvp_annoying_image,
-                                                               (int(ui_variables.SCREEN_WIDTH * 0.4), int(ui_variables.SCREEN_HEIGHT * 0.9))),
-                                        (ui_variables.SCREEN_WIDTH * 0.5, ui_variables.SCREEN_HEIGHT * 0))  # 이미지 깜빡거리게
+                                                               (int(SCREEN_WIDTH * 0.4), int(SCREEN_HEIGHT * 0.9))),
+                                        (SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0))  # 이미지 깜빡거리게
                             blink = False
                         else:
                             blink = True
@@ -1960,8 +1820,8 @@ while not done:
                             j * attack_score + 300):  # 1000~1300,2500~2800,4000~4300
                         if blink:
                             screen.blit(pygame.transform.scale(ui_variables.pvp_annoying_image,
-                                                               (int(ui_variables.SCREEN_WIDTH * 0.4), int(ui_variables.SCREEN_HEIGHT * 0.9))),
-                                        (ui_variables.SCREEN_WIDTH * 0, ui_variables.SCREEN_HEIGHT * 0))  # 이미지 깜빡거리게
+                                                               (int(SCREEN_WIDTH * 0.4), int(SCREEN_HEIGHT * 0.9))),
+                                        (SCREEN_WIDTH * 0, SCREEN_HEIGHT * 0))  # 이미지 깜빡거리게
                             blink = False
                         else:
                             blink = True
@@ -1970,30 +1830,33 @@ while not done:
                 if erase_stack >= 3 and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
-                                                       (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
+                                                       (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
+                                (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, framerate)
                 elif erase_stack > erase_stack_2P and erase_stack >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
-                                                       (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
+                                                       (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
+                                (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, framerate)
                 elif erase_stack < erase_stack_2P and erase_stack_2P >= 3:
                     erase_stack = 0
                     erase_stack_2P = 0
-                    values.framerate = math.ceil(values.framerate * values.FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
                     screen.blit(pygame.transform.scale(ui_variables.levelup,
-                                                       (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
+                                                       (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2))),
+                                (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.2)))  # 레벨업시 이미지 출력
                     pygame.display.update()
-                    pygame.time.delay(300)
+                    pygame.time.delay(200)
+                    framerate = math.ceil(framerate * FRAMERATE_MULTIFLIER_BY_DIFFCULTY[mode_selected])
+                    pygame.time.set_timer(pygame.USEREVENT, framerate)
 
 
             elif event.type == KEYDOWN:
@@ -2009,7 +1872,7 @@ while not done:
                     while not is_bottom(dx, dy, mino, rotation):
                         dy += 1
                     hard_drop = True
-                    pygame.time.set_timer(pygame.USEREVENT, 2)
+                    #pygame.time.set_timer(pygame.USEREVENT, 2)
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
@@ -2019,7 +1882,7 @@ while not done:
                     while not is_bottom_2P(dx_2P, dy_2P, mino_2P, rotation_2P):
                         dy_2P += 1
                     hard_drop_2P = True
-                    pygame.time.set_timer(pygame.USEREVENT, 2)
+                    #pygame.time.set_timer(pygame.USEREVENT, 2)
                     draw_mino(dx, dy, mino, rotation)
                     draw_mino_2P(dx_2P, dy_2P, mino_2P, rotation_2P)
                     draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
@@ -2253,28 +2116,26 @@ while not done:
 
             elif event.type == VIDEORESIZE:
 
-                ui_variables.SCREEN_WIDTH = event.w
+                SCREEN_WIDTH = event.w
 
-                ui_variables.SCREEN_HEIGHT = event.h
+                SCREEN_HEIGHT = event.h
 
-                if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                    ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                    SCREEN_WIDTH = min_width
 
-                    ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                    SCREEN_HEIGHT = min_height
 
-                if not ((values.board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                       values.board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+                    SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                    ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / values.board_rate)  # 너비를 적정 비율로 바꿔줌
-
-                    ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * values.board_rate)  # 높이를 적정 비율로 바꿔줌
+                    SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
                 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
         pygame.display.update()
 
     # Game over screen
@@ -2288,7 +2149,10 @@ while not done:
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
                 over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
 
-
+                screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
+                screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
+                screen.blit(over_start, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.3333))
+                
                 if reverse_over:
                     comboCounter = 0
                     draw_reverse_board(next_mino1, hold_mino, score, level, goal)
@@ -2302,35 +2166,35 @@ while not done:
             
             
             
-                screen.blit(over_text_1, (ui_variables.SCREEN_WIDTH * 0.0775, ui_variables.SCREEN_HEIGHT * 0.167))
-                screen.blit(over_text_2, (ui_variables.SCREEN_WIDTH * 0.0775, ui_variables.SCREEN_HEIGHT * 0.233))
+                screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
+                screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
                 pygame.display.update()
             
             # 마우스로 창크기조절
             elif event.type == VIDEORESIZE:
 
-                ui_variables.SCREEN_WIDTH = event.w
+                SCREEN_WIDTH = event.w
 
-                ui_variables.SCREEN_HEIGHT = event.h
+                SCREEN_HEIGHT = event.h
 
-                if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                    ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                    SCREEN_WIDTH = min_width
 
-                    ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                    SCREEN_HEIGHT = min_height
 
-                if not ((values.board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
-                        values.board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
+                        board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                    ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / values.board_rate)  # 너비를 적정 비율로 바꿔줌
+                    SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                    ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * values.board_rate)  # 높이를 적정 비율로 바꿔줌
+                    SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.display.update()
                 
             elif event.type == KEYDOWN:        
@@ -2363,18 +2227,18 @@ while not done:
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
                     item_mino = randint(1, 9)
-                    values.framerate = 30
+                    framerate = 30
                     fever_score = 500
                     score = 0
                     max_score = 99999
                     next_fever = 500
-                    values.fever_interval = 3
+                    fever_interval = 3
                     level = 1
                     goal = level * 5
                     bottom_count = 0
-                    ui_variables.min_width = 700
-                    ui_variables.min_height = 350
-                    values.board_rate = 0.5
+                    min_width = 700
+                    min_height = 350
+                    board_rate = 0.5
                     hard_drop = False
                     name_location = 0
                     name = [65, 65, 65]
@@ -2422,62 +2286,62 @@ while not done:
 
                 draw_multiboard(next_mino, hold_mino, next_mino_2P, hold_mino_2P)
 
-                screen.blit(over_text_1, (ui_variables.SCREEN_WIDTH * 0.0775, ui_variables.SCREEN_HEIGHT * 0.167))
-                screen.blit(over_text_2, (ui_variables.SCREEN_WIDTH * 0.0775, ui_variables.SCREEN_HEIGHT * 0.233))
-                screen.blit(over_start, (ui_variables.SCREEN_WIDTH * 0.033, ui_variables.SCREEN_HEIGHT * 0.3333))
+                screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
+                screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
+                screen.blit(over_start, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.3333))
 
                 # win-lose 이미지 출력
                 if player == 1:
                     screen.blit(pygame.transform.scale(ui_variables.pvp_win_image,
                                                        (
-                                                           int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.6))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.08), int(ui_variables.SCREEN_HEIGHT * 0.3)))
+                                                           int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.6))),
+                                (int(SCREEN_WIDTH * 0.08), int(SCREEN_HEIGHT * 0.3)))
                     screen.blit(pygame.transform.scale(ui_variables.pvp_lose_image,
                                                        (
-                                                           int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.6))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.55), int(ui_variables.SCREEN_HEIGHT * 0.3)))
+                                                           int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.6))),
+                                (int(SCREEN_WIDTH * 0.55), int(SCREEN_HEIGHT * 0.3)))
                 elif player == 2:
                     screen.blit(pygame.transform.scale(ui_variables.pvp_lose_image,
-                                                       (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.6))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.08), int(ui_variables.SCREEN_HEIGHT * 0.3)))
+                                                       (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.6))),
+                                (int(SCREEN_WIDTH * 0.08), int(SCREEN_HEIGHT * 0.3)))
                     screen.blit(pygame.transform.scale(ui_variables.pvp_win_image,
-                                                       (int(ui_variables.SCREEN_WIDTH * 0.3), int(ui_variables.SCREEN_HEIGHT * 0.6))),
-                                (int(ui_variables.SCREEN_WIDTH * 0.55), int(ui_variables.SCREEN_HEIGHT * 0.3)))
+                                                       (int(SCREEN_WIDTH * 0.3), int(SCREEN_HEIGHT * 0.6))),
+                                (int(SCREEN_WIDTH * 0.55), int(SCREEN_HEIGHT * 0.3)))
                 pygame.display.update()
 
             # 마우스로 창크기조절
             elif event.type == VIDEORESIZE:
 
-                ui_variables.SCREEN_WIDTH = event.w
+                SCREEN_WIDTH = event.w
 
-                ui_variables.SCREEN_HEIGHT = event.h
+                SCREEN_HEIGHT = event.h
 
-                if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                    ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                    SCREEN_WIDTH = min_width
 
-                    ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                    SCREEN_HEIGHT = min_height
 
-                if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                         board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                    ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                    SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                    ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                    SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.display.update()
 
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     ui_variables.click_sound.play()
 
-                    width = ui_variables.DEFAULT_WIDTH  # Board width
-                    height = ui_variables.DEFAULT_HEIGHT
+                    width = DEFAULT_WIDTH  # Board width
+                    height = DEFAULT_HEIGHT
                     game_over = False
                     reverse_over = False
                     item_over = False
@@ -2487,12 +2351,12 @@ while not done:
                     mino = randint(1, 7)
                     next_mino = randint(1, 7)
                     hold_mino = -1
-                    values.framerate = 30
+                    framerate = 30
                     fever_score = 500
                     max_score = 99999
                     score = 0
                     next_fever = 500
-                    values.fever_interval = 3
+                    fever_interval = 3
                     level = 1
                     goal = level * 5
                     bottom_count = 0
@@ -2504,8 +2368,8 @@ while not done:
 
                     
 
-                    ui_variables.min_width = 700
-                    ui_variables.min_height = 350
+                    min_width = 700
+                    min_height = 350
                     board_rate = 0.5
 
                     # PvP모드
@@ -2544,8 +2408,11 @@ while not done:
 
         START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30
         page, selected = START_PAGE, 0
-        ui_variables.background_sound.set_volume(0.1)
-        ui_variables.background_sound.play() # 배경음 추가
+        if background:
+
+            ui_variables.background_sound.set_volume(0.1)
+            ui_variables.background_sound.play() # 배경음 추가
+            background = False
         while not done and not start and not reverse and not pvp and not item:
             # Start Page
             if page == START_PAGE:
@@ -2605,41 +2472,41 @@ while not done:
                                       
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
                         block_size = int(SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
                         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                     
                         
                            
                 
                 
                 block_size = int(SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
-                    Rect(0, 0, int(ui_variables.SCREEN_WIDTH), int(ui_variables.SCREEN_HEIGHT * 0.24))
+                    Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
                 )
 
                 title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
@@ -2713,52 +2580,52 @@ while not done:
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                 
                 screen.fill(ui_variables.white)
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                block_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
-                    Rect(0, 0, int(ui_variables.SCREEN_WIDTH),
-                         int(ui_variables.SCREEN_HEIGHT * 0.24))
+                    Rect(0, 0, int(SCREEN_WIDTH),
+                         int(SCREEN_HEIGHT * 0.24))
                 )
 
                 title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press up and down to change, space to select", 1,
                                                     ui_variables.grey_1)
 
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
-                screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 100)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 100)))
 
                 title_start = ui_variables.h5.render("Game start", 1, ui_variables.grey_1)
                 title_help = ui_variables.h5.render("Help", 1, ui_variables.grey_1)
                 title_setting = ui_variables.h5.render("Settings", 1, ui_variables.grey_1)
 
-                pos_start = title_start.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 - 20))
-                pos_help = title_help.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 20))
-                pos_setting = title_setting.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 60))
+                pos_start = title_start.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
+                pos_help = title_help.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20))
+                pos_setting = title_setting.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60))
 
                 # blink current selected option
                 if blink:
@@ -2809,30 +2676,30 @@ while not done:
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                        
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
+                block_size = int(SCREEN_HEIGHT * 0.045)
                 screen.fill(ui_variables.white)
                 pygame.draw.rect(
                     screen,
@@ -2840,33 +2707,33 @@ while not done:
                     pygame.draw.rect(
                         screen,
                         ui_variables.grey_1,
-                        Rect(0, 0, int(ui_variables.SCREEN_WIDTH),
-                             int(ui_variables.SCREEN_HEIGHT * 0.24))
+                        Rect(0, 0, int(SCREEN_WIDTH),
+                             int(SCREEN_HEIGHT * 0.24))
                     )
                 )
 
                 title = ui_variables.h1.render("HELP", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press esc to return menu", 1, ui_variables.grey_1)
 
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
-                screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
 
-                keyhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_key), (ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
+                keyhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_key), (SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.7))
                 keyhelp_r = keyhelp_img.get_rect()
-                keyhelp_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
+                keyhelp_r.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.62)
 
-                itemhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_item), (ui_variables.SCREEN_WIDTH * 0.9, ui_variables.SCREEN_HEIGHT * 0.7))
+                itemhelp_img = pygame.transform.scale(pygame.image.load(ui_variables.help_item), (SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.7))
                 itemhelp_r = itemhelp_img.get_rect()
-                itemhelp_r.center = (ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.62)
+                itemhelp_r.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.62)
                 
                 if current_selected == 0:
                     screen.blit(keyhelp_img, keyhelp_img.get_rect(center=keyhelp_r.center))
-                    pos = [[ui_variables.SCREEN_WIDTH - 10, ui_variables.SCREEN_HEIGHT / 2], [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 - 5],
-                           [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pos = [[SCREEN_WIDTH - 10, SCREEN_HEIGHT / 2], [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 - 5],
+                           [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 + 5]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
                 else:
                     screen.blit(itemhelp_img, itemhelp_img.get_rect(center=itemhelp_r.center))
-                    pos = [[10, ui_variables.SCREEN_HEIGHT / 2], [15, ui_variables.SCREEN_HEIGHT / 2 - 5], [15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pos = [[10, SCREEN_HEIGHT / 2], [15, SCREEN_HEIGHT / 2 - 5], [15, SCREEN_HEIGHT / 2 + 5]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
 
               
@@ -2900,25 +2767,25 @@ while not done:
                             if selected == 0:
                                 # 미니 사이즈
                                 ui_variables.click_sound.play()
-                                ui_variables.SCREEN_WIDTH = 800
-                                ui_variables.SCREEN_HEIGHT = 400
-                                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
+                                SCREEN_WIDTH = 800
+                                SCREEN_HEIGHT = 400
+                                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                                 pygame.display.update()
                                 # page, selected = DIFFICULTY_PAGE, 0
                             elif selected == 1:
                                 # 중간 사이즈
                                 ui_variables.click_sound.play()
-                                ui_variables.SCREEN_WIDTH = 1200
-                                ui_variables.SCREEN_HEIGHT = 600
-                                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
+                                SCREEN_WIDTH = 1200
+                                SCREEN_HEIGHT = 600
+                                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                                 pygame.display.update()
                             # page = HELP_PAGE
                             elif selected == 2:
                                 # 큰 사이즈
                                 ui_variables.click_sound.play()
-                                ui_variables.SCREEN_WIDTH = 1600
-                                ui_variables.SCREEN_HEIGHT = 800
-                                screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
+                                SCREEN_WIDTH = 1600
+                                SCREEN_HEIGHT = 800
+                                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                                 pygame.display.update()
                                 # page = SETTING_PAGE
                         elif event.key == K_LEFT:
@@ -2943,41 +2810,41 @@ while not done:
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
                     pygame.draw.rect(
                         screen,
                         ui_variables.grey_1,
-                        Rect(0, 0, int(ui_variables.SCREEN_WIDTH),
-                             int(ui_variables.SCREEN_HEIGHT * 0.24))
+                        Rect(0, 0, int(SCREEN_WIDTH),
+                             int(SCREEN_HEIGHT * 0.24))
                     )
                 )
 
@@ -2985,35 +2852,35 @@ while not done:
 
                 title_info = ui_variables.h6.render("Press esc to return menu", 1, ui_variables.grey_1)
 
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
 
-                screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 220)))
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
 
                 screen_size = ui_variables.h2.render("SCREEN SIZE", 1, ui_variables.grey_1)
-                screen.blit(screen_size, screen_size.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 - 60)))
+                screen.blit(screen_size, screen_size.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 60)))
                 volume = ui_variables.h2.render("VOLUME", 1, ui_variables.grey_1)
-                screen.blit(volume, volume.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 120)))
+                screen.blit(volume, volume.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 120)))
 
                 mini_size = ui_variables.h5.render("800 X 400", 1, ui_variables.grey_1)
                 medium_size = ui_variables.h5.render("1200 X 600", 1, ui_variables.grey_1)
                 full_size = ui_variables.h5.render("1600 X 800", 1, ui_variables.grey_1)
                 sound = ui_variables.h5.render(str(effect_volume), 1, ui_variables.grey_1)
 
-                pos_mini_size = mini_size.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 - 20))
-                pos_medium_size = medium_size.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 20))
-                pos_full_size = full_size.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 60))
-                pos_sound = sound.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 160))
+                pos_mini_size = mini_size.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
+                pos_medium_size = medium_size.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20))
+                pos_full_size = full_size.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60))
+                pos_sound = sound.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 160))
 
                 if effect_volume > 0:
-                    pos = [[ui_variables.SCREEN_WIDTH / 2 - 30, ui_variables.SCREEN_HEIGHT / 2 + 160],
-                           [ui_variables.SCREEN_WIDTH / 2 - 25, ui_variables.SCREEN_HEIGHT / 2 + 155],
-                           [ui_variables.SCREEN_WIDTH / 2 - 25, ui_variables.SCREEN_HEIGHT / 2 + 165]]
+                    pos = [[SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 160],
+                           [SCREEN_WIDTH / 2 - 25, SCREEN_HEIGHT / 2 + 155],
+                           [SCREEN_WIDTH / 2 - 25, SCREEN_HEIGHT / 2 + 165]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
 
                 if effect_volume < 10:
-                    pos = [[ui_variables.SCREEN_WIDTH / 2 + 30, ui_variables.SCREEN_HEIGHT / 2 + 160],
-                           [ui_variables.SCREEN_WIDTH / 2 + 25, ui_variables.SCREEN_HEIGHT / 2 + 155],
-                           [ui_variables.SCREEN_WIDTH / 2 + 25, ui_variables.SCREEN_HEIGHT / 2 + 165]]
+                    pos = [[SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 + 160],
+                           [SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT / 2 + 155],
+                           [SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT / 2 + 165]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
 
                 # blink current selected option
@@ -3052,7 +2919,7 @@ while not done:
                     "Can you play Tetris while overcoming obstacles? ",
                     "Player versus Player",
                     "Lots of items will be appeared in game",
-                    "Can you play Tetris with reverse direction keys?"
+                    "Can you play Tetris with reversed direction keys?"
                 ]
                 set_difficulty = 0
                 current_selected = selected
@@ -3090,41 +2957,41 @@ while not done:
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                 
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
                     pygame.draw.rect(
                         screen,
                         ui_variables.grey_1,
-                        Rect(0, 0, int(ui_variables.SCREEN_WIDTH),
-                             int(ui_variables.SCREEN_HEIGHT * 0.24))
+                        Rect(0, 0, int(SCREEN_WIDTH),
+                             int(SCREEN_HEIGHT * 0.24))
                     )
                 )
                 ## 여기에 모드별 점수를 blit
@@ -3144,7 +3011,7 @@ while not done:
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
-                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(ui_variables.SCREEN_WIDTH / 11, ((ui_variables.SCREEN_HEIGHT * 0.05*(i+1))))))
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "HARD":
                     cursor = tetris.cursor()
                     sql = "SELECT COUNT(id) FROM HARD"
@@ -3157,7 +3024,7 @@ while not done:
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
-                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(ui_variables.SCREEN_WIDTH / 11, ((ui_variables.SCREEN_HEIGHT * 0.05*(i+1))))))     
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))     
                 if DIFFICULTY_NAMES[current_selected] == "ITEM":
                     cursor = tetris.cursor()
                     sql = "SELECT COUNT(id) FROM ITEM"
@@ -3170,7 +3037,7 @@ while not done:
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
-                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(ui_variables.SCREEN_WIDTH / 11, ((ui_variables.SCREEN_HEIGHT * 0.05*(i+1))))))
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 if DIFFICULTY_NAMES[current_selected] == "REVERSE":
                     cursor = tetris.cursor()
                     sql = "SELECT COUNT(id) FROM REVERSE"
@@ -3183,25 +3050,25 @@ while not done:
                         cursor.execute(query)
                         datas = cursor.fetchmany(size =int(num[0]))
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
-                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(ui_variables.SCREEN_WIDTH / 11, ((ui_variables.SCREEN_HEIGHT * 0.05*(i+1))))))
+                        screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 
                 title = ui_variables.h1.render(difficulty_name, 1, ui_variables.white)
                 title_explain = font2.render(difficulty_explain, 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Press left and right to change, space to select difficulty", 1,
                                                     ui_variables.grey_1)
             
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
-                screen.blit(title_explain, title_explain.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2)))
-                screen.blit(title_info, title_info.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.77)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
+                screen.blit(title_explain, title_explain.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)))
+                screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
 
                 # draw left, right sign (triangle)
                 if current_selected > 0:
-                    pos = [[10, ui_variables.SCREEN_HEIGHT / 2], [15, ui_variables.SCREEN_HEIGHT / 2 - 5], [15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pos = [[10, SCREEN_HEIGHT / 2], [15, SCREEN_HEIGHT / 2 - 5], [15, SCREEN_HEIGHT / 2 + 5]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
 
                 if current_selected < DIFFICULTY_COUNT - 1:
-                    pos = [[ui_variables.SCREEN_WIDTH - 10, ui_variables.SCREEN_HEIGHT / 2], [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 - 5],
-                           [ui_variables.SCREEN_WIDTH - 15, ui_variables.SCREEN_HEIGHT / 2 + 5]]
+                    pos = [[SCREEN_WIDTH - 10, SCREEN_HEIGHT / 2], [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 - 5],
+                           [SCREEN_WIDTH - 15, SCREEN_HEIGHT / 2 + 5]]
                     pygame.draw.polygon(screen, ui_variables.grey_1, pos, 1)
             
             elif page == DIFFICULTY_PAGE:
@@ -3239,71 +3106,71 @@ while not done:
                                 # start game with selected difficulty
                                 ui_variables.click_sound.play()
                                 start = True
-                                init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 1: # hard mode 
                                 ui_variables.click_sound.play()
                                 hard = True
                                 start = True 
-                                init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 2: # pvp mode
                                 ui_variables.click_sound.play()
                                 pvp = True
                                 start = False
-                                init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
 
                             if mode_selected == 3: # item mode
                                 # start game with ITEM
                                 ui_variables.click_sound.play()
                                 start = True
                                 item = True 
-                                init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
     
                             if mode_selected == 4: # Reverse mode 
                                 ui_variables.click_sound.play()
                                 start = True
                                 reverse = True
-                                init_game(ui_variables.DEFAULT_WIDTH, ui_variables.DEFAULT_HEIGHT, mode_selected, set_difficulty)
+                                init_game(DEFAULT_WIDTH, DEFAULT_HEIGHT, mode_selected, set_difficulty)
                                 
                          # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
 
-                        ui_variables.SCREEN_WIDTH = event.w
+                        SCREEN_WIDTH = event.w
 
-                        ui_variables.SCREEN_HEIGHT = event.h
+                        SCREEN_HEIGHT = event.h
 
-                        if ui_variables.SCREEN_WIDTH < ui_variables.min_width or ui_variables.SCREEN_HEIGHT < ui_variables.min_height:  # 최소 너비 또는 높이를 설정하려는 경우
+                        if SCREEN_WIDTH < min_width or SCREEN_HEIGHT < min_height:  # 최소 너비 또는 높이를 설정하려는 경우
 
-                            ui_variables.SCREEN_WIDTH = ui_variables.min_width
+                            SCREEN_WIDTH = min_width
 
-                            ui_variables.SCREEN_HEIGHT = ui_variables.min_height
+                            SCREEN_HEIGHT = min_height
 
-                        if not ((board_rate - 0.1) < (ui_variables.SCREEN_HEIGHT / ui_variables.SCREEN_WIDTH) < (
+                        if not ((board_rate - 0.1) < (SCREEN_HEIGHT / SCREEN_WIDTH) < (
 
                                 board_rate + 0.05)):  # 높이 또는 너비가 비율의 일정수준 이상을 넘어서게 되면
 
-                            ui_variables.SCREEN_WIDTH = int(ui_variables.SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
+                            SCREEN_WIDTH = int(SCREEN_HEIGHT / board_rate)  # 너비를 적정 비율로 바꿔줌
 
-                            ui_variables.SCREEN_HEIGHT = int(ui_variables.SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
+                            SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
 
-                        block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                        inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
-                        screen = pygame.display.set_mode((ui_variables.SCREEN_WIDTH, ui_variables.SCREEN_HEIGHT), pygame.RESIZABLE)
-                        barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                        block_size = int(SCREEN_HEIGHT * 0.045)
+                        inven_size = int(SCREEN_HEIGHT * 0.08)
+                        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                        barrier_size = int(SCREEN_HEIGHT * 0.9)
                         
-                block_size = int(ui_variables.SCREEN_HEIGHT * 0.045)
-                inven_size = int(ui_variables.SCREEN_HEIGHT * 0.08)
+                block_size = int(SCREEN_HEIGHT * 0.045)
+                inven_size = int(SCREEN_HEIGHT * 0.08)
                 screen.fill(ui_variables.white)
-                barrier_size = int(ui_variables.SCREEN_HEIGHT * 0.9)
+                barrier_size = int(SCREEN_HEIGHT * 0.9)
                 pygame.draw.rect(
                     screen,
                     ui_variables.grey_1,
                     pygame.draw.rect(
                         screen,
                         ui_variables.grey_1,
-                        Rect(0, 0, int(ui_variables.SCREEN_WIDTH),
-                             int(ui_variables.SCREEN_HEIGHT * 0.24))
+                        Rect(0, 0, int(SCREEN_WIDTH),
+                             int(SCREEN_HEIGHT * 0.24))
                     )
                 )
                 title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
@@ -3311,27 +3178,27 @@ while not done:
                 title_info1 = ui_variables.h6.render("Press up and down to change speed, space to start game", 1, ui_variables.grey_1)
                 title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
 
-                screen.blit(title, title.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT * 0.1)))
+                screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
 
-                screen.blit(title_info1, title_info1.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 200)))
-                screen.blit(title_info2, title_info2.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 220)))
+                screen.blit(title_info1, title_info1.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 200)))
+                screen.blit(title_info2, title_info2.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 220)))
     
                 
                 
                 velocity = ui_variables.h2.render(str(set_difficulty), 1, ui_variables.black)
-                pos_velocity = velocity.get_rect(center=(ui_variables.SCREEN_WIDTH / 2, ui_variables.SCREEN_HEIGHT / 2 + 15 ))
+                pos_velocity = velocity.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 15 ))
                 screen.blit(velocity, pos_velocity)
                 
                 if set_difficulty > 0: # 0 이하이면 아래쪽 삼각형 안 보이게 하려는 조건
-                    pos = [[ui_variables.SCREEN_WIDTH / 2 , ui_variables.SCREEN_HEIGHT / 2 + 90],
-                           [ui_variables.SCREEN_WIDTH / 2 - 30, ui_variables.SCREEN_HEIGHT / 2 + 60],
-                           [ui_variables.SCREEN_WIDTH / 2 + 30, ui_variables.SCREEN_HEIGHT / 2 + 60]]
+                    pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 + 90],
+                           [SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 60],
+                           [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 + 60]]
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0) # 원하는 좌표에 삼각형 그리기
 
                 if set_difficulty < 9: # 9 이상이면 위쪽 삼각형 안 보이게 하려는 조건
-                    pos = [[ui_variables.SCREEN_WIDTH / 2 , ui_variables.SCREEN_HEIGHT / 2 - 60],
-                           [ui_variables.SCREEN_WIDTH / 2 - 30 , ui_variables.SCREEN_HEIGHT / 2 - 30],
-                           [ui_variables.SCREEN_WIDTH / 2 + 30, ui_variables.SCREEN_HEIGHT / 2 - 30]]
+                    pos = [[SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 - 60],
+                           [SCREEN_WIDTH / 2 - 30 , SCREEN_HEIGHT / 2 - 30],
+                           [SCREEN_WIDTH / 2 + 30, SCREEN_HEIGHT / 2 - 30]]
                     pygame.draw.polygon(screen, ui_variables.black, pos, 0) 
                 
                 
