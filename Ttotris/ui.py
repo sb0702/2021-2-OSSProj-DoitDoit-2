@@ -50,11 +50,6 @@ class ui_variables:
     hard_barrier = pygame.image.load("assets/images/ink.png")
     loginScreen = pygame.image.load("assets/images/loginscreen_transparent.png")
     
-    earthquake_inven = pygame.image.load("assets/images/earthquake_Item_1.png") # 맨 마지막 줄 지우기
-    reset_inven = pygame.image.load("assets/images/reset_Item.png") # 전체 블록 리셋
-    row_inven = pygame.image.load("assets/images/erase_row_Item.png") # 가로 한 줄 삭제, 별도의 mino 필요
-    col_inven = pygame.image.load("assets/images/erase_col_Item.png") # 세로 한 줄 삭제, 별도의 mino 필요
-    bomb_inven = pygame.image.load("assets/images/bomb_Item.png") # 3x3 삭제, 별도의 mino 필요
 
     cyan_image ='assets/images/blocks/cyan.png' 
     blue_image = 'assets/images/blocks/blue.png'
@@ -100,6 +95,3 @@ class ui_variables:
     t_block = [table_image, cyan_image, blue_image, orange_image, yellow_image, green_image, pink_image, red_image,
                 ghost_image, addLine_image, row_image, col_image, bomb_image, itembox_image] # item_image 넣기, draw_itemboard에서 사용
  
-        
-    # timer
-    Basictimer = 50

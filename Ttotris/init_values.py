@@ -119,7 +119,6 @@ hard_score = 500
 interval = 3
 hard_i = 1
 barrier_size = 1200 # 장애물 사이즈
-barriertimer=10
 
 # 피버 관련
 next_fever = 500
