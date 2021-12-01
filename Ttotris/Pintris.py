@@ -1296,7 +1296,7 @@ while not done:
                     for i in range(1, max_score, interval):
                         if score > i * hard_score and score < (i + 0.5) * hard_score: 
                             
-                            barrier = pygame.transform.scale(ui_variables.hard_barrier, (barrier_size, barrier_size*0.5))
+                            barrier = pygame.transform.scale(ui_variables.hard_barrier, int(barrier_size, barrier_size*0.5))
                             dx_barrier = barrier_size * 0.35 # 장애물 x축
                             dy_barrier1 = barrier_size * 0.001 # 장애물1 y축
                             dy_barrier2 = barrier_size * 0.5 # 장애물2 y축
