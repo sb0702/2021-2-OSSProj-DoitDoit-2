@@ -2267,7 +2267,6 @@ while not done:
                     erase_stack_2P = 0
                     text=""
                     password =""
-                    page, selected = START_PAGE, 0
                 pygame.display.flip()
                 pygame.key.set_repeat(0)
                 
