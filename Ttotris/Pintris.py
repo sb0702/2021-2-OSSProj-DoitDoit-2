@@ -2441,7 +2441,7 @@ while not done:
                             elif LoginID("PLAYER",text) == False:
                                 print("신규")
                                 if password =="":
-                                    break;
+                                    break
                                 SavedID = text
                                 SavedPass = password 
                                 page, selected = MENU_PAGE,0
