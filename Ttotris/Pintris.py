@@ -2147,11 +2147,9 @@ while not done:
                 pygame.time.set_timer(pygame.USEREVENT, 300)
                 over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
-                over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
-
-                screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
-                screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
-                screen.blit(over_start, (SCREEN_WIDTH * 0.033, SCREEN_HEIGHT * 0.3333))
+                #over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
+                over_text_3 = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
+                
                 
                 if reverse_over:
                     comboCounter = 0
@@ -2163,11 +2161,10 @@ while not done:
                 else:
                     comboCounter = 0
                     draw_board(next_mino1, hold_mino, score, level, goal)
-            
-            
-            
+                
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
+                screen.blit(over_text_3, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.3333))
                 pygame.display.update()
             
             # 마우스로 창크기조절
@@ -2268,7 +2265,6 @@ while not done:
                     erase_stack_2P = 0
                     text=""
                     password =""
-                    page, selected = START_PAGE, 0
                 pygame.display.flip()
                 pygame.key.set_repeat(0)
                 
@@ -2416,15 +2412,14 @@ while not done:
         while not done and not start and not reverse and not pvp and not item:
             # Start Page
             if page == START_PAGE:
-                if text == "":
-                    text = SavedID
-                if password =="":
-                    password = SavedPass
+                
+                text_surf = ui_variables.h2_i.render(text, True, (0,0,0))
+                pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         done = True
                     elif event.type == KEYDOWN:
-                        
+                        ## 아이디 입력
                         if event.key == pygame.K_BACKSPACE:
                             if IDchoice == True:
                                 text = text[:-1]                               
@@ -2433,6 +2428,10 @@ while not done:
                                 IDchoice == False
                                 password = password[:-1]
                                 pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0)) 
+                        elif event.key == K_SPACE:
+                            pass
+                        elif event.key == K_TAB:
+                            pass
                         elif event.key == K_RETURN:  ## enter 인듯
                             pygame.key.set_repeat(0)
                             ui_variables.click_sound.play()
@@ -2440,12 +2439,14 @@ while not done:
                                 print("등록된") 
                                 SavedID = text
                                 SavedPass = password    
-                                page, selected = MODE_PAGE,0
+                                page, selected = MENU_PAGE,0
                             elif LoginID("PLAYER",text) == False:
-                                print("신규")   
+                                print("신규")
+                                if password =="":
+                                    break
                                 SavedID = text
                                 SavedPass = password 
-                                page, selected = MODE_PAGE,0
+                                page, selected = MENU_PAGE,0
                                 
                             elif LoginID("PLAYER",text) == True and LoginPass(text,"PLAYER",password) == False:
                                 print("비밀번호 틀림")    
@@ -2464,11 +2465,14 @@ while not done:
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if id_box.collidepoint(event.pos):
                             IDchoice = not IDchoice
-
+                            text=""
+                            text_surf = ui_variables.h2_i.render(text, True, (0, 0, 0))
                         elif pass_box.collidepoint(event.pos):
                             IDchoice = not IDchoice
                             IDchoice = False
-                            Passchoice = not Passchoice   
+                            Passchoice = not Passchoice
+                            password = ""
+                            pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))   
                                       
                     elif event.type == VIDEORESIZE:
 
@@ -2550,6 +2554,8 @@ while not done:
                             pygame.key.set_repeat(0)
                             # back to start page
                             ui_variables.click_sound.play()
+                            text=""
+                            password=""
                             page, selected = START_PAGE, 0
                         elif event.key == K_DOWN:
                             pygame.key.set_repeat(0)
