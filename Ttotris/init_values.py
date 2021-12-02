@@ -112,7 +112,6 @@ erase_stack = 0
 erase_stack_2P = 0
 attack_point = 0
 attack_point_2P = 0
-flag = True
 
 # 하드 모드 관련 변수들 
 hard_score = 500
