@@ -36,7 +36,7 @@ barPos      = (650, 200)
 barSize     = (250, 20)
 borderColor = (0, 0, 0)
 barColor    = (0, 128, 0)
-min_width = 700
+min_width = 600
 min_height = 350
 board_rate = 0.5
 input_IDactive = True
@@ -112,7 +112,6 @@ erase_stack = 0
 erase_stack_2P = 0
 attack_point = 0
 attack_point_2P = 0
-  
 
 # 하드 모드 관련 변수들 
 hard_score = 500

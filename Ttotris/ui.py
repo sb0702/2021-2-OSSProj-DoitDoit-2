@@ -27,6 +27,7 @@ class ui_variables:
 
     # 로그인 관련
     text = ""
+    loginText=""
     input_active = True
     color_active = pygame.Color('lightskyblue3')
     color_inactive = pygame.Color('blue')
