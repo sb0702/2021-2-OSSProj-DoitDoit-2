@@ -12,7 +12,8 @@ from init_values import *
 import time
 from pygame.rect import Rect
 
-
+min_width = 600
+min_height = 350
 
 pygame.init()
 pygame.key.set_repeat(500)
@@ -2541,7 +2542,8 @@ while not done:
                 pygame.draw.rect(screen, IDcolor, id_box, 2)
                 pygame.draw.rect(screen, Passcolor, pass_box, 2)
                 loginText = ui_variables.h1.render(ui_variables.loginText,1,ui_variables.black)
-                screen.blit(loginText,loginText.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT /3.5)))              
+                screen.blit(loginText,loginText.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT /3.5)))
+                ui_variables.loginText =""              
                 pygame.display.flip()
             
             # MENU PAGE
