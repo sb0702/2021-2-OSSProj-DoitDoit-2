@@ -1281,7 +1281,7 @@ while not done:
                     else:
                         t1 = time.time()
                         dt = t1 -t0                                 
-                        DrawBar(barPos,barSize,borderColor,barColor, (Basictimer-TimeDecreasedByScore - dt)/ 
+                        DrawBar((int(SCREEN_WIDTH*0.55), int(SCREEN_HEIGHT*0.34)),(int(SCREEN_WIDTH * 0.2), int(SCREEN_HEIGHT*0.03)),borderColor,barColor, (Basictimer-TimeDecreasedByScore - dt)/ 
                         (Basictimer-TimeDecreasedByScore))                 
                         mino = randint(1, 1)
                         next_mino1 = randint(1, 1)
@@ -2145,7 +2145,7 @@ while not done:
                 over_text_1 = ui_variables.h2_b.render("GAME", 1, ui_variables.white)
                 over_text_2 = ui_variables.h2_b.render("OVER", 1, ui_variables.white)
                 #over_start = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
-                over_text_3 = ui_variables.h5.render("Press Enter to main page", 1, ui_variables.white)
+                over_text_3 = ui_variables.h5_i.render("Press Enter to main page", 1, ui_variables.white)
                 
                 
                 if reverse_over:
@@ -2161,7 +2161,7 @@ while not done:
                 
                 screen.blit(over_text_1, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.167))
                 screen.blit(over_text_2, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.233))
-                screen.blit(over_text_3, (SCREEN_WIDTH * 0.0775, SCREEN_HEIGHT * 0.3333))
+                screen.blit(over_text_3, (SCREEN_WIDTH * 0.030, SCREEN_HEIGHT * 0.3333))
                 pygame.display.update()
             
             # 마우스로 창크기조절
@@ -2194,7 +2194,7 @@ while not done:
             elif event.type == KEYDOWN:        
 
                 if event.key == K_RETURN: 
-                    pygame.key.set_repeat(0)
+                    
                     ui_variables.click_sound.play()
                     page, selected = MENU_PAGE, 0                
                     ## 여기서부터 기록 저장
@@ -2330,7 +2330,6 @@ while not done:
 
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
-                    pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()
                     page, selected = MENU_PAGE, 0 
                     width = DEFAULT_WIDTH  # Board width
@@ -2429,12 +2428,12 @@ while not done:
                             if LoginCom(text,"PLAYER",password):
                                 pygame.time.delay(100)
                                
-                                ui_variables.loginText = "Sucess" 
+                                ui_variables.loginText = "SUCESS" 
                                 SavedID = text
                                 SavedPass = password    
                                 page, selected = MENU_PAGE,0
                             elif LoginID("PLAYER",text) == False:
-                                ui_variables.loginText = "New Player"  
+                                ui_variables.loginText = "NEW PLAYER"  
                                 if password =="":
                                     break
                                 SavedID = text
@@ -2442,7 +2441,7 @@ while not done:
                                 page, selected = MENU_PAGE,0
                                 
                             elif LoginID("PLAYER",text) == True and LoginPass(text,"PLAYER",password) == False:
-                                ui_variables.loginText = "PassWord Fail"  
+                                ui_variables.loginText = "PASSWORD FAIL"  
                                 
                                 page, selected = START_PAGE,0
                         
@@ -2517,13 +2516,13 @@ while not done:
                 title_info = ui_variables.h6.render("Copyright (c) 2021 DOITDOIT Rights Reserved.", 1, ui_variables.grey_1)
                 
                 if blink:
-                    screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.45)))
-                    screen.blit(pressEnter, title.get_rect(center=(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT * 0.5)))
+                    screen.blit(title_menu, title.get_rect(center=(SCREEN_WIDTH / 1.95, SCREEN_HEIGHT * 0.45)))
+                    screen.blit(pressEnter, title.get_rect(center=(SCREEN_WIDTH / 1.95, SCREEN_HEIGHT * 0.5)))
                 blink = not blink
 
                 screen.blit(ID, ID.get_rect(center=(SCREEN_WIDTH / 2.3, SCREEN_HEIGHT * 1.8)))
-                id_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.9,140,32)
-                pass_box = pygame.Rect(SCREEN_WIDTH / 2.3,SCREEN_HEIGHT / 1.6,140,32)
+                id_box = pygame.Rect(int(SCREEN_WIDTH * 0.43),SCREEN_HEIGHT / 1.9,140,32)
+                pass_box = pygame.Rect(SCREEN_WIDTH * 0.43,SCREEN_HEIGHT / 1.6,140,32)
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2.5, SCREEN_HEIGHT * 1.9)))
                 screen.blit(title_info, title_info.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.77)))
@@ -2536,7 +2535,7 @@ while not done:
                 pygame.draw.rect(screen, IDcolor, id_box, 2)
                 pygame.draw.rect(screen, Passcolor, pass_box, 2)
                 loginText = ui_variables.h1.render(ui_variables.loginText,1,ui_variables.black)
-                screen.blit(loginText,loginText.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT /3.5)))
+                screen.blit(loginText,loginText.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT /3.3)))
                 ui_variables.loginText =""              
                 pygame.display.flip()
             
