@@ -2223,6 +2223,7 @@ while not done:
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
                     item_mino = randint(1, 9)
+                    inven = []
                     framerate = 30
                     fever_score = 500
                     score = 0
@@ -2240,7 +2241,7 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                     ## 게임 끝나면 패스워드 초기화
+                    
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
