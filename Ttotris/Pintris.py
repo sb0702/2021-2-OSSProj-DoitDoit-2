@@ -14,7 +14,7 @@ from pygame.rect import Rect
 
 min_width = 600
 min_height = 350
-
+board_rate = 0.5
 pygame.init()
 pygame.key.set_repeat(500)
 
@@ -1080,7 +1080,7 @@ while not done:
 
 
             elif event.type == VIDEORESIZE:
-
+                
                 SCREEN_WIDTH = event.w
 
                 SCREEN_HEIGHT = event.h
@@ -1101,8 +1101,9 @@ while not done:
                 
                 block_size = int(SCREEN_HEIGHT * 0.045)
                 inven_size = int(SCREEN_HEIGHT * 0.08)
-                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                 barrier_size = int(SCREEN_HEIGHT * 0.9)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                
     # Game screen
     elif start:        
         for event in pygame.event.get():
@@ -1591,17 +1592,13 @@ while not done:
                         draw_mino(dx,dy, mino, rotation)
                         draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
-                       
-                    
-                
-
                
             elif event.type == KEYUP:
                 pygame.key.set_repeat(300)
 
 
             elif event.type == VIDEORESIZE:
-
+                pause = True
                 SCREEN_WIDTH = event.w
 
                 SCREEN_HEIGHT = event.h
@@ -1621,9 +1618,9 @@ while not done:
                     SCREEN_HEIGHT = int(SCREEN_WIDTH * board_rate)  # 높이를 적정 비율로 바꿔줌
                 block_size = int(SCREEN_HEIGHT * 0.045)
                 inven_size = int(SCREEN_HEIGHT * 0.08)
-                
-                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                 barrier_size = int(SCREEN_HEIGHT * 0.9)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                
         pygame.display.update()
 
 
@@ -2115,7 +2112,7 @@ while not done:
                     
 
             elif event.type == VIDEORESIZE:
-
+                pause = True
                 SCREEN_WIDTH = event.w
 
                 SCREEN_HEIGHT = event.h
@@ -2136,7 +2133,7 @@ while not done:
                 inven_size = int(SCREEN_HEIGHT * 0.08)
                 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
                 barrier_size = int(SCREEN_HEIGHT * 0.9)
-        pygame.display.update()
+                pygame.display.update()
 
     # Game over screen
     elif game_over:
@@ -2169,7 +2166,7 @@ while not done:
             
             # 마우스로 창크기조절
             elif event.type == VIDEORESIZE:
-
+                
                 SCREEN_WIDTH = event.w
 
                 SCREEN_HEIGHT = event.h
@@ -2198,7 +2195,8 @@ while not done:
 
                 if event.key == K_RETURN: 
                     pygame.key.set_repeat(0)
-                    ui_variables.click_sound.play()                
+                    ui_variables.click_sound.play()
+                    page, selected = MENU_PAGE, 0                
                     ## 여기서부터 기록 저장
                     istheresaved(text,SavedPass,"PLAYER")            
                     if DIFFICULTY_NAMES[current_selected] == "NORMAL": ## normal  명섭
@@ -2262,9 +2260,7 @@ while not done:
                     attack_stack = 0
                     attack_stack_2P = 0
                     erase_stack = 0
-                    erase_stack_2P = 0                  
-                page = MENU_PAGE
-                selected = 0    
+                    erase_stack_2P = 0                     
                 pygame.display.flip()
                 pygame.key.set_repeat(0)
                 
@@ -2334,8 +2330,9 @@ while not done:
 
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    pygame.key.set_repeat(0)
                     ui_variables.click_sound.play()
-
+                    page, selected = MENU_PAGE, 0 
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2472,7 +2469,7 @@ while not done:
                             pass_surf = ui_variables.h2_i.render('*'* len(password), True, (0, 0, 0))   
                                       
                     elif event.type == VIDEORESIZE:
-                        
+                        time.sleep(1)
                         SCREEN_WIDTH = event.w
 
                         SCREEN_HEIGHT = event.h
@@ -2583,7 +2580,7 @@ while not done:
                                 page, selected = SETTING_PAGE, 0
                     # 마우스로 창크기조절
                     elif event.type == VIDEORESIZE:
-                        
+                        time.sleep(1)
                         SCREEN_WIDTH = event.w
 
                         SCREEN_HEIGHT = event.h
