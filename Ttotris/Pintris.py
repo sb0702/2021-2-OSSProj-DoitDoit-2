@@ -2223,6 +2223,7 @@ while not done:
                     next_mino2 = randint(1, 7)
                     hold_mino = -1
                     item_mino = randint(1, 9)
+                    inven = []
                     framerate = 30
                     fever_score = 500
                     score = 0
@@ -2240,7 +2241,7 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                     ## 게임 끝나면 패스워드 초기화
+                    
                     # PvP모드
                     hold_2P = False
                     dx_2P, dy_2P = 3, 0
@@ -2510,7 +2511,7 @@ while not done:
                     Rect(0, 0, int(SCREEN_WIDTH), int(SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("TTOTRIS™", 1, ui_variables.white)
                 login = ui_variables.h1.render("ID", 1, ui_variables.grey_1)
                 passwordScreen = ui_variables.h1.render("PassWord", 1, ui_variables.grey_1)
                 ID = ui_variables.h2.render("ID", 1, ui_variables.grey_1)
@@ -2615,7 +2616,7 @@ while not done:
                          int(SCREEN_HEIGHT * 0.24))
                 )
 
-                title = ui_variables.h1.render("TTOTRIS™", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("TTOTRIS™", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press up and down to change, space to select", 1,
                                                     ui_variables.grey_1)
 
@@ -2715,7 +2716,7 @@ while not done:
                     )
                 )
 
-                title = ui_variables.h1.render("HELP", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("HELP", 1, ui_variables.white)
                 title_info = ui_variables.h6.render("Press esc to return menu", 1, ui_variables.grey_1)
 
                 screen.blit(title, title.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT * 0.1)))
@@ -2851,7 +2852,7 @@ while not done:
                     )
                 )
 
-                title = ui_variables.h1.render("SETTINGS", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("SETTINGS", 1, ui_variables.white)
 
                 title_info = ui_variables.h6.render("Press esc to return menu", 1, ui_variables.grey_1)
 
@@ -2921,7 +2922,7 @@ while not done:
                     "Noraml tetris mode",
                     "Can you play Tetris while overcoming obstacles? ",
                     "Player versus Player",
-                    "Lots of items will be appeared in game",
+                    "Some items will be appeared in game",
                     "Can you play Tetris with reversed direction keys?"
                 ]
                 set_difficulty = 0
@@ -2998,7 +2999,8 @@ while not done:
                     )
                 )
                 ## 여기에 모드별 점수를 blit
-                font2 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 15)
+                font2 = pygame.font.Font("./assets/fonts/OpenSans-Semibold.ttf", 15)
+                #font2 = pygame.font.Font('assets/fonts/NanumGothicCoding-Bold.ttf', 15)
                 difficulty_name = DIFFICULTY_NAMES[current_selected]
                 difficulty_explain = DIFFICULTY_EXPLAINES[current_selected]
                  
@@ -3055,7 +3057,7 @@ while not done:
                         ScoreBoard = font2.render(''.join(str(i+1)+'st  '+str(datas[i][0])+'   '+str(datas[i][1])), 1, ui_variables.white)
                         screen.blit(ScoreBoard, ScoreBoard.get_rect(center=(SCREEN_WIDTH / 11, ((SCREEN_HEIGHT * 0.05*(i+1))))))
                 
-                title = ui_variables.h1.render(difficulty_name, 1, ui_variables.white)
+                title = ui_variables.h1_s.render(difficulty_name, 1, ui_variables.white)
                 title_explain = font2.render(difficulty_explain, 1, ui_variables.grey_1)
                 title_info = ui_variables.h6.render("Press left and right to change, space to select difficulty", 1,
                                                     ui_variables.grey_1)
@@ -3176,7 +3178,7 @@ while not done:
                              int(SCREEN_HEIGHT * 0.24))
                     )
                 )
-                title = ui_variables.h1.render("DIFFICULTY", 1, ui_variables.white)
+                title = ui_variables.h1_s.render("DIFFICULTY", 1, ui_variables.white)
 
                 title_info1 = ui_variables.h6.render("Press up and down to change speed, space to start game", 1, ui_variables.grey_1)
                 title_info2 = ui_variables.h6.render("Press esc to return to mode page", 1, ui_variables.grey_1)
