@@ -79,6 +79,7 @@ bottom_count_2P = 0
 hard_drop = False
 hard_drop_2P = False
 effect_volume = 5
+background_music = True 
 
 dx, dy = 3, 0  # Minos location status
 dx_2P, dy_2P = 3, 0

@@ -40,6 +40,10 @@ class ui_variables:
     double_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearDouble.wav")
     triple_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialLineClearTriple.wav")
     tetris_sound = pygame.mixer.Sound("assets/sounds/SFX_SpecialTetris.wav")
+    background_sound = pygame.mixer.Sound("assets/sounds/SFX_Background.ogg")
+    item_eraseline = pygame.mixer.Sound("assets/sounds/SFX_ItemEraseLine.wav")
+    item_getuse = pygame.mixer.Sound("assets/sounds/SFX_ItemGet.wav")
+    
 
     # image
     levelup = pygame.image.load("assets/images/levelup.png")

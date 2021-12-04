@@ -35,6 +35,11 @@ def set_volume():
     ui_variables.double_sound.set_volume(effect_volume / 10)
     ui_variables.triple_sound.set_volume(effect_volume / 10)
     ui_variables.tetris_sound.set_volume(effect_volume / 10)
+    ui_variables.background_sound.set_volume(effect_volume / 40)
+    ui_variables.item_eraseline.set_volume(effect_volume / 20)
+    ui_variables.item_getuse.set_volume(effect_volume / 10)
+    
+
 
 
 # Draw block 
@@ -872,6 +877,7 @@ def earthquake(): # 맨 아래 줄 삭제 아이템
         matrix[i][height] = 0 
     while cnt_box > 0: # 깬 박스 수만큼
         get_item()
+        ui_variables.item_getuse.play() 
         cnt_box -=1  
     k = height
     while k > 0:  # 남아있는 블록 아래로 한 줄씩 내리기
@@ -899,6 +905,7 @@ def erase_row():    # 가로줄 삭제 아이템 효과
                     k -= 1
     while cnt_box > 0: # 깬 박스 수만큼
         get_item()
+        ui_variables.item_getuse.play() 
         cnt_box -=1 
 
 def erase_col(): # 세로줄 삭제 아이템 효과
@@ -915,6 +922,7 @@ def erase_col(): # 세로줄 삭제 아이템 효과
                     y -= 1
     while cnt_box > 0: # 깬 박스 수만큼
         get_item()
+        ui_variables.item_getuse.play() 
         cnt_box -=1 
     
 def bomb():# 3x3 블록 삭제 아이템 효과
@@ -932,6 +940,7 @@ def bomb():# 3x3 블록 삭제 아이템 효과
                             matrix[m+k][n+q] = 0 # 3x3만큼 다 지워줌
     while cnt_box > 0: # 깬 박스 수만큼
         get_item()
+        ui_variables.item_getuse.play() 
         cnt_box -=1 
 
 
@@ -1194,6 +1203,7 @@ while not done:
                                 cnt_box +=1
                         while cnt_box > 0: # 깬 박스 수만큼
                             get_item()
+                            ui_variables.item_getuse.play() 
                             cnt_box -=1  
                         while k > 0:
                             for i in range(width):
@@ -1517,6 +1527,7 @@ while not done:
                     #pygame.display.update()
 
                 elif event.key == K_z: # 인벤토리 첫 번째 아이템 사용
+                    
                     key = 1                    
                     if item:
                         if len(inven) != 0:
@@ -1524,23 +1535,28 @@ while not done:
                             if item_u == row_inven:
                                 mino = row_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == col_inven:
                                 mino = col_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == bomb_inven:
                                 mino = bomb_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == reset_inven:
                                 erase_mino(dx, dy, mino, rotation)
                                 board_reset()
+                                ui_variables.item_eraseline.play() 
                             elif item_u == earthquake_inven:
                                 erase_mino(dx, dy, mino, rotation)
                                 earthquake()
-                        
+                                ui_variables.item_eraseline.play() 
                         draw_mino(dx, dy, mino, rotation)
                         draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_x: # 인벤토리 첫 번째 아이템 사용
+                    
                     key = 2
                     if item:
                         if len(inven) > 1:
@@ -1548,25 +1564,31 @@ while not done:
                             if item_u == row_inven:
                                 mino = row_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                                 score += 50 # 한 줄 삭제했을 때의 점수
                             elif item_u == col_inven:
                                 mino = col_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == bomb_inven:
                                 mino = bomb_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == reset_inven: # 리셋 이상함
                                 erase_mino(dx, dy, mino, rotation)
                                 board_reset()
+                                ui_variables.item_eraseline.play() 
                             elif item_u == earthquake_inven:
                                 erase_mino(dx, dy, mino, rotation)
                                 earthquake()
+                                ui_variables.item_eraseline.play() 
                                 score += 50 # 한 줄 삭제했을 때의 점수
                         
                         draw_mino(dx,dy, mino, rotation)
                         draw_itemboard(next_mino1, hold_mino, score, level, goal, inven)   
 
                 elif event.key == K_c: # 인벤토리 첫 번째 아이템 사용
+                    
                     key = 3
                     if item:
                         if len(inven) >2:
@@ -1574,19 +1596,24 @@ while not done:
                             if item_u == row_inven:
                                 mino = row_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                                 score += 50 # 한 줄 삭제했을 때의 점수
                             elif item_u == col_inven:
                                 mino = col_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == bomb_inven:
                                 mino = bomb_mino
                                 erase_mino(dx, dy, mino, rotation)
+                                ui_variables.item_getuse.play() 
                             elif item_u == reset_inven:
                                 erase_mino(dx, dy, mino, rotation)
                                 board_reset()
+                                ui_variables.item_eraseline.play() 
                             elif item_u == earthquake_inven:
                                 erase_mino(dx, dy, mino, rotation)
                                 earthquake()
+                                ui_variables.item_eraseline.play() 
                                 score += 50 # 한 줄 삭제했을 때의 점수
                         
                         draw_mino(dx,dy, mino, rotation)
@@ -2400,6 +2427,9 @@ while not done:
 
         START_PAGE, MENU_PAGE, HELP_PAGE, SETTING_PAGE, MODE_PAGE, DIFFICULTY_PAGE = 0, 10, 11, 12, 20, 30
         page, selected = START_PAGE, 0
+        if background_music:
+            ui_variables.background_sound.play()
+            background_music = False
 
         while not done and not start and not reverse and not pvp and not item:
             # Start Page
