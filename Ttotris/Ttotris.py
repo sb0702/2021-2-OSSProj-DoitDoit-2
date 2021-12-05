@@ -1086,7 +1086,7 @@ while not done:
 
                     if item:
                         item = False
-                    # 수빈
+                    
                     if hard:
                         hard = False
 
@@ -1181,7 +1181,7 @@ while not done:
                             if item:
                                 item = False
                                 item_over = True
-                            # 수빈
+                            
                             if hard:
                                 hard = False
                                 hard_over = True
@@ -2241,7 +2241,7 @@ while not done:
                         istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
                     if DIFFICULTY_NAMES[current_selected] == "REVERSE": ## normal   명섭
                         istheresaved(text,SavedPass,DIFFICULTY_NAMES[mode_selected])
-                    hard_over = False # 수빈
+                    hard_over = False 
                     width = DEFAULT_WIDTH  # Board width
                     height = DEFAULT_HEIGHT
                     game_over = False
@@ -2392,7 +2392,7 @@ while not done:
                     name = [65, 65, 65]
                     matrix = [[0 for y in range(height + 1)] for x in range(width)]
                     set_difficulty = 0
-                    hard_over = False # 수빈
+                    hard_over = False 
                     
 
                     min_width = 700
